@@ -1,8 +1,5 @@
 <?php
-///////////////////////////////////////////////////////////////////////
-//Componente controller que verifica la opcion seleccionada
-//por el usuario, ejecuta el modelo y enruta la navegacion de paginas.
-///////////////////////////////////////////////////////////////////////
+
 
 require_once '../model/NotaModel.php';
 session_start();
@@ -17,8 +14,6 @@ switch ($opcion) {
         $listado = $notaModel->getNotas(true);
         //y los guardamos en sesion:
         $_SESSION['listado'] = serialize($listado);
-        //obtenemos el valor total de productos y guardamos en sesion:
-        $_SESSION['valorTotal'] = $productoModel->getValorProductos();
         header('Location: ../view/index.php');
         break;
     case "listar_desc":
@@ -26,8 +21,7 @@ switch ($opcion) {
         $listado = $productoModel->getProductos(false);
         //y los guardamos en sesion:
         $_SESSION['listado'] = serialize($listado);
-        //obtenemos el valor total de productos:
-        $_SESSION['valorTotal'] = $productoModel->getValorProductos();
+        
         header('Location: ../view/index.php');
         break;
     case "crear":
@@ -36,10 +30,10 @@ switch ($opcion) {
         break;
     case "guardar":
         //obtenemos los valores ingresados por el usuario en el formulario:
-        $codigo = $_REQUEST['codigo'];
-        $nombre = $_REQUEST['nombre'];
-        $precio = $_REQUEST['precio'];
-        $cantidad = $_REQUEST['cantidad'];
+        $cedula = $_REQUEST['cedula'];
+        $nombres = $_REQUEST['nombres'];
+        $nota1 = $_REQUEST['nota1'];
+        $nota2 = $_REQUEST['nota2'];
         //creamos un nuevo producto:
         try{
             $productoModel->crearProducto($codigo, $nombre, $precio, $cantidad);

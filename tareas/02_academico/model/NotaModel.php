@@ -51,17 +51,17 @@ class NotaModel
         return $nota;
     }
 
-    public function crearLibro($lib_codigo, $lib_titulo, $lib_año, $lib_autor, $lib_paginas)
+    public function crearNota($cedula, $nombres, $nota1, $nota2)
     {
         //Preparamos la conexion a la bdd:
         $pdo = Database::connect();
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         //Preparamos la sentencia con parametros:
-        $sql = "INSERT into libro (lib_codigo, lib_titulo, lib_año, lib_autor, lib_paginas) values(?,?,?,?,?)";
+        $sql = "INSERT into notas (cedula, nombres, nota1, nota2) values(?,?,?,?)";
         $consulta = $pdo->prepare($sql);
         //Ejecutamos y pasamos los parametros:
         try {
-            $consulta->execute(array($lib_codigo, $lib_titulo, $lib_año, $lib_autor, $lib_paginas));
+            $consulta->execute(array($cedula, $nobres, $nota1, $nota2));
         } catch (PDOException $e) {
             Database::disconnect();
             throw new Exception($e->getMessage());
@@ -69,26 +69,26 @@ class NotaModel
         Database::disconnect();
     }
 
-    public function eliminarLibro($lib_codigo)
+    public function eliminarNota($cedula)
     {
         //Preparamos la conexion a la bdd:
         $pdo = Database::connect();
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sql = "DELETE from libro where lib_codigo=?";
+        $sql = "DELETE from nota where cedula=?";
         $consulta = $pdo->prepare($sql);
         //Ejecutamos la sentencia incluyendo a los parametros:
-        $consulta->execute(array($lib_codigo));
+        $consulta->execute(array($cedula));
         Database::disconnect();
     }
 
-    public function actualizarlibro($lib_codigo, $lib_titulo, $lib_año, $lib_autor, $lib_paginas)
+    public function actualizarlibro($cedula, $nombres, $nota1, $nota2)
     {
         //Preparamos la conexión a la bdd:
         $pdo = Database::connect();
-        $sql = "UPDATE libro set lib_titulo=?,lib_año=?,lib_auto=?, lib_paginas=? where lib_codigo=?";
+        $sql = "UPDATE notas set cedula=?,nombres=?,nota1=?, nota2=? where cedula=?";
         $consulta = $pdo->prepare($sql);
         //Ejecutamos la sentencia incluyendo a los parametros:
-        $consulta->execute(array($lib_titulo, $lib_año, $lib_autor, $lib_paginas, $lib_codigo));
+        $consulta->execute(array($nombres, $nota1, $nota2, $promedio, $cedula));
         Database::disconnect();
     }
 }
