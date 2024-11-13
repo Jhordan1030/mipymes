@@ -1,13 +1,19 @@
 <?php
 
+/**
+ * Clase utilitaria que maneja la conexion/desconexion a la base de datos
+ * mediante las funciones PDO (PHP Data Objects).
+ * Utiliza el patron de diseno singleton para el manejo de la conexion.
+ * @author mrea
+ */
 class Database {
-    // Propiedades estaticas con la informacion de la conexion (DSN):
-    private static $dbName = 'biblioteca'; // Nombre de la base de datos
-    private static $dbHost = 'localhost';  // Servidor de la base de datos
-    private static $dbUsername = 'jmhueran';   // Usuario de la base de datos
-    private static $dbUserPassword = 'jmhueran';   // Contraseña del usuario
-    
-    // Propiedad para control de la conexion:
+
+    //Propiedades estaticas con la informacion de la conexion (DSN):
+    private static $dbName = 'biblioteca';
+    private static $dbHost = 'localhost';
+    private static $dbUsername = 'jmhueran';
+    private static $dbUserPassword = 'jmhueran';
+    //Propiedad para control de la conexion:
     private static $conexion = null;
 
     /**
@@ -20,17 +26,14 @@ class Database {
 
     /**
      * Metodo estatico que crea una conexion a la base de datos.
-     * @return PDO
+     * @return type
      */
     public static function connect() {
         // Una sola conexion para toda la aplicacion (singleton):
         if (self::$conexion == null) {
             try {
-                self::$conexion = new PDO(
-                    "mysql:host=" . self::$dbHost . ";dbname=" . self::$dbName, 
-                    self::$dbUsername, 
-                    self::$dbUserPassword
-                );
+                self::$conexion = new PDO("mysql:host=" . self::$dbHost . ";" . "dbname=" . self::$dbName, 
+                                          self::$dbUsername, self::$dbUserPassword);
             } catch (PDOException $e) {
                 die($e->getMessage());
             }
@@ -44,5 +47,7 @@ class Database {
     public static function disconnect() {
         self::$conexion = null;
     }
+
 }
+
 ?>

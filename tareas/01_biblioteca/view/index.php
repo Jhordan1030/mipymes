@@ -1,61 +1,73 @@
-<?php
-/**
- * Clase utilitaria que maneja la conexión y desconexión a la base de datos
- * mediante PDO (PHP Data Objects).
- * Utiliza el patrón de diseño Singleton para el manejo de la conexión.
- * 
- * @author mrea
- */
-class Database {
-    // Propiedades estáticas con la información de la conexión (DSN):
-    private static $dbName = 'biblioteca';       // Nombre de la base de datos
-    private static $dbHost = 'localhost';       // Host del servidor de la base de datos
-    private static $dbUsername = 'jmhueran';    // Usuario de la base de datos
-    private static $dbUserPassword = 'jmhueran';// Contraseña del usuario
-    
-    // Propiedad para controlar la conexión:
-    private static $conexion = null;
+<!DOCTYPE html>
+<html lang="es">
 
-    /**
-     * No se permite instanciar esta clase, se utilizan sus elementos
-     * de tipo estático.
-     */
-    public function __construct() {
-        exit('No se permite instanciar esta clase. Solo se usan sus métodos estáticamente.');
-    }
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Biblioteca</title>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.css">
+</head>
 
-    /**
-     * Método estático que crea una conexión a la base de datos.
-     * Si ya existe una conexión, la reutiliza (Singleton).
-     * 
-     * @return PDO La conexión a la base de datos
-     */
-    public static function connect() {
-        // Si no hay una conexión establecida, se crea una nueva (patrón Singleton)
-        if (self::$conexion == null) {
-            try {
-                self::$conexion = new PDO(
-                    "mysql:host=" . self::$dbHost . ";dbname=" . self::$dbName, 
-                    self::$dbUsername, 
-                    self::$dbUserPassword
-                );
-                // Configurar el modo de error de PDO para excepciones
-                self::$conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            } catch (PDOException $e) {
-                // Si ocurre un error en la conexión, se muestra el mensaje y se termina el script
-                die("Error de conexión: " . $e->getMessage());
+<body>
+    <h3>CRUD Libros</h3>
+
+    <table>
+        <tr>
+            <td>
+                <form action="../controller/controller.php">
+                    <input type="hidden" value="listar" name="opcion">
+                    <input type="submit" value="Consultar listado">
+                </form>
+            </td>
+            
+            <td>
+                <form action="../controller/controller.php">
+                    <input type="hidden" value="crear" name="opcion">
+                    <input type="submit" value="Crear producto">
+                </form>
+            </td>
+        </tr>
+    </table>
+    <table>
+        <thead>
+            <tr>
+                <th>CODIGO</th>
+                <th>TITULO</th>
+                <th>AÑO</th>
+                <th>AUTOR</th>
+                <th>PAGINAS</th>
+                <th>ELIMINAR</th>
+                <th>ACTUALIZAR</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            session_start();
+            include_once '../model/Libro.php';
+            //verificamos si existe en sesion el listado de productos:
+            if (isset($_SESSION['listado'])) {
+                $listado = unserialize($_SESSION['listado']);
+                foreach ($listado as $lib) {
+                    echo "<tr>";
+                    echo "<td>" . $lib->getLib_codigo() . "</td>";
+                    echo "<td>" . $lib->getLib_titulo() . "</td>";
+                    echo "<td>" . $lib->getLib_año() . "</td>";
+                    echo "<td>" . $lib->getLib_autor() . "</td>";
+                    echo "<td>" . $lib->getLib_paginas() . "</td>";
+                    //opciones para invocar al controlador indicando la opcion eliminar o cargar
+                    //y la fila que selecciono el usuario (con el codigo del producto):
+                    echo "<td><a href='../controller/controller.php?opcion=eliminar&lib_codigo=" . $lib->getLib_codigo() . "'>eliminar</a></td>";
+                    echo "<td><a href='../controller/controller.php?opcion=cargar&lib_codigo=" . $lib->getLib_codigo() . "'>actualizar</a></td>";
+                    echo "</tr>";
+                }
+            } else {
+                echo "<tr><td colspan=6>No se han cargado datos.</td></tr>";
             }
-        }
-        return self::$conexion;
-    }
+            ?>
+        </tbody>
+    </table>
 
-    /**
-     * Método estático para desconectar de la base de datos.
-     * 
-     * Destruye la conexión establecida.
-     */
-    public static function disconnect() {
-        self::$conexion = null;
-    }
-}
-?>
+</body>
+
+</html>
