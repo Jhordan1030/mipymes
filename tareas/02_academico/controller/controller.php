@@ -18,7 +18,7 @@ switch ($opcion) {
         break;
     case "listar_desc":
         //obtenemos la lista de productos:
-        $listado = $productoModel->getProductos(false);
+        $listado = $notaModel->getProductos(false);
         //y los guardamos en sesion:
         $_SESSION['listado'] = serialize($listado);
         
@@ -36,46 +36,46 @@ switch ($opcion) {
         $nota2 = $_REQUEST['nota2'];
         //creamos un nuevo producto:
         try{
-            $productoModel->crearProducto($codigo, $nombre, $precio, $cantidad);
+            $productoModel->crearProducto($cedula, $nombres, $nota1, $nota2);
         }catch(Exception $e){
             //colocamos el mensaje de la excepcion en sesion
             $_SESSION['mensaje']=$e->getMessage();
         }
         //actualizamos la lista de productos para grabar en sesion:
-        $listado = $productoModel->getProductos(true);
+        $listado = $notaModel->getNotas(true);
         $_SESSION['listado'] = serialize($listado);
         header('Location: ../view/index.php');
         break;
     case "eliminar":
         //obtenemos el codigo del producto a eliminar:
-        $codigo = $_REQUEST['codigo'];
+        $codigo = $_REQUEST['cedula'];
         //eliminamos el producto:
-        $productoModel->eliminarProducto($codigo);
+        $productoModel->eliminarProducto($cedula);
         //actualizamos la lista de productos para grabar en sesion:
-        $listado = $productoModel->getProductos(true);
+        $listado = $notaModel->getNotas(true);
         $_SESSION['listado'] = serialize($listado);
         header('Location: ../view/index.php');
         break;
     case "cargar":
         //para permitirle actualizar un producto al usuario primero
         //obtenemos los datos completos de ese producto:
-        $codigo = $_REQUEST['codigo'];
-        $producto = $productoModel->getProducto($codigo);
+        $codigo = $_REQUEST['cedula'];
+        $nota = $notaModel->getNota($cedula);
         //guardamos en sesion el producto para posteriormente visualizarlo
         //en un formulario para permitirle al usuario editar los valores:
-        $_SESSION['producto'] = $producto;
+        $_SESSION['nota'] = $nota;
         header('Location: ../view/actualizar.php');
         break;
     case "actualizar":
         //obtenemos los datos modificados por el usuario:
-        $codigo = $_REQUEST['codigo'];
-        $nombre = $_REQUEST['nombre'];
-        $precio = $_REQUEST['precio'];
-        $cantidad = $_REQUEST['cantidad'];
+        $codigo = $_REQUEST['cedula'];
+        $nombre = $_REQUEST['nombres'];
+        $precio = $_REQUEST['nota1'];
+        $cantidad = $_REQUEST['nota2'];
         //actualizamos los datos del producto:
-        $productoModel->actualizarProducto($codigo, $nombre, $precio, $cantidad);
+        $notaModel->actualizarNota($cedula, $nombres, $nota1, $nota2);
         //actualizamos la lista de productos para grabar en sesion:
-        $listado = $productoModel->getProductos(true);
+        $listado = $notaModel->getNotas(true);
         $_SESSION['listado'] = serialize($listado);
         header('Location: ../view/index.php');
         break;
