@@ -1,9 +1,9 @@
 <?php
 
 
-require_once '../model/ProductoModel.php';
+require_once '../model/LibroModel.php';
 session_start();
-$productoModel = new ProductoModel();
+$libroModel = new LibroModel();
 $opcion = $_REQUEST['opcion'];
 //limpiamos cualquier mensaje previo:
 unset($_SESSION['mensaje']);
@@ -11,20 +11,9 @@ unset($_SESSION['mensaje']);
 switch ($opcion) {
     case "listar":
         //obtenemos la lista de productos:
-        $listado = $productoModel->getProductos(true);
+        $listado = $libroModel->getLibros();
         //y los guardamos en sesion:
         $_SESSION['listado'] = serialize($listado);
-        //obtenemos el valor total de productos y guardamos en sesion:
-        $_SESSION['valorTotal'] = $productoModel->getValorProductos();
-        header('Location: ../view/index.php');
-        break;
-    case "listar_desc":
-        //obtenemos la lista de productos:
-        $listado = $productoModel->getProductos(false);
-        //y los guardamos en sesion:
-        $_SESSION['listado'] = serialize($listado);
-        //obtenemos el valor total de productos:
-        $_SESSION['valorTotal'] = $productoModel->getValorProductos();
         header('Location: ../view/index.php');
         break;
     case "crear":
@@ -33,52 +22,54 @@ switch ($opcion) {
         break;
     case "guardar":
         //obtenemos los valores ingresados por el usuario en el formulario:
-        $codigo = $_REQUEST['codigo'];
-        $nombre = $_REQUEST['nombre'];
-        $precio = $_REQUEST['precio'];
-        $cantidad = $_REQUEST['cantidad'];
+        $lib_codigo = $_REQUEST['lib_codigo'];
+        $lib_titulo = $_REQUEST['lib_titulo'];
+        $lib_año = $_REQUEST['lib_año'];
+        $lib_autor = $_REQUEST['lib_autor'];
+        $lib_paginas = $_REQUEST['lib_paginas'];
         //creamos un nuevo producto:
-        try{
-            $productoModel->crearProducto($codigo, $nombre, $precio, $cantidad);
-        }catch(Exception $e){
+        try {
+            $libroModel->crearLibro($lib_codigo, $lib_titulo, $lib_año, $lib_autor, $lib_paginas);
+        } catch (Exception $e) {
             //colocamos el mensaje de la excepcion en sesion
-            $_SESSION['mensaje']=$e->getMessage();
+            $_SESSION['mensaje'] = $e->getMessage();
         }
         //actualizamos la lista de productos para grabar en sesion:
-        $listado = $productoModel->getProductos(true);
+        $listado = $libroModel->getLibros(true);
         $_SESSION['listado'] = serialize($listado);
         header('Location: ../view/index.php');
         break;
     case "eliminar":
         //obtenemos el codigo del producto a eliminar:
-        $codigo = $_REQUEST['codigo'];
+        $lib_codigo = $_REQUEST['lib_codigo'];
         //eliminamos el producto:
-        $productoModel->eliminarProducto($codigo);
+        $kibroModel->eliminarLibro($lib_codigo);
         //actualizamos la lista de productos para grabar en sesion:
-        $listado = $productoModel->getProductos(true);
+        $listado = $libroModel->getLibros(true);
         $_SESSION['listado'] = serialize($listado);
         header('Location: ../view/index.php');
         break;
     case "cargar":
         //para permitirle actualizar un producto al usuario primero
         //obtenemos los datos completos de ese producto:
-        $codigo = $_REQUEST['codigo'];
-        $producto = $productoModel->getProducto($codigo);
+        $lib_codigo = $_REQUEST['lib_codigo'];
+        $libro = $libroModel->getLibro($lib_codigo);
         //guardamos en sesion el producto para posteriormente visualizarlo
         //en un formulario para permitirle al usuario editar los valores:
-        $_SESSION['producto'] = $producto;
+        $_SESSION['libro'] = $libro;
         header('Location: ../view/actualizar.php');
         break;
     case "actualizar":
         //obtenemos los datos modificados por el usuario:
-        $codigo = $_REQUEST['codigo'];
-        $nombre = $_REQUEST['nombre'];
-        $precio = $_REQUEST['precio'];
-        $cantidad = $_REQUEST['cantidad'];
+        $lib_codigo = $_REQUEST['lib_codigo'];
+        $lib_titulo = $_REQUEST['lib_titulo'];
+        $lib_año = $_REQUEST['lib_año'];
+        $lib_autor = $_REQUEST['lib_autor'];
+        $lib_paginas = $_REQUEST['lib_paginas'];
         //actualizamos los datos del producto:
-        $productoModel->actualizarProducto($codigo, $nombre, $precio, $cantidad);
+        $libroModel->actualizarlibro($lib_codigo, $lib_titulo, $lib_año, $lib_autor,$lib_paginas);
         //actualizamos la lista de productos para grabar en sesion:
-        $listado = $productoModel->getProductos(true);
+        $listado = $libroModel->getLibros(true);
         $_SESSION['listado'] = serialize($listado);
         header('Location: ../view/index.php');
         break;
