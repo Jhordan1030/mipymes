@@ -21,6 +21,7 @@
         <input type="hidden" value="actualizar" name="opcion">
         <!-- Utilizamos pequeños scripts PHP para obtener los valores del producto: -->
         <input type="hidden" value="<?php echo $libro->getLib_codigo(); ?>" name="lib_codigo">
+        
         <label>Codigo:</label>
         <b><?php echo $libro->getLib_codigo(); ?></b>
 
@@ -28,8 +29,8 @@
         <input type="text" name="lib_titulo" required value="<?php echo $libro->getLib_titulo(); ?>">
         
         <label>Año:</label>
-        <input type="number"  min="1" name="lib_año" value="<?php echo $libro->getLib_año(); ?>">
-        
+        <input type="number"  name="lib_año" value="<?php echo $libro->getLib_año(); ?>">
+
         <label>Autor:</label>
         <input type="text"  name="lib_autor" value="<?php echo $libro->getLib_autor(); ?>">
 

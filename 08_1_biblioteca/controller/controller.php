@@ -43,7 +43,7 @@ switch ($opcion) {
         //obtenemos el codigo del producto a eliminar:
         $lib_codigo = $_REQUEST['lib_codigo'];
         //eliminamos el producto:
-        $kibroModel->eliminarLibro($lib_codigo);
+        $libroModel->eliminarLibro($lib_codigo);
         //actualizamos la lista de productos para grabar en sesion:
         $listado = $libroModel->getLibros(true);
         $_SESSION['listado'] = serialize($listado);
@@ -67,7 +67,7 @@ switch ($opcion) {
         $lib_autor = $_REQUEST['lib_autor'];
         $lib_paginas = $_REQUEST['lib_paginas'];
         //actualizamos los datos del producto:
-        $libroModel->actualizarlibro($lib_codigo, $lib_titulo, $lib_año, $lib_autor,$lib_paginas);
+        $libroModel->actualizarlibro($lib_codigo, $lib_titulo, $lib_año, $lib_autor, $lib_paginas);
         //actualizamos la lista de productos para grabar en sesion:
         $listado = $libroModel->getLibros(true);
         $_SESSION['listado'] = serialize($listado);

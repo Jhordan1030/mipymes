@@ -53,6 +53,7 @@
                     echo "<td>" . $lib->getLib_codigo() . "</td>";
                     echo "<td>" . $lib->getLib_titulo() . "</td>";
                     echo "<td>" . $lib->getLib_año() . "</td>";
+                    echo "<td>" . $lib->getLib_autor() . "</td>";
                     echo "<td>" . $lib->getLib_paginas() . "</td>";
                     //opciones para invocar al controlador indicando la opcion eliminar o cargar
                     //y la fila que selecciono el usuario (con el codigo del producto):

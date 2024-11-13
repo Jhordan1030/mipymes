@@ -1,6 +1,6 @@
 <?php
 include 'Database.php';
-include 'Producto.php';
+include 'Libro.php';
 
 
 class LibroModel
@@ -10,7 +10,7 @@ class LibroModel
     {
         //obtenemos la informacion de la bdd:
         $pdo = Database::connect();
-        $sql = "select * from libro order by lib_titulo";
+        $sql = "SELECT * from libro order by lib_titulo";
         $resultado = $pdo->query($sql);
         //transformamos los registros en objetos de tipo Producto:
         $listado = array();
@@ -18,7 +18,7 @@ class LibroModel
             $libro = new Libro();
             $libro->setLib_codigo($res['lib_codigo']);
             $libro->setLib_titulo($res['lib_titulo']);
-            $libro->setLib_año($res['Lib_año']);
+            $libro->setLib_año($res['lib_año']);
             $libro->setLib_autor($res['lib_autor']);
             $libro->setLib_paginas($res['lib_paginas']);
             array_push($listado, $libro);
@@ -34,7 +34,7 @@ class LibroModel
         //Obtenemos la informacion del producto especifico:
         $pdo = Database::connect();
         //Utilizamos parametros para la consulta:
-        $sql = "select * from libro where lib_codigo=?";
+        $sql = "SELECT * from libro where lib_codigo=?";
         $consulta = $pdo->prepare($sql);
         //Ejecutamos y pasamos los parametros para la consulta:
         $consulta->execute(array($lib_codigo));
@@ -57,7 +57,7 @@ class LibroModel
         $pdo = Database::connect();
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         //Preparamos la sentencia con parametros:
-        $sql = "insert into libro (lib_codigo,lib_titulo,lib_año,lib_autor, lib_paginas) values(?,?,?,?,?)";
+        $sql = "INSERT into libro (lib_codigo, lib_titulo, lib_año, lib_autor, lib_paginas) values(?,?,?,?,?)";
         $consulta = $pdo->prepare($sql);
         //Ejecutamos y pasamos los parametros:
         try {
@@ -74,7 +74,7 @@ class LibroModel
         //Preparamos la conexion a la bdd:
         $pdo = Database::connect();
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sql = "delete from libro where lib_codigo=?";
+        $sql = "DELETE from libro where lib_codigo=?";
         $consulta = $pdo->prepare($sql);
         //Ejecutamos la sentencia incluyendo a los parametros:
         $consulta->execute(array($lib_codigo));
@@ -85,7 +85,7 @@ class LibroModel
     {
         //Preparamos la conexión a la bdd:
         $pdo = Database::connect();
-        $sql = "update libro set lib_titulo=?,lib_año=?,lib_auto=?, lib_paginas=? where lib_codigo=?";
+        $sql = "UPDATE libro set lib_titulo=?,lib_año=?,lib_auto=?, lib_paginas=? where lib_codigo=?";
         $consulta = $pdo->prepare($sql);
         //Ejecutamos la sentencia incluyendo a los parametros:
         $consulta->execute(array($lib_titulo, $lib_año, $lib_autor, $lib_paginas, $lib_codigo));
