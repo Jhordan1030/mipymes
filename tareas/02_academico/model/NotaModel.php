@@ -61,7 +61,7 @@ class NotaModel
         $consulta = $pdo->prepare($sql);
         //Ejecutamos y pasamos los parametros:
         try {
-            $consulta->execute(array($cedula, $nobres, $nota1, $nota2));
+            $consulta->execute(array($cedula, $nombres, $nota1, $nota2));
         } catch (PDOException $e) {
             Database::disconnect();
             throw new Exception($e->getMessage());
@@ -88,7 +88,7 @@ class NotaModel
         $sql = "UPDATE notas set cedula=?,nombres=?,nota1=?, nota2=? where cedula=?";
         $consulta = $pdo->prepare($sql);
         //Ejecutamos la sentencia incluyendo a los parametros:
-        $consulta->execute(array($nombres, $nota1, $nota2, $promedio, $cedula));
+        $consulta->execute(array($nombres, $nota1, $nota2, $cedula));
         Database::disconnect();
     }
 }
