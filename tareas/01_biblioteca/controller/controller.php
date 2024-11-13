@@ -1,53 +1,80 @@
 <?php
 
-/**
- * Clase utilitaria que maneja la conexion/desconexion a la base de datos
- * mediante las funciones PDO (PHP Data Objects).
- * Utiliza el patron de diseno singleton para el manejo de la conexion.
- * @author mrea
- */
-class Database {
 
-    //Propiedades estaticas con la informacion de la conexion (DSN):
-    private static $dbName = 'biblioteca';
-    private static $dbHost = 'localhost';
-    private static $dbUsername = 'jmhueran';
-    private static $dbUserPassword = 'jmhueran';
-    //Propiedad para control de la conexion:
-    private static $conexion = null;
+require_once '../model/LibroModel.php';
+session_start();
+$libroModel = new LibroModel();
+$opcion = $_REQUEST['opcion'];
+//limpiamos cualquier mensaje previo:
+unset($_SESSION['mensaje']);
 
-    /**
-     * No se permite instanciar esta clase, se utilizan sus elementos
-     * de tipo estatico.
-     */
-    public function __construct() {
-        exit('No se permite instanciar esta clase. Solo se usan sus métodos estáticamente.');
-    }
-
-    /**
-     * Metodo estatico que crea una conexion a la base de datos.
-     * @return type
-     */
-    public static function connect() {
-        // Una sola conexion para toda la aplicacion (singleton):
-        if (self::$conexion == null) {
-            try {
-                self::$conexion = new PDO("mysql:host=" . self::$dbHost . ";" . "dbname=" . self::$dbName, 
-                                          self::$dbUsername, self::$dbUserPassword);
-            } catch (PDOException $e) {
-                die($e->getMessage());
-            }
+switch ($opcion) {
+    case "listar":
+        //obtenemos la lista de productos:
+        $listado = $libroModel->getLibros();
+        //y los guardamos en sesion:
+        $_SESSION['listado'] = serialize($listado);
+        header('Location: ../view/index.php');
+        break;
+    case "crear":
+        //navegamos a la pagina de creacion:
+        header('Location: ../view/crear.php');
+        break;
+    case "guardar":
+        //obtenemos los valores ingresados por el usuario en el formulario:
+        $lib_codigo = $_REQUEST['lib_codigo'];
+        $lib_titulo = $_REQUEST['lib_titulo'];
+        $lib_año = $_REQUEST['lib_año'];
+        $lib_autor = $_REQUEST['lib_autor'];
+        $lib_paginas = $_REQUEST['lib_paginas'];
+        //creamos un nuevo producto:
+        try {
+            $libroModel->crearLibro($lib_codigo, $lib_titulo, $lib_año, $lib_autor, $lib_paginas);
+        } catch (Exception $e) {
+            //colocamos el mensaje de la excepcion en sesion
+            $_SESSION['mensaje'] = $e->getMessage();
         }
-        return self::$conexion;
-    }
-
-    /**
-     * Metodo estatico para desconexion de la bdd.
-     */
-    public static function disconnect() {
-        self::$conexion = null;
-    }
-
+        //actualizamos la lista de productos para grabar en sesion:
+        $listado = $libroModel->getLibros(true);
+        $_SESSION['listado'] = serialize($listado);
+        header('Location: ../view/index.php');
+        break;
+    case "eliminar":
+        //obtenemos el codigo del producto a eliminar:
+        $lib_codigo = $_REQUEST['lib_codigo'];
+        //eliminamos el producto:
+        $libroModel->eliminarLibro($lib_codigo);
+        //actualizamos la lista de productos para grabar en sesion:
+        $listado = $libroModel->getLibros(true);
+        $_SESSION['listado'] = serialize($listado);
+        header('Location: ../view/index.php');
+        break;
+    case "cargar":
+        //para permitirle actualizar un producto al usuario primero
+        //obtenemos los datos completos de ese producto:
+        $lib_codigo = $_REQUEST['lib_codigo'];
+        $libro = $libroModel->getLibro($lib_codigo);
+        //guardamos en sesion el producto para posteriormente visualizarlo
+        //en un formulario para permitirle al usuario editar los valores:
+        $_SESSION['libro'] = $libro;
+        header('Location: ../view/actualizar.php');
+        break;
+    case "actualizar":
+        //obtenemos los datos modificados por el usuario:
+        $lib_codigo = $_REQUEST['lib_codigo'];
+        $lib_titulo = $_REQUEST['lib_titulo'];
+        $lib_año = $_REQUEST['lib_año'];
+        $lib_autor = $_REQUEST['lib_autor'];
+        $lib_paginas = $_REQUEST['lib_paginas'];
+        //actualizamos los datos del producto:
+        $libroModel->actualizarlibro($lib_codigo, $lib_titulo, $lib_año, $lib_autor, $lib_paginas);
+        //actualizamos la lista de productos para grabar en sesion:
+        $listado = $libroModel->getLibros(true);
+        $_SESSION['listado'] = serialize($listado);
+        header('Location: ../view/index.php');
+        break;
+    default:
+        //si no existe la opcion recibida por el controlador, siempre
+        //redirigimos la navegacion a la pagina index:
+        header('Location: ../view/index.php');
 }
-
-?>
