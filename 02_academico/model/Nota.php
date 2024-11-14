@@ -4,11 +4,8 @@
         private $nombres;
         private $nota1;
         private $nota2;
-        private  $promedio;
+        private $promedio;
 
-        
-
-        
 
         /**
          * Get the value of cedula

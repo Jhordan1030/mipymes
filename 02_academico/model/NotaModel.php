@@ -5,41 +5,65 @@ include 'Nota.php';
 
 class NotaModel
 {
-
-    public function getNota()
+    public function getPromedioGeneral()
     {
-        // Obtenemos la información de la base de datos
+        // Primero, consultamos todos los promedios de los estudiantes desde la base de datos:
         $pdo = Database::connect();
-        $sql = "SELECT * FROM notas ORDER BY nombres";
+        $sql = "SELECT promedio FROM notas";  // Seleccionamos solo el campo 'promedio' de todos los estudiantes
         $resultado = $pdo->query($sql);
 
-        // Transformamos los registros en objetos de tipo Nota
+        $suma = 0;
+        $cantidad = 0;
+
+        // Sumamos todos los promedios:
+        foreach ($resultado as $res) {
+            $suma += $res['promedio'];
+            $cantidad++;
+        }
+
+        Database::disconnect();
+
+        // Calculamos el promedio general
+        if ($cantidad > 0) {
+            return $suma / $cantidad;  // Promedio general
+        } else {
+            return 0;  // En caso de que no haya estudiantes
+        }
+    }
+
+    public function getNotas($orden)
+    {
+        //obtenemos la informacion de la bdd:
+        $pdo = Database::connect();
+        //verificamos el ordenamiento asc o desc:
+        if ($orden == true) //ascendente
+            $sql = "SELECT * from notas order by nombres";
+        else //descendente
+            $sql = "SELECT * from notas order by nombres desc";
+        $resultado = $pdo->query($sql);
+        //transformamos los registros en objetos de tipo Producto:
+
         $listado = array();
         foreach ($resultado as $res) {
             $nota = new Nota();
             $nota->setCedula($res['cedula']);
             $nota->setNombres($res['nombres']);
-            $nota->setNota1($res['nota1']);  // Cambiado de 'lib_año' a 'nota1'
+            $nota->setNota1($res['nota1']);
             $nota->setNota2($res['nota2']);
             $nota->setPromedio($res['promedio']);
             array_push($listado, $nota);
         }
-
-        // Cerramos la conexión a la base de datos
         Database::disconnect();
-
-        // Retornamos el listado resultante
+        //retornamos el listado resultante:
         return $listado;
     }
 
-
-
-    public function getNotas($cedula)
+    public function getNota($cedula)
     {
         //Obtenemos la informacion del producto especifico:
         $pdo = Database::connect();
         //Utilizamos parametros para la consulta:
-        $sql = "SELECT * from notas where cedula=?";
+        $sql = "select * from notas where cedula=?";
         $consulta = $pdo->prepare($sql);
         //Ejecutamos y pasamos los parametros para la consulta:
         $consulta->execute(array($cedula));
@@ -58,23 +82,19 @@ class NotaModel
 
     public function crearNota($cedula, $nombres, $nota1, $nota2)
     {
-        // Preparamos la conexión a la base de datos
+        //Preparamos la conexion a la bdd:
         $pdo = Database::connect();
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        // Preparamos la sentencia SQL para insertar los datos (sin promedio, ya que se calcula automáticamente)
-        $sql = "INSERT INTO notas (cedula, nombres, nota1, nota2) VALUES (?, ?, ?, ?)";
+        //Preparamos la sentencia con parametros:
+        $sql = "INSERT into notas (cedula,nombres,nota1,nota2) values(?,?,?,?)";
         $consulta = $pdo->prepare($sql);
-
-        // Ejecutamos y pasamos los parámetros
+        //Ejecutamos y pasamos los parametros:
         try {
             $consulta->execute(array($cedula, $nombres, $nota1, $nota2));
         } catch (PDOException $e) {
             Database::disconnect();
             throw new Exception($e->getMessage());
         }
-
-        // Desconectamos de la base de datos
         Database::disconnect();
     }
 
@@ -92,17 +112,12 @@ class NotaModel
 
     public function actualizarNota($cedula, $nombres, $nota1, $nota2)
     {
-        // Preparamos la conexión a la base de datos
+        //Preparamos la conexión a la bdd:
         $pdo = Database::connect();
-
-        // Sentencia SQL para actualizar los datos, el promedio se calcula automáticamente
-        $sql = "UPDATE notas SET nombres = ?, nota1 = ?, nota2 = ? WHERE cedula = ?";
+        $sql = "UPDATE notas set nombres=?,nota1=?,nota2=? where cedua¿la=?";
         $consulta = $pdo->prepare($sql);
-
-        // Ejecutamos la sentencia incluyendo los parámetros
+        //Ejecutamos la sentencia incluyendo a los parametros:
         $consulta->execute(array($nombres, $nota1, $nota2, $cedula));
-
-        // Cerramos la conexión a la base de datos
         Database::disconnect();
     }
 }

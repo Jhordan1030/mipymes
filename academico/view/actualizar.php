@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,19 +7,17 @@
     <title>Actualizar Nota</title>
     <link rel="stylesheet" href="https://cdn.simplecss.org/simple.css">
 </head>
-
 <body>
     <h3>Actualizar Nota</h3>
     <?php
     include_once '../model/Nota.php';
-    // Obtenemos los datos de sesión:
     session_start();
-    $nota = $_SESSION['nota'];
+    if (isset($_SESSION['nota'])) {
+        $nota = $_SESSION['nota'];
     ?>
-    <form action="../controller/controller.php" method="POST">
+    <form action="../controller/controller.php">
         <input type="hidden" value="actualizar" name="opcion">
-        <!-- Utilizamos pequeños scripts PHP para obtener los valores de la nota: -->
-        <input type="hidden" value="<?php echo $nota->getCedula(); ?>" name="cedula">
+        <input type="hidden" name="cedula" value="<?php echo $nota->getCedula(); ?>">
 
         <label>Cédula:</label>
         <b><?php echo $nota->getCedula(); ?></b>
@@ -29,16 +26,20 @@
         <input type="text" name="nombres" required value="<?php echo $nota->getNombres(); ?>">
 
         <label>Nota 1:</label>
-        <input type="number" name="nota1" min="0" max="10" step="0.1" required value="<?php echo $nota->getNota1(); ?>">
+        <input type="number" name="nota1" min="0" max="10" required value="<?php echo $nota->getNota1(); ?>">
 
         <label>Nota 2:</label>
-        <input type="number" name="nota2" min="0" max="10" step="0.1" required value="<?php echo $nota->getNota2(); ?>">
+        <input type="number" name="nota2" min="0" max="10" required value="<?php echo $nota->getNota2(); ?>">
 
-        <label>Promedio:</label>
-        <input type="number" name="promedio" min="0" max="10" step="0.1" readonly value="<?php echo $nota->getPromedio(); ?>"><br>
-
-        <input type="submit" value="Actualizar Nota">
+        <br>
+        <input type="submit" value="Actualizar">
+        <a href="index.php">Cancelar</a>
     </form>
+    <?php
+    } else {
+        echo "<p>Error: No se encontró la información de la nota.</p>";
+        echo "<a href='index.php'>Volver a la página principal</a>";
+    }
+    ?>
 </body>
-
 </html>
