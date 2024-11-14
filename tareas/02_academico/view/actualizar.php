@@ -10,31 +10,34 @@
 </head>
 
 <body>
-    <h3>Actualizar nota</h3>
+    <h3>Actualizar Nota</h3>
     <?php
     include_once '../model/Nota.php';
-    //obtenemos los datos de sesion:
+    // Obtenemos los datos de sesión:
     session_start();
     $nota = $_SESSION['nota'];
     ?>
-    <form action="../controller/controller.php">
+    <form action="../controller/controller.php" method="POST">
         <input type="hidden" value="actualizar" name="opcion">
-        <!-- Utilizamos pequeños scripts PHP para obtener los valores del producto: -->
-        <input type="hidden" value="<?php echo $libro->getCedula(); ?>" name="cedula">
-        
-        <label>Nombres:</label>
+        <!-- Utilizamos pequeños scripts PHP para obtener los valores de la nota: -->
+        <input type="hidden" value="<?php echo $nota->getCedula(); ?>" name="cedula">
+
+        <label>Cédula:</label>
         <b><?php echo $nota->getCedula(); ?></b>
 
-        <label>Nota1:</label>
-        <input type="number" step="0.01" min="1" name="nota1" value="<?php echo $nota->getNota1(); ?>">
-        
-        <label>Nota2:</label>
-        <input type="number" step="0.01" min="1" name="nota2" value="<?php echo $nota->getNota2(); ?>">
-        
+        <label>Nombres:</label>
+        <input type="text" name="nombres" required value="<?php echo $nota->getNombres(); ?>">
+
+        <label>Nota 1:</label>
+        <input type="number" name="nota1" min="0" max="10" step="0.1" required value="<?php echo $nota->getNota1(); ?>">
+
+        <label>Nota 2:</label>
+        <input type="number" name="nota2" min="0" max="10" step="0.1" required value="<?php echo $nota->getNota2(); ?>">
+
         <label>Promedio:</label>
-        <input type="hidden" value="<?php echo $nota->getPromedio(); ?>" name="promedio">
-        
-        <input type="submit" value="Actualizar">
+        <input type="number" name="promedio" min="0" max="10" step="0.1" readonly value="<?php echo $nota->getPromedio(); ?>"><br>
+
+        <input type="submit" value="Actualizar Nota">
     </form>
 </body>
 

@@ -10,24 +10,23 @@
 </head>
 
 <body>
-    <h3>Crear nuevo Nota</h3>
-    <form action="../controller/controller.php">
+    <h3>Crear nueva nota</h3>
+    <form action="../controller/controller.php" method="POST">
         <input type="hidden" value="guardar" name="opcion">
 
-        <label>Cedula:</label>
-        <input type="number" name="cedula" required>
+        <label>Cédula:</label>
+        <input type="text" name="cedula" maxlength="10" required>
 
         <label>Nombres:</label>
         <input type="text" name="nombres" required>
 
-        <label>Nota1:</label>
-        <input type="number" min="1" name="nota1" require>
+        <label>Nota 1:</label>
+        <input type="number" name="nota1" min="0" max="10" step="0.1" required>
 
-        <label>Nota2:</label>
-        <input type="number" min="1" name="nota2">
+        <label>Nota 2:</label>
+        <input type="number" name="nota2" min="0" max="10" step="0.1" required>
 
-        
-        <input type="submit" value="Crear">
+        <input type="submit" value="Crear Nota">
     </form>
 </body>
 

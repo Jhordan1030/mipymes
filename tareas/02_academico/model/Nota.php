@@ -1,15 +1,34 @@
-
 <?php
     class Nota{
         private $cedula;
         private $nombres;
         private $nota1;
         private $nota2;
-        private $promedio;
+        private  $promedio;
 
         
 
         
+
+        /**
+         * Get the value of cedula
+         */ 
+        public function getCedula()
+        {
+                return $this->cedula;
+        }
+
+        /**
+         * Set the value of cedula
+         *
+         * @return  self
+         */ 
+        public function setCedula($cedula)
+        {
+                $this->cedula = $cedula;
+
+                return $this;
+        }
 
         /**
          * Get the value of nombres
@@ -87,26 +106,6 @@
         public function setPromedio($promedio)
         {
                 $this->promedio = $promedio;
-
-                return $this;
-        }
-
-        /**
-         * Get the value of cedula
-         */ 
-        public function getCedula()
-        {
-                return $this->cedula;
-        }
-
-        /**
-         * Set the value of cedula
-         *
-         * @return  self
-         */ 
-        public function setCedula($cedula)
-        {
-                $this->cedula = $cedula;
 
                 return $this;
         }
