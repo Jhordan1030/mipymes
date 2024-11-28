@@ -12,8 +12,8 @@ class PaisController extends Controller
      */
     public function index()
     {
-        $paises=Pais::ordeBy('id', 'DESC');
-        return view('pais.index',compact('paises'));
+        $paises = Pais::orderBy('id', 'DESC')->paginate(3);
+        return view('pais.index', compact('paises'));
     }
 
     /**
@@ -29,12 +29,18 @@ class PaisController extends Controller
      */
     public function store(Request $request)
     {
+        // Validar que 'codigo_pais' no sea nulo
         $request->validate([
-            'codigoPais'=>'required',
-            'nombrePais'=>'required'
+            'codigo_pais' => 'required',
+            'nombre_pais' => 'required',
         ]);
-        Pais::create($request->all());
-        return redirect()->route('pais.index')->with('success','Registro creado satisfactoriamente');
+
+        $pais = new Pais();
+        $pais->codigo_pais = $request->codigo_pais;
+        $pais->nombre_pais = $request->nombre_pais;
+        $pais->save();
+
+        return redirect()->route('pais.index')->with('success', 'Pais creado exitosamente');
     }
 
     /**
@@ -43,7 +49,7 @@ class PaisController extends Controller
     public function show(string $id)
     {
         $paises = Pais::find($id);
-        return view('pais.show',compact('paises'));
+        return view('pais.show', compact('paises'));
     }
 
     /**
@@ -51,8 +57,8 @@ class PaisController extends Controller
      */
     public function edit(string $id)
     {
-        $pais= pais::find($id);
-        return view('pais.edit',compact('libro'));
+        $pais = pais::find($id);
+        return view('pais.edit', compact('libro'));
     }
 
     /**
@@ -61,12 +67,12 @@ class PaisController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'codigo_pais'=>'required',
-            'nombre_pais'=>'required',
+            'codigo_pais' => 'required',
+            'nombre_pais' => 'required',
         ]);
-        $pais= Pais::find($id);
+        $pais = Pais::find($id);
         $pais->update($request->all());
-        return redirect()->route('pais.index')->with('success','Pais acrualizado satisfactoriamente');
+        return redirect()->route('pais.index')->with('success', 'Pais acrualizado satisfactoriamente');
     }
 
     /**
