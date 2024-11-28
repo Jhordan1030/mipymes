@@ -58,21 +58,29 @@ class PaisController extends Controller
     public function edit(string $id)
     {
         $pais = pais::find($id);
-        return view('pais.edit', compact('libro'));
+        return view('pais.edit', compact('pais'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
+        // Validación de los campos del libro
         $request->validate([
             'codigo_pais' => 'required',
-            'nombre_pais' => 'required',
+            'nombre_pais' => 'required'
+            
         ]);
+
+        // Buscar el libro por su ID
         $pais = Pais::find($id);
+
+        // Actualizar los campos del libro con los datos del request
         $pais->update($request->all());
-        return redirect()->route('pais.index')->with('success', 'Pais acrualizado satisfactoriamente');
+
+        // Redirigir con mensaje de éxito
+        return redirect()->route('pais.index')->with('success', 'País actualizado satisfactoriamente');
     }
 
     /**
