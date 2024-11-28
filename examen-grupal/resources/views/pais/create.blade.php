@@ -21,43 +21,27 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Nuevo País</h3>
+                    <h3 class="panel-title">Nuevo Pais</h3>
                 </div>
                 <div class="panel-body">                    
                     <div class="table-container">
-                        <form method="POST" action="{{ route('curso.store') }}"  role="form">
+                        <form method="POST" action="{{ route('pais.store') }}"  role="form">
                             {{ csrf_field() }}
                             <div class="row">
                                 <div class="col-xs-6 col-sm-6 col-md-6">
                                     <div class="form-group">
-                                        <input type="text" name="nombre" id="nombre" class="form-control input-sm" placeholder="Nombre del Curso">
+                                        <input type="text" name="codigo_pais" id="codigo_pais" class="form-control input-sm" placeholder="Código País">
                                     </div>
-                                </div>
-                                
-                            </div>
-
-                            <div class="form-group">
-                                <textarea name="descripcion" class="form-control input-sm" placeholder="Descripción"></textarea>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-6 col-sm-6 col-md-6">
                                     <div class="form-group">
-                                        <input type="text" name="duracion" id="duracion" class="form-control input-sm" placeholder="Duración del curso">
+                                        <input type="text" name="nombre_pais" id="nombre_pais" class="form-control input-sm" placeholder="Nombre País">
                                     </div>
                                 </div>
-                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                    <div class="form-group">
-                                        <input type="text" name="precio" id="precio" class="form-control input-sm" placeholder="Precio del curso
-                                        ">
-                                    </div>
-                                </div>
-                            </div>
                             
                             <div class="row">
 
                                 <div class="col-xs-12 col-sm-12 col-md-12">
                                     <input type="submit"  value="Guardar" class="btn btn-success btn-block">
-                                    <a href="{{ route('curso.index') }}" class="btn btn-info btn-block"> Atrás</a>
+                                    <a href="{{ route('pais.index') }}" class="btn btn-info btn-block" >Atrás</a>
                                 </div>    
 
                             </div>
