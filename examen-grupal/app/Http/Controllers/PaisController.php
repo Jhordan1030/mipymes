@@ -12,7 +12,7 @@ class PaisController extends Controller
      */
     public function index()
     {
-        $paises=Pais::ordeBy('id', 'DESC');
+        $paises = Pais::orderBy('id', 'DESC')->paginate(3);
         return view('pais.index',compact('paises'));
     }
 
