@@ -14,8 +14,8 @@ class ParametroController extends Controller
      */
     public function index()
     {
-        $parametros=Parametro::orderBy('id','DESC')->paginate(3);
-        return view('parametro.index',compact('parametros'));
+        $parametros = Parametro::orderBy('id_parametro', 'DESC')->paginate(3); // Paginación de 3 registros por página
+        return view('parametro.index', compact('parametros'));
     }
 
     /**
@@ -36,14 +36,17 @@ class ParametroController extends Controller
      */
     public function store(Request $request)
     {
+        // Validación de los datos
         $request->validate([
-            'codigo_parametro' => 'required|max:10',
-            'nombre_parametro' => 'required|max:100',
+            'codigo_parametro' => 'required|string|max:10',
+            'nombre_parametro' => 'required|string|max:100',
             'valor_parametro' => 'required|numeric',
-            'descripcion_parametro' => 'nullable|max:255',
+            'descripcion_parametro' => 'nullable|string|max:255',
         ]);
 
+        // Crear el parámetro
         Parametro::create($request->all());
+
         return redirect()->route('parametro.index')->with('success', 'Parámetro creado satisfactoriamente');
     }
 
@@ -55,7 +58,7 @@ class ParametroController extends Controller
      */
     public function show($id)
     {
-        $parametro = Parametro::find($id);
+        $parametro = Parametro::findOrFail($id); // Obtener el parámetro por id
         return view('parametro.show', compact('parametro'));
     }
 
@@ -67,7 +70,7 @@ class ParametroController extends Controller
      */
     public function edit($id)
     {
-        $parametro = Parametro::find($id);
+        $parametro = Parametro::findOrFail($id); // Obtener el parámetro por id
         return view('parametro.edit', compact('parametro'));
     }
 
@@ -80,14 +83,16 @@ class ParametroController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // Validación de los datos
         $request->validate([
-            'codigo_parametro' => 'required|max:10',
-            'nombre_parametro' => 'required|max:100',
+            'codigo_parametro' => 'required|string|max:10',
+            'nombre_parametro' => 'required|string|max:100',
             'valor_parametro' => 'required|numeric',
-            'descripcion_parametro' => 'nullable|max:255',
+            'descripcion_parametro' => 'nullable|string|max:255',
         ]);
 
-        $parametro = Parametro::find($id);
+        // Buscar el parámetro y actualizar sus valores
+        $parametro = Parametro::findOrFail($id);
         $parametro->update($request->all());
 
         return redirect()->route('parametro.index')->with('success', 'Parámetro actualizado satisfactoriamente');
@@ -101,7 +106,9 @@ class ParametroController extends Controller
      */
     public function destroy($id)
     {
-        Parametro::find($id)->delete();
+        // Eliminar el parámetro
+        Parametro::findOrFail($id)->delete();
+
         return redirect()->route('parametro.index')->with('success', 'Parámetro eliminado satisfactoriamente');
     }
 }
