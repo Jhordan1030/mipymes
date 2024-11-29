@@ -14,8 +14,7 @@ class CantonController extends Controller
     public function index()
     {
         //
-        $cantones = Canton::orderBy('id', 'DESC')->paginate(3); 
-        //$cantones = Canton::with('provincia')->orderBy('id', 'DESC')->paginate(3);
+        $cantones = Canton::with('provincia')->orderBy('id', 'DESC')->paginate(3);
         return view('canton.index', compact('cantones')); 
     }
 
@@ -35,6 +34,7 @@ class CantonController extends Controller
     public function store(Request $request)
     {
         //
+
         $request->validate([ 'nombre' => 'required', 
             'provincia_id' => 'required|exists:provincias,id', 
         ]);
@@ -44,13 +44,13 @@ class CantonController extends Controller
         return redirect()->route('canton.index') ->with('success', 'Canton creado satisfactoriamente.');
     }
 
+
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
         //
-        //$canton = Canton::findOrFail($id);
         $canton = Canton::with('provincia')->findOrFail($id);
         return view('canton.show', compact('canton'));
     }
@@ -79,7 +79,7 @@ class CantonController extends Controller
 
         return redirect()->route('canton.index') ->with('success', 'Canton actualizado satisfactoriamente.');
     }
-
+    
     /**
      * Remove the specified resource from storage.
      */
@@ -89,5 +89,5 @@ class CantonController extends Controller
         $canton = Canton::findOrFail($id); 
         $canton->delete();
         return redirect()->route('canton.index') ->with('success', 'Canton eliminado satisfactoriamente.');
-    }
+    }    
 }

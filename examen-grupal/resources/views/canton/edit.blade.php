@@ -34,6 +34,10 @@
                                         <input type="text" name="nombre" id="nombre" class="form-control input-sm" value="{{$canton->nombre}}">
                                     </div>
                                 </div>
+                                
+                            </div>
+
+                            
                             <div class="row">
 
                                 <div class="col-xs-12 col-sm-12 col-md-12">

@@ -30,9 +30,22 @@
                             <div class="row">
                                 <div class="col-xs-6 col-sm-6 col-md-6">
                                     <div class="form-group">
-                                        <input type="text" name="nombre" id="nombre" class="form-control input-sm" placeholder="Nombre del canton">
+                                        <input type="text" name="nombre" id="nombre" class="form-control input-sm" placeholder="Nombre del cantón">
                                     </div>
                                 </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="form-group">
+                                        <select name="provincia_id" id="provincia_id" class="form-control input-sm">
+                                            <option value="">Seleccione la Provincia</option>
+                                            @foreach($provincias as $provincia)
+                                                <option value="{{ $provincia->id }}">{{ $provincia->nombre }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
                             <div class="row">
 
                                 <div class="col-xs-12 col-sm-12 col-md-12">
