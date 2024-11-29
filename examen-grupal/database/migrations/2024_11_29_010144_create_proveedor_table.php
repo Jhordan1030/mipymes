@@ -17,8 +17,6 @@ return new class extends Migration
             $table->string('descripcion_proveedor');
             $table->string('direccion_proveedor');
             $table->string('telefono_proveedor');
-            $table->unsignedBigInteger('id_pais');  // Define la relación con la tabla pais
-            $table->foreign('id_pais')->references('id')->on('pais')->onDelete('cascade');
             $table->timestamps();
         });
     }
