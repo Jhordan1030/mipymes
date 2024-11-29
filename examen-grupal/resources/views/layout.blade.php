@@ -1,25 +1,37 @@
-<html>
+<!DOCTYPE html> 
+<html lang="es">
 
 <head>
     <title>@yield('title')</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink
-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 
 <body>
     <div class="container">
-        <nav>
-            <ul>
-                <li><a href="/home">Home</a></li>
-                <li><a href="/portafolio">Portafolio</a></li>
-                <li><a href="/acerca">Acerca de</a></li>
-                <li><a href="/contacto">Contacto</a></li>
-            </ul>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="/">Inicio</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/parametro">Parametros</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/pais">Pais</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/provincia">Provincia</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/canton">Canton</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/tipo_empaque">Tipo de Empaque</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/proveedor">Proveedor</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/tpago">Tipo de Pago</a></li>
+                </ul>
+            </div>
         </nav>
-        @yield('content')
+        <div class="content">
+            @yield('content')
+        </div>
     </div>
 </body>
 
