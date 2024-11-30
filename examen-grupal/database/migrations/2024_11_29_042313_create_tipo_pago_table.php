@@ -12,10 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tipo_pago', function (Blueprint $table) {
-            $table->id(); 
+            $table->id();
             $table->string('codigo_tipo_pago')->unique(); 
             $table->string('nombre_tipo_pago'); 
             $table->text('descripcion_tipo_pago')->nullable(); 
+            $table->timestamps();  // Esto añadirá las columnas created_at y updated_at
         });
     }
 
