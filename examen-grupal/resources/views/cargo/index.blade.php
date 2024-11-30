@@ -25,7 +25,7 @@
               <tr>
                 <td>{{$cargo->codigo_cargo}}</td>                  
                 <td>{{$cargo->nombre_cargo}}</td>
-                
+                <td><a class="btn btn-primary btn-xs" href="{{ route('cargo.edit', $cargo->id) }}" ><span class="glyphicon glyphicon-pencil"></span></a></td>
                 <td>
                   <form action="{{ route('cargo.destroy', $cargo->id)}}" method="post">
                    {{csrf_field()}}
