@@ -30,7 +30,7 @@
                             <div class="row">
                                 <div class="col-xs-6 col-sm-6 col-md-6">
                                     <div class="form-group">
-                                        <input type="text" name="codigo_cargo" id="codigo_cargo" class="form-control input-sm" placeholder="Codigo del cargo">
+                                        <input type="text" name="codigo_cargo" id="codigo_cargo" class="form-control input-sm" placeholder="Código del cargo">
                                     </div>
                                 </div>
                               <div class="col-xs-6 col-sm-6 col-md-6">
