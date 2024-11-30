@@ -41,6 +41,9 @@
                 @endif
               </tbody>
             </table>
+            <div class="footer"> 
+              <p>Creado por: Marcelo Chiriboga</p> 
+            </div>
           </div>
         </div>
         {{ $tiposEmpaque->links() }}
