@@ -56,6 +56,9 @@
                     </div>
                 </div>
             </div>
+            <div class="footer">
+                <p>Creado por: Marcelo Chiriboga</p>
+            </div>
         </div>
     </section>
 @endsection
