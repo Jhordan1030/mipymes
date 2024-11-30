@@ -49,7 +49,7 @@
           </div>
         </div>
       </div>
-      {{ $provincias->links() }}
+      {{ $cargos->links() }}
     </div>
   </div>
 </section>
