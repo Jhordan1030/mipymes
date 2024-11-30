@@ -72,7 +72,8 @@ class CantonController extends Controller
     public function update(Request $request, string $id)
     {
         //
-        $request->validate([ 'nombre' => 'required', ]);
+        $request->validate([ 'nombre' => 'required', 
+        'provincia_id' => 'required|exists:provincias,id',]);
 
         $canton = Canton::findOrFail($id); 
         $canton->update($request->all());
