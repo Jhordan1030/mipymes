@@ -22,7 +22,7 @@
               @if($provincias->count())  
               @foreach($provincias as $provincia)  
               <tr>
-                <td>{{$provincia->nombre}}</td>
+                <td>{{$provincia->nombre_provincia}}</td>
                 <td><a class="btn btn-primary btn-xs" href="{{ route('provincia.edit', $provincia->id) }}" ><span class="glyphicon glyphicon-pencil"></span></a></td>
                 <td>
                   <form action="{{ route('provincia.destroy', $provincia->id)}}" method="post">
