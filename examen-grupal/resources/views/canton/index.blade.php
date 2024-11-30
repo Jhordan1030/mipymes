@@ -23,8 +23,8 @@
                 @if($cantones->count())  
                 @foreach($cantones as $canton)  
                 <tr>
-                  <td>{{ $canton->nombre }}</td>
-                  <td>{{ $canton->provincia->nombre }}</td>
+                  <td>{{ $canton->nombre_canton }}</td>
+                  <td>{{ $canton->provincia->nombre_provinica }}</td>
                   <td><a class="btn btn-primary btn-xs" href="{{ route('canton.edit', $canton->id) }}" ><span class="glyphicon glyphicon-pencil"></span></a></td>
                   <td>
                     <form action="{{ route('canton.destroy', $canton->id)}}" method="post">
