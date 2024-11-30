@@ -31,7 +31,7 @@
                             <div class="row">
                                 <div class="col-xs-6 col-sm-6 col-md-6">
                                     <div class="form-group">
-                                        <input type="text" name="nombre_canton" id="nombre_canton" class="form-control input-sm" value="{{$canton->nombre_canton}}">
+                                        <input type="text" name="nombre" id="nombre" class="form-control input-sm" value="{{$canton->nombre}}">
                                     </div>
                                 </div>
                                 <div class="col-xs-6 col-sm-6 col-md-6">
