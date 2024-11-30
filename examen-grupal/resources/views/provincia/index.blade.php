@@ -42,6 +42,9 @@
             </tbody>
 
           </table>
+          <div class="footer"> 
+            <p>Creado por: Deysi Guevara</p> 
+          </div>
         </div>
       </div>
       {{ $provincias->links() }}
