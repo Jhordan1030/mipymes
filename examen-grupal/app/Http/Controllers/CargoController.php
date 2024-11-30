@@ -63,7 +63,7 @@ class CargoController extends Controller
     public function update(Request $request, string $id)
     {
         //
-        $request->validate(['nombre_cargo' => 'required', 'nombre_cargo'=>'required',]);
+        $request->validate(['codigo_cargo' => 'required', 'nombre_cargo'=>'required',]);
 
         $cargo = Cargo::find($id);
 
