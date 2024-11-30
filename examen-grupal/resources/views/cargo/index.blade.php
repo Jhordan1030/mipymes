@@ -9,6 +9,7 @@
           <div class="pull-right">
             <div class="btn-group">
               <a href="{{ route('cargo.create') }}" class="btn btn-info" >Añadir Cargo</a>
+              <a href="{{url('/home')}}" class="btn btn-primary" style="margin-left: 10px;">Home</a>
             </div>
           </div>
           <div class="table-container">

@@ -9,6 +9,7 @@
           <div class="pull-right">
             <div class="btn-group">
               <a href="{{ route('provincia.create') }}" class="btn btn-info" >Añadir Provincia</a>
+              <a href="{{url('/home')}}" class="btn btn-primary" style="margin-left: 10px;">Home</a>
             </div>
           </div>
           <div class="table-container">

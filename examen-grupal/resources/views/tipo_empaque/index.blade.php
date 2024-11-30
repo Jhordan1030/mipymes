@@ -10,6 +10,7 @@
           <div class="pull-right">
             <div class="btn-group">
               <a href="{{ route('tipo_empaque.create') }}" class="btn btn-info">Añadir Tipo de Empaque</a>
+              <a href="{{url('/home')}}" class="btn btn-primary" style="margin-left: 10px;">Home</a>
             </div>
           </div>
           <div class="table-container">

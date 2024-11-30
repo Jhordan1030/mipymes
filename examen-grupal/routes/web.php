@@ -28,4 +28,4 @@ Route::resource('/tpago', TipoPagoController::class);
 
 Route::get('/home', function() {
     return view('home', ['nombre' => 'Usuario invitado']);
-});
+})->name('home');
