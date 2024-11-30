@@ -11,7 +11,7 @@ class CreateCantonesTable extends Migration
      */
     public function up(): void
     {
-        Schema::create('cantones', function (Blueprint $table) {
+        Schema::create('cantons', function (Blueprint $table) {
             $table->id();
             $table->string('nombre'); 
             $table->unsignedBigInteger('provincia_id'); 
@@ -25,6 +25,6 @@ class CreateCantonesTable extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cantones');
+        Schema::dropIfExists('cantons');
     }
 };
