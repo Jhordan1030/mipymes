@@ -16,7 +16,7 @@
              <thead>
                <th>Cédula</th>
                <th>Nombres</th>
-               <th>Apellidosr</th>                 
+               <th>Apellidos</th>                 
                <th>Dirección</th>
                <th>Teléfono</th>
                <th>Editar</th>
