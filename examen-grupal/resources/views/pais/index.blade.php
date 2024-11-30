@@ -45,6 +45,9 @@
             </tbody>
 
           </table>
+          <div class="footer">
+            <p>Creado por: Jhordan Huera</p>
+        </div>
         </div>
       </div>
       {{ $paises->links() }}
