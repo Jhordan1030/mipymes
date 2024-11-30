@@ -19,13 +19,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/parametro">Parametros</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/pais">Pais</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/provincia">Provincia</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/canton">Canton</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/tipo_empaque">Tipo de Empaque</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/proveedor">Proveedor</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/tpago">Tipo de Pago</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/parametro">Parametros: CRUD - Marcelo Chiriboga</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/pais">Pais: CRUD - Jhordan Huera</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/provincia">Provincia: CRUD - Deysi Guevara</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/canton">Canton: CRUD - Deysi Guevara</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/tipo_empaque">Tipo de Empaque: CRUD - Marcelo Chiriboga</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/proveedor">Proveedor: CRUD - Jhordan Huera</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/tpago">Tipo de Pago: CRUD - Jhordan Huera</a></li>
                 </ul>
             </div>
         </nav>

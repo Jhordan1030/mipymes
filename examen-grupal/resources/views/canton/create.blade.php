@@ -59,6 +59,9 @@
                 </div>
 
             </div>
+            <div class="footer"> 
+            <p>Creado por: Deysi Guevara</p> 
+          </div>
         </div>
     </section>
     @endsection
