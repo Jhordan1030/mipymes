@@ -6,11 +6,11 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <div class="pull-left">
-                            <h3>Lista Libros</h3>
+                            <h3>Lista Tipos de Pago</h3>
                         </div>
                         <div class="pull-right">
                             <div class="btn-group">
-                                <a href="{{ route('tpago.create') }}" class="btn btn-info">Añadir Libro</a>
+                                <a href="{{ route('tpago.create') }}" class="btn btn-info">Añadir Tipo de Pago</a>
                             </div>
                         </div>
                         <div class="table-container">
@@ -18,7 +18,7 @@
                                 <thead>
                                     <th>Código</th>
                                     <th>Nombre </th>
-                                    <th>Descripción/th>
+                                    <th>Descripción</th>
                                     <th>Editar</th>
                                     <th>Eliminar</th>
                                 </thead>
