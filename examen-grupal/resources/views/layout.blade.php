@@ -23,6 +23,8 @@
                     <li class="nav-item"><a class="nav-link" href="/pais">Pais: CRUD - Jhordan Huera</a></li>
                     <li class="nav-item"><a class="nav-link" href="/provincia">Provincia: CRUD - Deysi Guevara</a></li>
                     <li class="nav-item"><a class="nav-link" href="/canton">Canton: CRUD - Deysi Guevara</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/cargo">Cargo: CRUD - Deysi Guevara</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/empleado">Empleado: CRUD - Deysi Guevara</a></li>
                     <li class="nav-item"><a class="nav-link" href="/tipo_empaque">Tipo de Empaque: CRUD - Marcelo Chiriboga</a></li>
                     <li class="nav-item"><a class="nav-link" href="/proveedor">Proveedor: CRUD - Jhordan Huera</a></li>
                     <li class="nav-item"><a class="nav-link" href="/tpago">Tipo de Pago: CRUD - Jhordan Huera</a></li>
