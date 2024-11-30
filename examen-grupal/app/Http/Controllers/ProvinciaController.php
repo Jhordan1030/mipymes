@@ -32,7 +32,7 @@ class ProvinciaController extends Controller
     public function store(Request $request)
     {
         //
-        $request->validate([ 'nombre'=>'required']);
+        $request->validate([ 'nombre_provincia'=>'required']);
         Provincia::create($request->all());
         return redirect()->route('provincia.index')->with('success','Registro creado satisfactoriamente');
     }
@@ -62,7 +62,7 @@ class ProvinciaController extends Controller
     public function update(Request $request, string $id)
     {
         //
-        $request->validate(['nombre' => 'required']);
+        $request->validate(['nombre_provincia' => 'required']);
 
         $provincia = Provincia::find($id);
 
