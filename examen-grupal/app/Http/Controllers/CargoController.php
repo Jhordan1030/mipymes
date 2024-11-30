@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Cargo;
 
 class CargoController extends Controller
 {
@@ -12,6 +13,8 @@ class CargoController extends Controller
     public function index()
     {
         //
+        $cargos=Cargo::orderBy('id','DESC')->paginate(3);
+        return view('cargo.index',compact('cargos'));
     }
 
     /**
@@ -20,6 +23,7 @@ class CargoController extends Controller
     public function create()
     {
         //
+        return view('cargo.create');
     }
 
     /**
@@ -28,6 +32,9 @@ class CargoController extends Controller
     public function store(Request $request)
     {
         //
+        $request->validate([ 'codigo_cargo'=>'required', 'nombre_cargo'=>'required',]);
+        Cargo::create($request->all());
+        return redirect()->route('cargo.index')->with('success','Registro creado satisfactoriamente');
     }
 
     /**
@@ -36,6 +43,8 @@ class CargoController extends Controller
     public function show(string $id)
     {
         //
+        $cargos=Cargo::find($id);
+        return  view('cargo.show',compact('cargos'));
     }
 
     /**
@@ -44,6 +53,8 @@ class CargoController extends Controller
     public function edit(string $id)
     {
         //
+        $cargo=cargo::find($id);
+        return view('cargo.edit',compact('cargo'));
     }
 
     /**
@@ -52,6 +63,14 @@ class CargoController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        $request->validate(['nombre_cargo' => 'required', 'nombre_cargo'=>'required',]);
+
+        $cargo = Cargo::find($id);
+
+        $cargo->update($request->all());
+
+        return redirect()->route('cargo.index')->with('success', 'Registro actualizado satisfactoriamente');
+    
     }
 
     /**
@@ -60,5 +79,7 @@ class CargoController extends Controller
     public function destroy(string $id)
     {
         //
+        Cargo::find($id)->delete();
+        return redirect()->route('cargo.index')->with('success','Registro eliminado satisfactoriamente');
     }
 }

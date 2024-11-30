@@ -35,7 +35,7 @@ class CantonController extends Controller
     {
         //
 
-        $request->validate([ 'nombre' => 'required', 
+        $request->validate([ 'nombre_canton' => 'required', 
             'provincia_id' => 'required|exists:provincias,id', 
         ]);
 
@@ -72,7 +72,7 @@ class CantonController extends Controller
     public function update(Request $request, string $id)
     {
         //
-        $request->validate([ 'nombre' => 'required', 
+        $request->validate([ 'nombre_canton' => 'required', 
         'provincia_id' => 'required|exists:provincias,id',]);
 
         $canton = Canton::findOrFail($id); 
