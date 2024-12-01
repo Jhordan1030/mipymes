@@ -10,6 +10,7 @@
           <div class="pull-right">
             <div class="btn-group">
               <a href="{{ route('tipoidentificacion.create') }}" class="btn btn-info">Añadir Tipo de Identificación</a>
+              <a href="{{url('/home')}}" class="btn btn-primary" style="margin-left: 10px;">Home</a>
             </div>
           </div>
           <div class="table-container">
@@ -37,6 +38,9 @@
               @endforeach 
             </tbody>
           </table>
+          <div class="footer">
+            <p>Creado por: Giuliana Espinoza</p>
+        </div>
           {{ $tipoIdentificaciones->links() }}
         </div>
       </div>
