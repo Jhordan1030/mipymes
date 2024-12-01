@@ -18,6 +18,8 @@
                 <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="/parametro">Parametros: CRUD - Marcelo Chiriboga</a></li>
                 <li class="nav-item"><a class="nav-link" href="/tipo_empaque">Tipo de Empaque: CRUD - Marcelo Chiriboga</a></li>
+                <li class="nav-item"><a class="nav-link" href="/tipocliente">Tipo de Cliente: CRUD - Giuliana Espinoza</a></li>
+                <li class="nav-item"><a class="nav-link" href="/tipoidentificacion">Tipo de Identificación: CRUD - Giuliana Espinoza</a></li>
                 <li class="nav-item"><a class="nav-link" href="/canton">Canton: CRUD - Deysi Guevara</a></li>
                 <li class="nav-item"><a class="nav-link" href="/provincia">Provincia: CRUD - Deysi Guevara</a></li>
                 <li class="nav-item"><a class="nav-link" href="/cargo">Cargo: CRUD - Deysi Guevara</a></li>
