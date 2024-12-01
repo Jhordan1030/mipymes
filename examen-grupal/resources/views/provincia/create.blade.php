@@ -30,7 +30,7 @@
                             <div class="row">
                                 <div class="col-xs-6 col-sm-6 col-md-6">
                                     <div class="form-group">
-                                        <input type="text" name="nombre" id="nombre" class="form-control input-sm" placeholder="Nombre del provincia">
+                                        <input type="text" name="nombre_provincia" id="nombre_provincia" class="form-control input-sm" placeholder="Nombre de la provincia">
                                     </div>
                                 </div>                                
                             <div class="row">
@@ -46,6 +46,9 @@
                 </div>
 
             </div>
+            <div class="footer"> 
+            <p>Creado por: Deysi Guevara</p> 
+          </div>
         </div>
     </section>
     @endsection

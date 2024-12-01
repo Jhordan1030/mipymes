@@ -5,30 +5,36 @@
     <div class="col-md-8 col-md-offset-2">
       <div class="panel panel-default">
         <div class="panel-body">
-          <div class="pull-left"><h3>Lista Paises</h3></div>
+          <div class="pull-left"><h3>Lista Proveedores</h3></div>
           <div class="pull-right">
             <div class="btn-group">
-              <a href="{{ route('pais.create') }}" class="btn btn-info" >Añadir País</a>
+              <a href="{{ route('proveedor.create') }}" class="btn btn-info" >Añadir Proveedor</a>
               <a href="{{url('/home')}}" class="btn btn-primary" style="margin-left: 10px;">Home</a>
             </div>
           </div>
           <div class="table-container">
             <table id="mytable" class="table table-bordred table-striped">
              <thead>
-               <th>Codigo País</th>
-               <th>Nombre Pais</th>
+               <th>Nombre Proveedor</th>
+               <th>Descripción Proveedor</th>
+               <th>Dirección Proveedor </th>
+               <th>Telefono Proveedor</th>
+               
                <th>Editar</th>
                <th>Eliminar</th>
              </thead>
              <tbody>
-              @if($paises->count())  
-              @foreach($paises as $pais)  
+              @if($proveedores->count())  
+              @foreach($proveedores as $proveedor)  
               <tr>
-                <td>{{$pais->codigo_pais}}</td>
-                <td>{{$pais->nombre_pais}}</td>
-                <td><a class="btn btn-primary btn-xs" href="{{ route('pais.edit', $pais->id) }}" ><span class="glyphicon glyphicon-pencil"></span></a></td>
+                <td>{{$proveedor->nombre_proveedor}}</td>
+                <td>{{$proveedor->descripcion_proveedor}}</td>
+                <td>{{$proveedor->direccion_proveedor}}</td>
+                <td>{{$proveedor->telefono_proveedor}}</td>
+                
+                <td><a class="btn btn-primary btn-xs" href="{{ route('proveedor.edit', $proveedor->id) }}" ><span class="glyphicon glyphicon-pencil"></span></a></td>
                 <td>
-                  <form action="{{ route('pais.destroy', $pais->id)}}" method="post">
+                  <form action="{{ route('proveedor.destroy', $proveedor->id)}}" method="post">
                    {{csrf_field()}}
                    <input name="_method" type="hidden" value="DELETE">
 
@@ -50,7 +56,7 @@
         </div>
         </div>
       </div>
-      {{ $paises->links() }}
+      {{ $proveedores->links() }}
     </div>
   </div>
 </section>

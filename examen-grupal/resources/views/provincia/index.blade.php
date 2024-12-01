@@ -9,6 +9,7 @@
           <div class="pull-right">
             <div class="btn-group">
               <a href="{{ route('provincia.create') }}" class="btn btn-info" >Añadir Provincia</a>
+              <a href="{{url('/home')}}" class="btn btn-primary" style="margin-left: 10px;">Home</a>
             </div>
           </div>
           <div class="table-container">
@@ -22,7 +23,7 @@
               @if($provincias->count())  
               @foreach($provincias as $provincia)  
               <tr>
-                <td>{{$provincia->nombre}}</td>
+                <td>{{$provincia->nombre_provincia}}</td>
                 <td><a class="btn btn-primary btn-xs" href="{{ route('provincia.edit', $provincia->id) }}" ><span class="glyphicon glyphicon-pencil"></span></a></td>
                 <td>
                   <form action="{{ route('provincia.destroy', $provincia->id)}}" method="post">
@@ -42,6 +43,9 @@
             </tbody>
 
           </table>
+          <div class="footer"> 
+            <p>Creado por: Deysi Guevara</p> 
+          </div>
         </div>
       </div>
       {{ $provincias->links() }}

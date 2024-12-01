@@ -9,7 +9,7 @@ class Provincia extends Model
 {
     //
     use HasFactory;
-    protected $fillable = ['nombre'];
+    protected $fillable = ['nombre_provincia'];
     public function cantones() 
     { 
         return $this->hasMany(Canton::class); 

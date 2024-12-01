@@ -9,7 +9,7 @@ class Canton extends Model
 {
     //
     use HasFactory; 
-    protected $fillable = ['nombre', 'provincia_id']; 
+    protected $fillable = ['nombre_canton', 'provincia_id']; 
     public function provincia() 
     { 
         return $this->belongsTo(Provincia::class);

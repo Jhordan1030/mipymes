@@ -21,37 +21,29 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Nuevo Cantón</h3>
+                    <h3 class="panel-title">Nuevo Cargo</h3>
                 </div>
                 <div class="panel-body">                    
                     <div class="table-container">
-                        <form method="POST" action="{{ route('canton.update',$canton->id) }}"  role="form">
+                        <form method="POST" action="{{ route('cargo.store') }}"  role="form">
                             {{ csrf_field() }}
-                            <input name="_method" type="hidden" value="PATCH">
                             <div class="row">
                                 <div class="col-xs-6 col-sm-6 col-md-6">
                                     <div class="form-group">
-                                        <input type="text" name="nombre_canton" id="nombre_canton" class="form-control input-sm" value="{{$canton->nombre_canton}}">
+                                        <input type="text" name="codigo_cargo" id="codigo_cargo" class="form-control input-sm" placeholder="Código del cargo">
                                     </div>
                                 </div>
-                                <div class="col-xs-6 col-sm-6 col-md-6">
+                              <div class="col-xs-6 col-sm-6 col-md-6">
                                     <div class="form-group">
-                                        <select name="provincia_id" id="provincia_id" class="form-control input-sm">
-                                            <option value="">Seleccione la Provincia</option>
-                                            @foreach($provincias as $provincia)
-                                                <option value="{{ $provincia->id }}">{{ $provincia->nombre_provincia }}</option>
-                                            @endforeach
-                                        </select>
+                                        <input type="text" name="nombre_cargo" id="nombre_cargo" class="form-control input-sm" placeholder="Nombre del cargo">
                                     </div>
                                 </div>
-                            </div>
-
-                            
+                                </div>                                
                             <div class="row">
 
                                 <div class="col-xs-12 col-sm-12 col-md-12">
-                                    <input type="submit"  value="Actualizar" class="btn btn-success btn-block">
-                                    <a href="{{ route('canton.index') }}" class="btn btn-info btn-block" >Atrás</a>
+                                    <input type="submit"  value="Guardar" class="btn btn-success btn-block">
+                                    <a href="{{ route('cargo.index') }}" class="btn btn-info btn-block" >Atrás</a>
                                 </div>    
 
                             </div>

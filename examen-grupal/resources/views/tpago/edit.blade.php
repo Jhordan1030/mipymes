@@ -21,37 +21,35 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Nuevo Cantón</h3>
+                    <h3 class="panel-title">Actualizar Tipo de Pago</h3>
                 </div>
                 <div class="panel-body">                    
                     <div class="table-container">
-                        <form method="POST" action="{{ route('canton.update',$canton->id) }}"  role="form">
+                        <form method="POST" action="{{ route('tpago.update',$tpago->id) }}"  role="form">
                             {{ csrf_field() }}
                             <input name="_method" type="hidden" value="PATCH">
                             <div class="row">
                                 <div class="col-xs-6 col-sm-6 col-md-6">
                                     <div class="form-group">
-                                        <input type="text" name="nombre_canton" id="nombre_canton" class="form-control input-sm" value="{{$canton->nombre_canton}}">
+                                        <input type="text" name="codigo_tipo_pago" id="codigo_tipo_pago" class="form-control input-sm" value="{{$tpago->codigo_tipo_pago}}">
                                     </div>
                                 </div>
                                 <div class="col-xs-6 col-sm-6 col-md-6">
                                     <div class="form-group">
-                                        <select name="provincia_id" id="provincia_id" class="form-control input-sm">
-                                            <option value="">Seleccione la Provincia</option>
-                                            @foreach($provincias as $provincia)
-                                                <option value="{{ $provincia->id }}">{{ $provincia->nombre_provincia }}</option>
-                                            @endforeach
-                                        </select>
+                                        <input type="text" name="nombre_tipo_pago" id="nombre_tipo_pago" class="form-control input-sm" value="{{$tpago->nombre_tipo_pago}}">
                                     </div>
                                 </div>
                             </div>
 
+                            <div class="form-group">
+                                <textarea name="descripcion_tipo_pago" class="form-control input-sm"  placeholder="Resumen">{{$tpago->descripcion_tipo_pago}}</textarea>
+                            </div>
                             
                             <div class="row">
 
                                 <div class="col-xs-12 col-sm-12 col-md-12">
                                     <input type="submit"  value="Actualizar" class="btn btn-success btn-block">
-                                    <a href="{{ route('canton.index') }}" class="btn btn-info btn-block" >Atrás</a>
+                                    <a href="{{ route('tpago.index') }}" class="btn btn-info btn-block" >Atrás</a>
                                 </div>    
 
                             </div>
@@ -60,9 +58,9 @@
                 </div>
 
             </div>
-            <div class="footer"> 
-            <p>Creado por: Deysi Guevara</p> 
-          </div>
+            <div class="footer">
+                <p>Creado por: Jhordan Huera</p>
+            </div>
         </div>
     </section>
     @endsection

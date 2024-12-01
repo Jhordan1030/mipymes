@@ -10,6 +10,7 @@
           <div class="pull-right">
             <div class="btn-group">
               <a href="{{ route('parametro.create') }}" class="btn btn-info">Añadir Parámetro</a>
+              <a href="{{url('/home')}}" class="btn btn-primary" style="margin-left: 10px;">Home</a>
             </div>
           </div>
           <div class="table-container">
@@ -53,6 +54,9 @@
                 @endif
               </tbody>
             </table>
+            <div class="footer"> 
+              <p>Creado por: Marcelo Chiriboga</p> 
+            </div>
           </div>
         </div>
         {{ $parametros->links() }}
