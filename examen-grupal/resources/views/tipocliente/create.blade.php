@@ -21,5 +21,8 @@
       </div>
     </div>
   </div>
+  <div class="footer">
+    <p>Creado por: Giuliana Espinoza</p>
+</div>
 </div>
 @endsection

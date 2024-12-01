@@ -37,6 +37,9 @@
               @endforeach 
             </tbody>
           </table>
+          <div class="footer">
+            <p>Creado por: Giuliana Espinoza</p>
+        </div>
           {{ $tipoIdentificaciones->links() }}
         </div>
       </div>
