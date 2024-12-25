@@ -1,4 +1,4 @@
-@extends('plantilla.plantilla')
+@extends('layouts.app')
 @section('content')
 <div class="row">
   <section class="content">
@@ -9,11 +9,10 @@
           <div class="pull-right">
             <div class="btn-group">
               <a href="{{ route('pais.create') }}" class="btn btn-info" >Añadir País</a>
-              <a href="{{url('/home')}}" class="btn btn-primary" style="margin-left: 10px;">Home</a>
             </div>
           </div>
           <div class="table-container">
-            <table id="mytable" class="table table-bordred table-striped">
+            <table id="mytable" class="table table-bordered">
              <thead>
                <th>Codigo País</th>
                <th>Nombre Pais</th>

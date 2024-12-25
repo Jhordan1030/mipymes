@@ -1,5 +1,4 @@
-@extends('plantilla.plantilla')
-
+@extends('layouts.app')
 @section('content')
 <div class="row">
     <section class="content">
