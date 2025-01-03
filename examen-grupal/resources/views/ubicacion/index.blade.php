@@ -5,41 +5,45 @@
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
                     <div class="panel-body">
+
+                        <!-- Mensaje de éxito -->
                         @if (session('success'))
                             <div class="alert alert-success">
                                 {{ session('success') }}
                             </div>
                         @endif
+
                         <div class="pull-left">
-                            <h3>Lista Paises</h3>
+                            <h3>Lista Libros</h3>
                         </div>
                         <div class="pull-right">
-                            <div class="btn-group">
-                                <a href="{{ route('pais.create') }}" class="btn btn-info">Añadir País</a>
-                            </div>
+                          <div class="btn-group">
+                            <a href="{{ route('ubicacion.create') }}" class="btn btn-info">Añadir Ubicación</a>
+                            
+                        </div>                        
                         </div>
                         <div class="table-container">
                             <table id="mytable" class="table table-bordered">
                                 <thead>
-                                    <th>Codigo País</th>
-                                    <th>Nombre Pais</th>
+                                    <th>Nombre Ubicación</th>
+                                    <th>Descripción Ubicación</th>
                                     <th>Editar</th>
                                     <th>Eliminar</th>
                                 </thead>
                                 <tbody>
-                                    @if ($paises->count())
-                                        @foreach ($paises as $pais)
+                                    @if ($ubicaciones->count())
+                                        @foreach ($ubicaciones as $ubicacion)
                                             <tr>
-                                                <td>{{ $pais->codigo_pais }}</td>
-                                                <td>{{ $pais->nombre_pais }}</td>
+                                                <td>{{ $ubicacion->nombreUbicacion }}</td>
+                                                <td>{{ $ubicacion->descripcionUbicacion }}</td>
+                                                
                                                 <td><a class="btn btn-primary btn-xs"
-                                                        href="{{ route('pais.edit', $pais->id) }}"><span
+                                                        href="{{ route('ubicacion.edit', $ubicacion->idubicacion) }}"><span
                                                             class="glyphicon glyphicon-pencil"></span></a></td>
                                                 <td>
-                                                    <form action="{{ route('pais.destroy', $pais->id) }}" method="post">
+                                                    <form action="{{ route('ubicacion.destroy', $ubicacion->idubicacion) }}" method="post">
                                                         {{ csrf_field() }}
                                                         <input name="_method" type="hidden" value="DELETE">
-
                                                         <button class="btn btn-danger btn-xs" type="submit"><span
                                                                 class="glyphicon glyphicon-trash"></span></button>
                                                     </form>
@@ -52,16 +56,11 @@
                                         </tr>
                                     @endif
                                 </tbody>
-
                             </table>
-                            <div class="footer">
-                                <p>Creado por: Jhordan Huera</p>
-                            </div>
                         </div>
                     </div>
-                    {{ $paises->links() }}
+                    {{ $ubicaciones->links() }}
                 </div>
             </div>
         </section>
-
     @endsection
