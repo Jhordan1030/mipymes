@@ -15,5 +15,5 @@ class TipoEmpaque extends Model
 
     protected $fillable = ['descripcion_tipo__empaque'];
 
-    public $timestamps = false;
+   
 }

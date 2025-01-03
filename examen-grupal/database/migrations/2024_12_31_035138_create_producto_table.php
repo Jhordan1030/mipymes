@@ -13,7 +13,7 @@ class CreateProductoTable extends Migration
      */
     public function up()
     {
-        Schema::create('productos', function (Blueprint $table) {
+        Schema::create('producto', function (Blueprint $table) {
             $table->id('idproducto');
             $table->unsignedBigInteger('id_tipo__empaque')->nullable();
             $table->string('nombreproducto', 254);
@@ -32,6 +32,6 @@ class CreateProductoTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('productos');
+        Schema::dropIfExists('producto');
     }
 }

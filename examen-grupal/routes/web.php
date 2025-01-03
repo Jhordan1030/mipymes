@@ -5,6 +5,7 @@ use App\Http\Controllers\PaisController;
 use App\Http\Controllers\ProvinciaController;
 use App\Http\Controllers\CantonController;
 use App\Http\Controllers\CargoController;
+use App\Http\Controllers\DetalleProductoController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\TipoEmpaqueController;
 use App\Http\Controllers\TipoIdentificacionController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\TipoPagoController;
 use App\Http\Controllers\ParametroController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\TipoEstadoController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -31,6 +33,8 @@ Route::resource('/pais', PaisController::class);
 Route::resource('/proveedor', ProveedorController::class);
 Route::resource('/tpago', TipoPagoController::class);
 Route::resource('/producto', ProductoController::class);
+Route::resource('/detalleproducto', DetalleProductoController::class);
+Route::resource('/tipo_estado', TipoEstadoController::class);
 
 Route::get('/home', function() {
     return view('home', ['nombre' => 'Usuario invitado']);
