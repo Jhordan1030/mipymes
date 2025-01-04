@@ -34,6 +34,8 @@ Route::resource('/pais', PaisController::class);
 Route::resource('/proveedor', ProveedorController::class);
 Route::resource('/tpago', TipoPagoController::class);
 Route::resource('/producto', ProductoController::class);
+Route::resource('/tipo_estado', TipoEstadoController::class);
+Route::resource('/detalleproducto', DetalleProductoController::class);
 
 Route::get('/home', function() {
     return view('home', ['nombre' => 'Usuario invitado']);
