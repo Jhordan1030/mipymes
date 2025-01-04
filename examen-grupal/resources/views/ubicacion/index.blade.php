@@ -14,7 +14,7 @@
                         @endif
 
                         <div class="pull-left">
-                            <h3>Lista Libros</h3>
+                            <h3>Lista Ubicaciones</h3>
                         </div>
                         <div class="pull-right">
                           <div class="btn-group">
