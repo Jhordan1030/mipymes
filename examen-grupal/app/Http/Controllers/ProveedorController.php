@@ -12,10 +12,9 @@ class ProveedorController extends Controller
      */
     public function index()
     {
-        // Obtener todos los proveedores ordenados por ID en orden descendente y paginados
-        $proveedores = Proveedor::orderBy('id', 'DESC')->paginate(3);
+        // Cambia 'id' a 'idproveedor'
+        $proveedores = Proveedor::orderBy('idproveedor', 'DESC')->paginate(3);
 
-        // Retornar la vista 'proveedor.index' pasando los proveedores como datos
         return view('proveedor.index', compact('proveedores'));
     }
 
@@ -38,61 +37,59 @@ class ProveedorController extends Controller
             'direccion_proveedor' => 'required',
             'telefono_proveedor' => 'required',
         ]);
+
         Proveedor::create($request->all());
+
         return redirect()->route('proveedor.index')->with('success', 'Registro creado satisfactoriamente');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $idproveedor)
     {
-        $proveedores = Proveedor::find($id);
-        return  view('proveedor.show', compact('proveedores'));
+        // Cambia 'id' a 'idproveedor'
+        $proveedores = Proveedor::find($idproveedor);
+
+        return view('proveedor.show', compact('proveedores'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $idproveedor)
     {
-        // Obtener los proveedores y paginarlos
-        $proveedor = Proveedor::find($id);
+        // Cambia 'id' a 'idproveedor'
+        $proveedor = Proveedor::find($idproveedor);
 
-        // Retornar la vista con los proveedores
         return view('proveedor.edit', compact('proveedor'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $idproveedor)
     {
-        // Validación de los campos del libro
         $request->validate([
             'nombre_proveedor' => 'required',
             'descripcion_proveedor' => 'required',
             'direccion_proveedor' => 'required',
-            'telefono_proveedor' => 'required'
-
+            'telefono_proveedor' => 'required',
         ]);
 
-        // Buscar el libro por su ID
-        $proveedor = Proveedor::find($id);
-
-        // Actualizar los campos del libro con los datos del request
+        $proveedor = Proveedor::find($idproveedor);
         $proveedor->update($request->all());
 
-        // Redirigir con mensaje de éxito
         return redirect()->route('proveedor.index')->with('success', 'Proveedor actualizado satisfactoriamente');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $idproveedor)
     {
-        $proveedor = Proveedor::find($id)->delete();
+        Proveedor::find($idproveedor)->delete();
+
         return redirect()->route('proveedor.index')->with('success', 'Registro eliminado');
     }
 }

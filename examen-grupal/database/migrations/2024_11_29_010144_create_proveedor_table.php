@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('proveedor', function (Blueprint $table) {
-            $table->id();  // Esto crea la columna 'id' automáticamente como PRIMARY KEY.
+            $table->id('idproveedor'); // Esto crea la columna 'idproveedor' como PRIMARY KEY.
             $table->string('nombre_proveedor');
-            $table->string('descripcion_proveedor');
+            $table->string('descripcion_proveedor')->nullable(); // Permitir valores nulos si corresponde.
             $table->string('direccion_proveedor');
             $table->string('telefono_proveedor');
             $table->timestamps();

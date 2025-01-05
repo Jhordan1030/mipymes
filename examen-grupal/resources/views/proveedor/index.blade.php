@@ -31,9 +31,9 @@
                 <td>{{$proveedor->direccion_proveedor}}</td>
                 <td>{{$proveedor->telefono_proveedor}}</td>
                 
-                <td><a class="btn btn-primary btn-xs" href="{{ route('proveedor.edit', $proveedor->id) }}" ><span class="glyphicon glyphicon-pencil"></span></a></td>
+                <td><a class="btn btn-primary btn-xs" href="{{ route('proveedor.edit', $proveedor->idproveedor) }}" ><span class="glyphicon glyphicon-pencil"></span></a></td>
                 <td>
-                  <form action="{{ route('proveedor.destroy', $proveedor->id)}}" method="post">
+                  <form action="{{ route('proveedor.destroy', $proveedor->idproveedor)}}" method="post">
                    {{csrf_field()}}
                    <input name="_method" type="hidden" value="DELETE">
 

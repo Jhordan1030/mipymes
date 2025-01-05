@@ -17,6 +17,8 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\TipoEstadoController;
 use App\Http\Controllers\UbicacionController;
 use App\Http\Controllers\FacturaCompraController;
+use App\Http\Controllers\DetalleUbicacionController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -39,6 +41,7 @@ Route::resource('/tipo_estado', TipoEstadoController::class);
 Route::resource('/detalleproducto', DetalleProductoController::class);
 Route::resource('/ubicacion', UbicacionController::class);
 Route::resource('/factura_compra', FacturaCompraController::class);
+Route::resource('/detalle_ubicacion', DetalleUbicacionController::class);
 
 Route::get('/home', function() {
     return view('home', ['nombre' => 'Usuario invitado']);

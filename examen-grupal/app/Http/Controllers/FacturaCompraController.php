@@ -34,7 +34,7 @@ class FacturaCompraController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'idproveedor' => 'nullable|exists:proveedores,id',
+            'idproveedor' => 'nullable|exists:proveedor,idproveedor',
             'fechafacturacompra' => 'required|date',
             'codigofacturacompra' => 'required|string|max:250',
             'totalfacturacompra' => 'required|numeric'
@@ -69,7 +69,7 @@ class FacturaCompraController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'idproveedor' => 'nullable|exists:proveedores,id',
+            'idproveedor' => 'nullable|exists:proveedor,idproveedor',
             'fechafacturacompra' => 'required|date',
             'codigofacturacompra' => 'required|string|max:250',
             'totalfacturacompra' => 'required|numeric'

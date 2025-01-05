@@ -25,7 +25,7 @@
                 </div>
                 <div class="panel-body">                    
                     <div class="table-container">
-                        <form method="POST" action="{{ route('proveedor.update',$proveedor->id) }}"  role="form">
+                        <form method="POST" action="{{ route('proveedor.update',$proveedor->idproveedor) }}"  role="form">
                             {{ csrf_field() }}
                             <input name="_method" type="hidden" value="PATCH">
                             <div class="row">

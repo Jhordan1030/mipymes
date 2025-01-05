@@ -18,9 +18,9 @@ return new class extends Migration
             $table->string('codigofacturacompra', 250);
             $table->decimal('totalfacturacompra', 10, 2);
             $table->timestamps();
-
-            //Relaciones
-            $table->foreign('idproveedor')->references('id')->on('proveedor')->onDelete('set null');
+        
+            // Relaciones
+            $table->foreign('idproveedor')->references('idproveedor')->on('proveedor')->onDelete('set null');
         });
     }
 
