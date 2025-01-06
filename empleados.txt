@@ -1,11 +1,854 @@
---Controllers
+*********ESTADO_CUENTA*************
+php artisan make:migration create_estado_cuenta_table
 
---Mogrations
+--Controllers
+php artisan make:controller EstadoCuentaController --resource
+
+
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\EstadoCuenta;
+
+class EstadoCuentaController extends Controller
+{
+    public function index()
+    {
+        $estado_cuenta = EstadoCuenta::orderBy('idestadocuenta', 'DESC')->paginate(3);
+        return view('estado_cuenta.index', compact('estado_cuenta')); 
+    }
+
+    public function create()
+    {
+        return view('estado_cuenta.create');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nombreestadocuenta' => 'required',
+            'descripcionestadocuenta' => 'required',
+        ]);
+        EstadoCuenta::create($request->all());
+        return redirect()->route('estado_cuenta.index')->with('success', 'Estado de cuenta creado satisfactoriamente');
+    }
+
+    public function show($id)
+    {
+        $estado_cuenta = EstadoCuenta::find($id);
+        return view('estado_cuenta.show', compact('estado_cuenta'));
+    }
+
+    public function edit($id)
+    {
+        $estado_cuenta = EstadoCuenta::find($id);
+        return view('estado_cuenta.edit', compact('estado_cuenta'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'nombreestadocuenta' => 'required',
+            'descripcionestadocuenta' => 'required',
+        ]);
+        EstadoCuenta::find($id)->update($request->all());
+        return redirect()->route('estado_cuenta.index')->with('success', 'Estado de cuenta actualizado satisfactoriamente');
+    }
+
+    public function destroy($id)
+    {
+        EstadoCuenta::find($id)->delete();
+        return redirect()->route('estado_cuenta.index')->with('success', 'Estado de cuenta eliminado satisfactoriamente');
+    }
+}
+
+
+
+--Migrations
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateEstadoCuentaTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('estado_cuenta', function (Blueprint $table) {
+            $table->id('idestadocuenta');
+            $table->string('nombreestadocuenta');
+            $table->string('descripcionestadocuenta');
+            $table->timestamps();
+            $table->primary('idestadocuenta');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('estado_cuenta');
+    }
+}
+
+php artisan migrate
+
 
 --Models
+php artisan make:model EstadoCuenta
+app/Models/EstadoCuenta.php
+
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class EstadoCuenta extends Model
+{
+    use HasFactory;
+    
+    protected $fillable = ['nombreestadocuenta', 'descripcionestadocuenta'];
+}
+
+
+--Routes
+
+Route::resource('/estado_cuenta', EstadoCuentaController::class);
+
+
 
 --Index
+@extends('plantilla.plantilla')
+
+@section('content')
+<div class="row">
+  <section class="content">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="pull-left"><h3>Lista de Estados de Cuenta</h3></div>
+          <div class="pull-right">
+            <div class="btn-group">
+              <a href="{{ route('estado_cuenta.create') }}" class="btn btn-info">Añadir Estado de Cuenta</a>
+            </div>
+          </div>
+          <div class="table-container">
+            <table id="mytable" class="table table-bordred table-striped">
+              <thead>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+              </thead>
+              <tbody>
+                @foreach($estado_cuenta as $estado)
+                <tr>
+                  <td>{{ $estado->nombreestadocuenta }}</td>
+                  <td>{{ $estado->descripcionestadocuenta }}</td>
+                  <td><a class="btn btn-primary btn-xs" href="{{ route('estado_cuenta.edit', $estado->idestadocuenta) }}"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                  <td>
+                    <form action="{{ route('estado_cuenta.destroy', $estado->idestadocuenta) }}" method="post">
+                      {{ csrf_field() }}
+                      <input name="_method" type="hidden" value="DELETE">
+                      <button class="btn btn-danger btn-xs" type="submit"><span class="glyphicon glyphicon-trash"></span></button>
+                    </form>
+                  </td>
+                </tr>
+                @endforeach
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {{ $estado_cuenta->links() }}
+      </div>
+    </div>
+  </section>
+</div>
+@endsection
+
 
 --edit
+@extends('plantilla.plantilla')
+
+@section('content')
+<div class="row">
+    <section class="content">
+        <div class="col-md-8 col-md-offset-2">
+            <form method="POST" action="{{ route('estado_cuenta.update', $estado_cuenta->idestadocuenta) }}">
+                {{ csrf_field() }}
+                <input name="_method" type="hidden" value="PATCH">
+                <div class="form-group">
+                    <input type="text" name="nombreestadocuenta" class="form-control" value="{{ $estado_cuenta->nombreestadocuenta }}">
+                </div>
+                <div class="form-group">
+                    <textarea name="descripcionestadocuenta" class="form-control">{{ $estado_cuenta->descripcionestadocuenta }}</textarea>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Actualizar" class="btn btn-success btn-block">
+                    <a href="{{ route('estado_cuenta.index') }}" class="btn btn-info btn-block">Atrás</a>
+                </div>
+            </form>
+        </div>
+    </section>
+@endsection
+
 
 --create
+@extends('plantilla.plantilla')
+
+@section('content')
+<div class="row">
+    <section class="content">
+        <div class="col-md-8 col-md-offset-2">
+            <form method="POST" action="{{ route('estado_cuenta.store') }}">
+                {{ csrf_field() }}
+                <div class="form-group">
+                    <input type="text" name="nombreestadocuenta" class="form-control" placeholder="Nombre del Estado de Cuenta">
+                </div>
+                <div class="form-group">
+                    <textarea name="descripcionestadocuenta" class="form-control" placeholder="Descripción"></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Guardar" class="btn btn-success btn-block">
+                    <a href="{{ route('estado_cuenta.index') }}" class="btn btn-info btn-block">Atrás</a>
+                </div>
+            </form>
+        </div>
+    </section>
+@endsection
+
+
+*************EMPLEADO***************
+--Migrations
+php artisan make:migration create_empleado_table
+
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateEmpleadoTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('empleados', function (Blueprint $table) {
+            $table->id('idempleado');
+            $table->unsignedBigInteger('idcargo')->nullable();
+            $table->string('cedulaempleado', 254)->unique();
+            $table->string('nombresempleado', 254);
+            $table->string('apellidoempleados', 254);
+            $table->string('direccionempleado', 254);
+            $table->string('telefonoempleado', 254);
+            $table->timestamps();
+
+            // Llave foránea
+            $table->foreign('idcargo')->references('id')->on('cargos')->onDelete('set null');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('empleados');
+    }
+}
+
+
+php artisan migrate
+
+--Models
+php artisan make:model Empleado
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Empleado extends Model
+{
+    use HasFactory;
+
+    protected $table = 'empleados';
+
+    protected $fillable = [
+        'idcargo',
+        'cedulaempleado',
+        'nombresempleado',
+        'apellidoempleados',
+        'direccionempleado',
+        'telefonoempleado',
+    ];
+
+    public function cargo()
+    {
+        return $this->belongsTo(Cargo::class, 'idcargo');
+    }
+}
+
+--Controllers
+php artisan make:controller EmpleadoController --resource
+
+
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Empleado;
+use App\Models\Cargo;
+
+class EmpleadoController extends Controller
+{
+    public function index()
+    {
+        $empleados = Empleado::with('cargo')->orderBy('idempleado', 'DESC')->paginate(5);
+        return view('empleado.index', compact('empleados'));
+    }
+
+    public function create()
+    {
+        $cargos = Cargo::all();
+        return view('empleado.create', compact('cargos'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'cedulaempleado' => 'required|unique:empleados|max:254',
+            'nombresempleado' => 'required',
+            'apellidoempleados' => 'required',
+            'direccionempleado' => 'required',
+            'telefonoempleado' => 'required',
+        ]);
+
+        Empleado::create($request->all());
+        return redirect()->route('empleado.index')->with('success', 'Empleado creado correctamente');
+    }
+
+    public function edit($id)
+    {
+        $empleado = Empleado::findOrFail($id);
+        $cargos = Cargo::all();
+        return view('empleado.edit', compact('empleado', 'cargos'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'cedulaempleado' => 'required|max:254|unique:empleados,cedulaempleado,' . $id . ',idempleado',
+            'nombresempleado' => 'required',
+            'apellidoempleados' => 'required',
+            'direccionempleado' => 'required',
+            'telefonoempleado' => 'required',
+        ]);
+
+        $empleado = Empleado::findOrFail($id);
+        $empleado->update($request->all());
+
+        return redirect()->route('empleado.index')->with('success', 'Empleado actualizado correctamente');
+    }
+
+    public function destroy($id)
+    {
+        Empleado::findOrFail($id)->delete();
+        return redirect()->route('empleado.index')->with('success', 'Empleado eliminado correctamente');
+    }
+}
+
+--Routes 
+Route::resource('/empleado', EmpleadoController::class);
+
+
+
+--create
+@extends('plantilla.plantilla')
+
+@section('content')
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <form method="POST" action="{{ route('empleado.store') }}">
+            @csrf
+            <div class="form-group">
+                <label for="cedulaempleado">Cédula</label>
+                <input type="text" name="cedulaempleado" id="cedulaempleado" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="nombresempleado">Nombres</label>
+                <input type="text" name="nombresempleado" id="nombresempleado" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="apellidoempleados">Apellidos</label>
+                <input type="text" name="apellidoempleados" id="apellidoempleados" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="idcargo">Cargo</label>
+                <select name="idcargo" id="idcargo" class="form-control">
+                    <option value="">Seleccione un cargo</option>
+                    @foreach($cargos as $cargo)
+                        <option value="{{ $cargo->id }}">{{ $cargo->detallecar }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="telefonoempleado">Teléfono</label>
+                <input type="text" name="telefonoempleado" id="telefonoempleado" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection
+
+
+--edit
+@extends('plantilla.plantilla')
+@section('content')
+<div class="row">
+    <section class="content">
+        <div class="col-md-8 col-md-offset-2">
+            @if (count($errors) > 0)
+            <div class="alert alert-danger">
+                <strong>Error!</strong> Revise los campos obligatorios.<br><br>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+            @if(Session::has('success'))
+            <div class="alert alert-info">
+                {{Session::get('success')}}
+            </div>
+            @endif
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Editar Empleado</h3>
+                </div>
+                <div class="panel-body">                    
+                    <div class="table-container">
+                        <form method="POST" action="{{ route('empleado.update', $empleado->id) }}" role="form">
+                            {{ csrf_field() }}
+                            <input name="_method" type="hidden" value="PATCH">
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="form-group">
+                                        <input type="text" name="cedulaempleado" id="cedulaempleado" class="form-control input-sm" value="{{ $empleado->cedulaempleado }}">
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="form-group">
+                                        <input type="text" name="nombresempleado" id="nombresempleado" class="form-control input-sm" value="{{ $empleado->nombresempleado }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="apellidoempleado" id="apellidoempleado" class="form-control input-sm" value="{{ $empleado->apellidoempleado }}">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="direccionempleado" id="direccionempleado" class="form-control input-sm" value="{{ $empleado->direccionempleado }}">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="telefonoempleado" id="telefonoempleado" class="form-control input-sm" value="{{ $empleado->telefonoempleado }}">
+                            </div>
+                            <div class="form-group">
+                                <select name="idcargo" id="idcargo" class="form-control">
+                                    <option value="">Seleccione un Cargo</option>
+                                    @foreach ($cargos as $cargo)
+                                    <option value="{{ $cargo->idcargo }}" {{ $empleado->idcargo == $cargo->idcargo ? 'selected' : '' }}>
+                                        {{ $cargo->detallecar }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12">
+                                    <input type="submit" value="Actualizar" class="btn btn-success btn-block">
+                                    <a href="{{ route('empleado.index') }}" class="btn btn-info btn-block">Atrás</a>
+                                </div>    
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+@endsection
+
+--index
+@extends('plantilla.plantilla')
+@section('content')
+<div class="row">
+    <section class="content">
+        <div class="col-md-8 col-md-offset-2">
+            @if(Session::has('success'))
+            <div class="alert alert-info">
+                {{ Session::get('success') }}
+            </div>
+            @endif
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Lista de Empleados</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="table-container">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Cédula</th>
+                                    <th>Nombres</th>
+                                    <th>Apellidos</th>
+                                    <th>Teléfono</th>
+                                    <th>Dirección</th>
+                                    <th>Cargo</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if($empleados->count()) 
+                                    @foreach($empleados as $empleado)
+                                    <tr>
+                                        <td>{{ $empleado->cedulaempleado }}</td>
+                                        <td>{{ $empleado->nombresempleado }}</td>
+                                        <td>{{ $empleado->apellidoempleado }}</td>
+                                        <td>{{ $empleado->telefonoempleado }}</td>
+                                        <td>{{ $empleado->direccionempleado }}</td>
+                                        <td>{{ $empleado->cargo->detallecar ?? 'Sin cargo asignado' }}</td>
+                                        <td>
+                                            <a href="{{ route('empleado.edit', $empleado->id) }}" class="btn btn-warning btn-sm">Editar</a>
+                                            <form action="{{ route('empleado.destroy', $empleado->id) }}" method="POST" style="display:inline-block;">
+                                                {{ csrf_field() }}
+                                                {{ method_field('DELETE') }}
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Está seguro de eliminar este empleado?')">Eliminar</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                @else
+                                <tr>
+                                    <td colspan="7" class="text-center">No hay empleados registrados</td>
+                                </tr>
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <a href="{{ route('empleado.create') }}" class="btn btn-primary">Nuevo Empleado</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+@endsection
+
+**********MOTIVO_DETALLE_DEVOLUCIÓN*******************
+--Migratios
+php artisan make:migration create_motivo_detalle_devolucion_table
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateMotivoDetalleDevolucionTable extends Migration
+{
+    public function up()
+    {
+        Schema::create('motivo_detalle_devolucion', function (Blueprint $table) {
+            $table->id('idmotivotdetalledevolucion'); // Primary key
+            $table->string('nombremotivotdetalledevolucion', 254);
+            $table->string('descripcionmotivotdetalledevoluc', 254);
+            $table->timestamps();
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('motivo_detalle_devolucion');
+    }
+}
+
+
+php artisan migrate
+
+--Models
+php artisan make:model MotivoDetalleDevolucion
+
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class MotivoDetalleDevolucion extends Model
+{
+    use HasFactory;
+
+    protected $table = 'motivo_detalle_devolucion'; // Tabla asociada
+    protected $fillable = [
+        'nombremotivotdetalledevolucion',
+        'descripcionmotivotdetalledevoluc'
+    ];
+}
+
+--Controllers
+php artisan make:controller MotivoDetalleDevolucionController --resource
+
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\MotivoDetalleDevolucion;
+
+class MotivoDetalleDevolucionController extends Controller
+{
+    public function index()
+    {
+        $items = MotivoDetalleDevolucion::orderBy('idmotivotdetalledevolucion', 'DESC')->paginate(5);
+        return view('motivo_detalle_devolucion.index', compact('items'));
+    }
+
+    public function create()
+    {
+        return view('motivo_detalle_devolucion.create');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nombremotivotdetalledevolucion' => 'required',
+            'descripcionmotivotdetalledevoluc' => 'required',
+        ]);
+
+        MotivoDetalleDevolucion::create($request->all());
+        return redirect()->route('motivo_detalle_devolucion.index')->with('success', 'Registro creado exitosamente');
+    }
+
+    public function show($id)
+    {
+        $item = MotivoDetalleDevolucion::findOrFail($id);
+        return view('motivo_detalle_devolucion.show', compact('item'));
+    }
+
+    public function edit($id)
+    {
+        $item = MotivoDetalleDevolucion::findOrFail($id);
+        return view('motivo_detalle_devolucion.edit', compact('item'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'nombremotivotdetalledevolucion' => 'required',
+            'descripcionmotivotdetalledevoluc' => 'required',
+        ]);
+
+        $item = MotivoDetalleDevolucion::findOrFail($id);
+        $item->update($request->all());
+        return redirect()->route('motivo_detalle_devolucion.index')->with('success', 'Registro actualizado exitosamente');
+    }
+
+    public function destroy($id)
+    {
+        MotivoDetalleDevolucion::findOrFail($id)->delete();
+        return redirect()->route('motivo_detalle_devolucion.index')->with('success', 'Registro eliminado exitosamente');
+    }
+}
+
+--Routes
+Route::resource('/motivo_detalle_devolucion', MotivoDetalleDevolucionController::class);
+
+
+--Index
+@extends('plantilla.plantilla')
+@section('content')
+<div class="row">
+  <section class="content">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="pull-left"><h3>Lista Motivos</h3></div>
+          <div class="pull-right">
+            <a href="{{ route('motivo_detalle_devolucion.create') }}" class="btn btn-info">Añadir Motivo</a>
+          </div>
+          <table class="table">
+            <thead>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Editar</th>
+              <th>Eliminar</th>
+            </thead>
+            <tbody>
+              @foreach($items as $item)
+              <tr>
+                <td>{{ $item->nombremotivotdetalledevolucion }}</td>
+                <td>{{ $item->descripcionmotivotdetalledevoluc }}</td>
+                <td><a href="{{ route('motivo_detalle_devolucion.edit', $item->idmotivotdetalledevolucion) }}" class="btn btn-primary">Editar</a></td>
+                <td>
+                  <form action="{{ route('motivo_detalle_devolucion.destroy', $item->idmotivotdetalledevolucion) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button class="btn btn-danger">Eliminar</button>
+                  </form>
+                </td>
+              </tr>
+              @endforeach
+            </tbody>
+          </table>
+          {{ $items->links() }}
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+@endsection
+
+--Create
+@extends('plantilla.plantilla')
+@section('content')
+<div class="row">
+    <section class="content">
+        <div class="col-md-8 col-md-offset-2">
+            @if (count($errors) > 0)
+            <div class="alert alert-danger">
+                <strong>Error!</strong> Revise los campos obligatorios.<br><br>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+            @if(Session::has('success'))
+            <div class="alert alert-info">
+                {{ Session::get('success') }}
+            </div>
+            @endif
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Nuevo Motivo Detalle Devolución</h3>
+                </div>
+                <div class="panel-body">                    
+                    <div class="table-container">
+                        <form method="POST" action="{{ route('motivo_detalle_devolucion.store') }}" role="form">
+                            {{ csrf_field() }}
+                            <div class="form-group">
+                                <input type="text" name="nombremotivodetalledevolucion" class="form-control input-sm" placeholder="Nombre del Motivo Detalle Devolución">
+                            </div>
+                            <div class="form-group">
+                                <textarea name="descripcionmotivodetalledev" class="form-control input-sm" placeholder="Descripción del Motivo Detalle Devolución"></textarea>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12">
+                                    <input type="submit" value="Guardar" class="btn btn-success btn-block">
+                                    <a href="{{ route('motivo_detalle_devolucion.index') }}" class="btn btn-info btn-block">Atrás</a>
+                                </div>    
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+@endsection
+
+
+--edit
+@extends('plantilla.plantilla')
+@section('content')
+<div class="row">
+    <section class="content">
+        <div class="col-md-8 col-md-offset-2">
+            @if (count($errors) > 0)
+            <div class="alert alert-danger">
+                <strong>Error!</strong> Revise los campos obligatorios.<br><br>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+            @if(Session::has('success'))
+            <div class="alert alert-info">
+                {{ Session::get('success') }}
+            </div>
+            @endif
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Editar Motivo Detalle Devolución</h3>
+                </div>
+                <div class="panel-body">                    
+                    <div class="table-container">
+                        <form method="POST" action="{{ route('motivo_detalle_devolucion.update', $motivoDetalleDevolucion->id) }}" role="form">
+                            {{ csrf_field() }}
+                            <input name="_method" type="hidden" value="PATCH">
+                            <div class="form-group">
+                                <input type="text" name="nombremotivodetalledevolucion" class="form-control input-sm" value="{{ $motivoDetalleDevolucion->nombremotivodetalledevolucion }}">
+                            </div>
+                            <div class="form-group">
+                                <textarea name="descripcionmotivodetalledev" class="form-control input-sm" placeholder="Descripción">{{ $motivoDetalleDevolucion->descripcionmotivodetalledev }}</textarea>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12">
+                                    <input type="submit" value="Actualizar" class="btn btn-success btn-block">
+                                    <a href="{{ route('motivo_detalle_devolucion.index') }}" class="btn btn-info btn-block">Atrás</a>
+                                </div>    
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+@endsection
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
