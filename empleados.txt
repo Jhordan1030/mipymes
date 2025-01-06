@@ -836,6 +836,345 @@ Route::resource('/motivo_detalle_devolucion', MotivoDetalleDevolucionController:
 </div>
 @endsection
 
+**********CLIENTES***********
+
+--Migrations 
+php artisan make:migration create_clientes_table
+
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateClientesTable extends Migration
+{
+    public function up()
+    {
+        Schema::create('clientes', function (Blueprint $table) {
+            $table->id('idcliente');
+            $table->foreignId('idcanton')->nullable()->constrained('cantones')->onDelete('cascade');
+            $table->foreignId('idtipocliente')->nullable()->constrained('tipo_cliente')->onDelete('cascade');
+            $table->foreignId('idtipoidentificacion')->nullable()->constrained('tipo_identificacion')->onDelete('cascade');
+            $table->string('identificacioncliente', 254);
+            $table->string('nombrecliente', 254);
+            $table->string('apellidoscliente', 254);
+            $table->string('direccioncliente', 254);
+            $table->string('telefonocliente', 254);
+            $table->string('emailcliente', 254);
+            $table->date('fecharegistrocliente');
+            $table->decimal('creditomaximocliente', 10, 2);
+            $table->string('notacliente', 254);
+            $table->timestamps();
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('clientes');
+    }
+}
+
+
+php artisan migrate
+
+--Models
+php artisan make:model Cliente
+
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Cliente extends Model
+{
+    use HasFactory;
+
+    protected $table = 'clientes';
+    protected $fillable = [
+        'idcanton',
+        'idtipocliente',
+        'idtipoidentificacion',
+        'identificacioncliente',
+        'nombrecliente',
+        'apellidoscliente',
+        'direccioncliente',
+        'telefonocliente',
+        'emailcliente',
+        'fecharegistrocliente',
+        'creditomaximocliente',
+        'notacliente',
+    ];
+}
+--Controller
+php artisan make:controller ClienteController --resource
+
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Cliente;
+
+class ClienteController extends Controller
+{
+    public function index()
+    {
+        $clientes = Cliente::orderBy('idcliente', 'DESC')->paginate(10);
+        return view('cliente.index', compact('clientes'));
+    }
+
+    public function create()
+    {
+        return view('cliente.create');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'identificacioncliente' => 'required',
+            'nombrecliente' => 'required',
+            'apellidoscliente' => 'required',
+            'direccioncliente' => 'required',
+            'telefonocliente' => 'required',
+            'emailcliente' => 'required|email',
+            'fecharegistrocliente' => 'required|date',
+            'creditomaximocliente' => 'required|numeric',
+            'notacliente' => 'required',
+        ]);
+
+        Cliente::create($request->all());
+        return redirect()->route('cliente.index')->with('success', 'Cliente creado satisfactoriamente.');
+    }
+
+    public function edit($id)
+    {
+        $cliente = Cliente::findOrFail($id);
+        return view('cliente.edit', compact('cliente'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'identificacioncliente' => 'required',
+            'nombrecliente' => 'required',
+            'apellidoscliente' => 'required',
+            'direccioncliente' => 'required',
+            'telefonocliente' => 'required',
+            'emailcliente' => 'required|email',
+            'fecharegistrocliente' => 'required|date',
+            'creditomaximocliente' => 'required|numeric',
+            'notacliente' => 'required',
+        ]);
+
+        $cliente = Cliente::findOrFail($id);
+        $cliente->update($request->all());
+        return redirect()->route('cliente.index')->with('success', 'Cliente actualizado correctamente.');
+    }
+
+    public function destroy($id)
+    {
+        $cliente = Cliente::findOrFail($id);
+        $cliente->delete();
+        return redirect()->route('cliente.index')->with('success', 'Cliente eliminado correctamente.');
+    }
+}
+
+
+--Routes 
+Route::resource('cliente', ClienteController::class);
+
+--index
+@extends('plantilla.plantilla')
+
+@section('content')
+<div class="row">
+  <section class="content">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="pull-left"><h3>Lista de Clientes</h3></div>
+          <div class="pull-right">
+            <div class="btn-group">
+              <a href="{{ route('cliente.create') }}" class="btn btn-info">Añadir Cliente</a>
+            </div>
+          </div>
+          <div class="table-container">
+            <table id="mytable" class="table table-bordred table-striped">
+             <thead>
+               <th>Nombre</th>
+               <th>Apellidos</th>
+               <th>Identificación</th>
+               <th>Teléfono</th>
+               <th>Dirección</th>
+               <th>Email</th>
+               <th>Fecha de Registro</th>
+               <th>Acciones</th>
+             </thead>
+             <tbody>
+              @if($clientes->count())  
+              @foreach($clientes as $cliente)  
+              <tr>
+                <td>{{$cliente->NOMBRECLIENTE}}</td>
+                <td>{{$cliente->APLLIDOSCLIENTE}}</td>
+                <td>{{$cliente->IDENTIFICACIONCLIENTE}}</td>
+                <td>{{$cliente->TELEFONOCLIENTE}}</td>
+                <td>{{$cliente->DIRECCIONCLIENTE}}</td>
+                <td>{{$cliente->EMAILCLIENTE}}</td>
+                <td>{{$cliente->FECHAREGISTROCLIENTE}}</td>
+                <td>
+                  <a class="btn btn-primary btn-xs" href="{{ route('cliente.edit', $cliente->IDCLIENTE) }}"><span class="glyphicon glyphicon-pencil"></span> Editar</a>
+                  <form action="{{ route('cliente.destroy', $cliente->IDCLIENTE)}}" method="post" style="display:inline;">
+                   {{ csrf_field() }}
+                   <input name="_method" type="hidden" value="DELETE">
+                   <button class="btn btn-danger btn-xs" type="submit"><span class="glyphicon glyphicon-trash"></span> Eliminar</button>
+                  </form>
+                </td>
+               </tr>
+               @endforeach 
+               @else
+               <tr>
+                <td colspan="8">No hay registros</td>
+              </tr>
+              @endif
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {{ $clientes->links() }}
+    </div>
+  </div>
+</section>
+@endsection
+
+--create
+@extends('plantilla.plantilla')
+
+@section('content')
+<div class="row">
+    <section class="content">
+        <div class="col-md-8 col-md-offset-2">
+            @if (count($errors) > 0)
+            <div class="alert alert-danger">
+                <strong>Error!</strong> Revise los campos obligatorios.<br><br>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+            @if(Session::has('success'))
+            <div class="alert alert-info">
+                {{Session::get('success')}}
+            </div>
+            @endif
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Nuevo Cliente</h3>
+                </div>
+                <div class="panel-body">
+                    <form method="POST" action="{{ route('cliente.store') }}" role="form">
+                        {{ csrf_field() }}
+                        <div class="form-group">
+                            <input type="text" name="NOMBRECLIENTE" class="form-control input-sm" placeholder="Nombre del Cliente" value="{{ old('NOMBRECLIENTE') }}">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="APLLIDOSCLIENTE" class="form-control input-sm" placeholder="Apellidos del Cliente" value="{{ old('APLLIDOSCLIENTE') }}">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="IDENTIFICACIONCLIENTE" class="form-control input-sm" placeholder="Identificación" value="{{ old('IDENTIFICACIONCLIENTE') }}">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="TELEFONOCLIENTE" class="form-control input-sm" placeholder="Teléfono" value="{{ old('TELEFONOCLIENTE') }}">
+                        </div>
+                        <div class="form-group">
+                            <input type="email" name="EMAILCLIENTE" class="form-control input-sm" placeholder="Email" value="{{ old('EMAILCLIENTE') }}">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="DIRECCIONCLIENTE" class="form-control input-sm" placeholder="Dirección" value="{{ old('DIRECCIONCLIENTE') }}">
+                        </div>
+                        <div class="form-group">
+                            <input type="date" name="FECHAREGISTROCLIENTE" class="form-control input-sm" value="{{ old('FECHAREGISTROCLIENTE') }}">
+                        </div>
+                        <div class="form-group">
+                            <input type="number" name="CREDITOMAXIMOCLIENTE" class="form-control input-sm" placeholder="Crédito Máximo" value="{{ old('CREDITOMAXIMOCLIENTE') }}">
+                        </div>
+                        <div class="form-group">
+                            <textarea name="NOTACLIENTE" class="form-control input-sm" placeholder="Notas">{{ old('NOTACLIENTE') }}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Guardar" class="btn btn-success btn-block">
+                            <a href="{{ route('cliente.index') }}" class="btn btn-info btn-block">Atrás</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+@endsection
+
+--edit
+@extends('plantilla.plantilla')
+
+@section('content')
+<div class="row">
+    <section class="content">
+        <div class="col-md-8 col-md-offset-2">
+            @if (count($errors) > 0)
+            <div class="alert alert-danger">
+                <strong>Error!</strong> Revise los campos obligatorios.<br><br>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+            @if(Session::has('success'))
+            <div class="alert alert-info">
+                {{Session::get('success')}}
+            </div>
+            @endif
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Editar Cliente</h3>
+                </div>
+                <div class="panel-body">
+                    <form method="POST" action="{{ route('cliente.update', $cliente->IDCLIENTE) }}" role="form">
+                        {{ csrf_field() }}
+                        <input name="_method" type="hidden" value="PATCH">
+                        <div class="form-group">
+                            <input type="text" name="NOMBRECLIENTE" class="form-control input-sm" value="{{ $cliente->NOMBRECLIENTE }}">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="APLLIDOSCLIENTE" class="form-control input-sm" value="{{ $cliente->APLLIDOSCLIENTE }}">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="IDENTIFICACIONCLIENTE" class="form-control input-sm" value="{{ $cliente->IDENTIFICACIONCLIENTE }}">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="TELEFONOCLIENTE" class="form-control input-sm" value="{{ $cliente->TELEFONOCLIENTE }}">
+                        </div>
+                        <div class="form-group">
+                            <input type="email" name="EMAILCLIENTE" class="form-control input-sm" value="{{ $cliente->EMAILCLIENTE }}">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="DIRECCIONCLIENTE" class="form-control input-sm" value="{{ $cliente->DIRECCIONCLIENTE }}">
+                        </div>
+                        <div class="form-group">
+                            <input type="date" name="FECHAREGISTROCLIENTE" class="form-control input-sm" value="{{ $cliente->FECHAREGISTROCLIENTE }}">
+                        </div>
+                        <div class="form-group">
+                            <input type="number" name="CREDITOMAXIMOCLIENTE" class="form-control input-sm" value="{{ $cliente->CREDITOMAXIMOCLIENTE }}">
+                        </div>
+                        <div class="form-group">
+                            <textarea name="NOTACLIENTE" class="form-control input-sm">{{ $cliente->NOTACLIENTE }}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Actualizar" class="btn btn-success btn
+
 
 
 
