@@ -12,8 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tipo_empaques', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->id('idtipoempaque'); // SERIAL equivale a un campo autoincremental
+            $table->unsignedBigInteger('idproducto')->nullable(); // Relación con productos (puede ser NULL)
+            $table->string('nombretipoempaque', 20); // Nombre del tipo de empaque
+            $table->string('codigotipoempaque', 5); // Código del tipo de empaque
+            $table->timestamps(); // Campos created_at y updated_at
+
+             // Clave primaria
+             $table->primary('idtipoempaque');
         });
     }
 

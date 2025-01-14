@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h2 class="text-center">Lista de Pacientes</h2>
+    <h2 class="text-center">Lista de Cargos</h2>
 
     @if (session('success'))
         <div class="alert alert-success">
@@ -29,7 +29,7 @@
     </form>
 
     <div class="mb-3 text-right">
-        <a href="{{ route('cargo.create') }}" class="btn btn-primary">Añadir Paciente</a>
+        <a href="{{ route('cargo.create') }}" class="btn btn-primary">Añadir Cargo</a>
     </div>
 
     <table class="table table-bordered table-striped">

@@ -11,7 +11,7 @@ class TipoEmpaquesController extends Controller
      */
     public function index()
     {
-        //
+        
     }
 
     /**
