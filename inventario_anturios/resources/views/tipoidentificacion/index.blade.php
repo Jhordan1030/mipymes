@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h2 class="text-center">Tipos de Identifiacaiones</h2>
+    <h2 class="text-center">Tipos de Identificaciones</h2>
 
     @if (session('success'))
         <div class="alert alert-success">
