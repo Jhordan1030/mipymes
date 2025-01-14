@@ -2,18 +2,18 @@
 
 @section('content')
 <div class="container">
-    <h2 class="text-center">Tipos de Identifiacaiones</h2>
+    <h2 class="text-center">Tipos de Identificaciones</h2>
 
     @if (session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
     @endif
 
     @if (session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
     @endif
 
     <!-- Formulario de búsqueda -->
@@ -35,30 +35,30 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-
+                
                 <th>Nombre Cargo</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
             @forelse ($tipoIdentificaciones as $tipoidentificacion)
-            <tr>
-
-                <td>{{ $tipoidentificacion->nombreidentificacion }}</td>
-
-                <td>
-                    <a href="{{ route('tipoidentificacion.edit', $tipoidentificacion->ididentificacion) }}" class="btn btn-sm btn-primary">Editar</a>
-                    <form action="{{ route('tipoidentificacion.destroy', $tipoidentificacion->ididentificacion) }}" method="POST" class="d-inline-block">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar este paciente?')">Eliminar</button>
-                    </form>
-                </td>
-            </tr>
+                <tr>
+                    
+                    <td>{{ $tipoidentificacion->nombreidentificacion }}</td>
+                    
+                    <td>
+                        <a href="{{ route('tipoidentificacion.edit', $tipoidentificacion->ididentificacion) }}" class="btn btn-sm btn-primary">Editar</a>
+                        <form action="{{ route('tipoidentificacion.destroy', $tipoidentificacion->ididentificacion) }}" method="POST" class="d-inline-block">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar este paciente?')">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
             @empty
-            <tr>
-                <td colspan="6" class="text-center">No hay pacientes registrados.</td>
-            </tr>
+                <tr>
+                    <td colspan="6" class="text-center">No hay pacientes registrados.</td>
+                </tr>
             @endforelse
         </tbody>
     </table>
