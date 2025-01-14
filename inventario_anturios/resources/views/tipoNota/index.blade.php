@@ -1,4 +1,4 @@
-@extends('layout.app')
+@extends('layouts.app')
 @section('content')
 <div class="container">
     <h3>Lista de Notas</h3>

@@ -1,4 +1,4 @@
-@extends('layout.app')
+@extends('layouts.app')
 @section('content')
 <div class="container">
     <h3>Crear Nuevo Tipo de Nota</h3>
