@@ -3,13 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Producto;
+use App\Models\TipoEmpaque;
 use Illuminate\Http\Request;
 
 class ProductoController extends Controller
 {
-    /**
-     * Muestra una lista de productos.
-     */
     public function index(Request $request)
     {
         $query = Producto::query();
@@ -25,25 +23,21 @@ class ProductoController extends Controller
         return view('producto.index', compact('productos'));
     }
 
-    /**
-     * Muestra el formulario para crear un nuevo producto.
-     */
     public function create()
     {
-        return view('producto.create');
+        // Obtener los tipos de empaque disponibles
+        $tipoempaques = TipoEmpaque::all();
+        return view('producto.create', compact('tipoempaques'));
     }
 
-    /**
-     * Almacena un nuevo producto en la base de datos.
-     */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'idtipoempaque' => 'nullable|integer|exists:tipo_empaques,id',
+            'idtipoempaque' => 'nullable|integer|exists:tipoempaques,idtipoempaque',
             'nombreprod' => 'required|string|max:10',
             'descripcionprod' => 'required|string|max:30',
             'precio' => 'required|numeric|min:0',
-            'estadodisponibilidad' => 'required|string|max:10',
+            'estadodisponibilidad' => 'required|string|max:20',
             'cantidadmin' => 'required|integer|min:1',
         ]);
 
@@ -52,37 +46,22 @@ class ProductoController extends Controller
         return redirect()->route('producto.index')->with('success', 'Producto creado correctamente.');
     }
 
-    /**
-     * Muestra los detalles de un producto específico.
-     */
-    public function show($idproducto)
-    {
-        $producto = Producto::findOrFail($idproducto);
-
-        return view('producto.show', compact('producto'));
-    }
-
-    /**
-     * Muestra el formulario para editar un producto existente.
-     */
     public function edit($idproducto)
     {
         $producto = Producto::findOrFail($idproducto);
+        $tipoempaques = TipoEmpaque::all();
 
-        return view('producto.edit', compact('producto'));
+        return view('producto.edit', compact('producto', 'tipoempaques'));
     }
 
-    /**
-     * Actualiza un producto existente en la base de datos.
-     */
     public function update(Request $request, $idproducto)
     {
         $validatedData = $request->validate([
-            'idtipoempaque' => 'nullable|integer|exists:tipo_empaques,id',
+            'idtipoempaque' => 'nullable|integer|exists:tipoempaques,idtipoempaque',
             'nombreprod' => 'required|string|max:10',
             'descripcionprod' => 'required|string|max:30',
             'precio' => 'required|numeric|min:0',
-            'estadodisponibilidad' => 'required|string|max:10',
+            'estadodisponibilidad' => 'required|string|max:20',
             'cantidadmin' => 'required|integer|min:1',
         ]);
 
@@ -92,9 +71,6 @@ class ProductoController extends Controller
         return redirect()->route('producto.index')->with('success', 'Producto actualizado correctamente.');
     }
 
-    /**
-     * Elimina un producto de la base de datos.
-     */
     public function destroy($idproducto)
     {
         $producto = Producto::findOrFail($idproducto);

@@ -26,14 +26,41 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                    <!-- Productos -->
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('cargo.index') }}">Cargo</a>
+                        <a class="nav-link" href="{{ route('producto.index') }}">Productos</a>
                     </li>
+
+                    <!-- Empleados -->
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Acerca de</a>
+                        <a class="nav-link" href="{{ route('empleado.index') }}">Empleados</a>
                     </li>
+
+                    <!-- Bodegas (Desplegable) -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBodegas" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Bodegas
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownBodegas">
+                            <li><a class="dropdown-item" href="{{ route('bodega.index') }}">Listado de Bodegas</a></li>
+                            <li><a class="dropdown-item" href="{{ route('bodega.create') }}">Añadir Nueva Bodega</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Transacción Producto (Desplegable) -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownTransaccion" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Transacción Producto
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownTransaccion">
+                            <li><a class="dropdown-item" href="{{ route('transaccion_producto.index') }}">Registrar Transacción</a></li>
+                            <li><a class="dropdown-item" href="#">Historial de Transacciones</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Tipo Nota -->
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Contacto</a>
+                        <a class="nav-link" href="{{ route('tipoNota.index') }}">Tipo Nota</a>
                     </li>
                 </ul>
             </div>

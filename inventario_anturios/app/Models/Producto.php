@@ -2,15 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Producto extends Model
 {
-    use HasFactory;
-
-    protected $table = 'productos';
-    protected $primaryKey = 'idproducto';
+    protected $table = 'productos'; // Nombre correcto de la tabla
+    protected $primaryKey = 'idproducto'; // Clave primaria personalizada
+    public $incrementing = true;
+    protected $keyType = 'int';
 
     protected $fillable = [
         'idtipoempaque',
@@ -21,9 +20,9 @@ class Producto extends Model
         'cantidadmin',
     ];
 
-    // Relación con otra tabla si aplica (por ejemplo, TipoEmpaque)
+    // Relación con tipo de empaque
     public function tipoEmpaque()
     {
-        return $this->belongsTo(TipoEmpaque::class, 'idtipoempaque');
+        return $this->belongsTo(TipoEmpaque::class, 'idtipoempaque', 'idtipoempaque');
     }
 }

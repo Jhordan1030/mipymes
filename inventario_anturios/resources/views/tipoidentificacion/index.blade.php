@@ -29,7 +29,7 @@
     </form>
 
     <div class="mb-3 text-right">
-        <a href="{{ route('tipoidentificacion.create') }}" class="btn btn-primary">Añadir Paciente</a>
+        <a href="{{ route('tipoidentificacion.create') }}" class="btn btn-primary">Añadir Tipo identificacion</a>
     </div>
 
     <table class="table table-bordered table-striped">

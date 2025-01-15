@@ -3,6 +3,8 @@
 <div class="container">
     <h2>Lista de Empleados</h2>
     <a href="{{ route('empleado.create') }}" class="btn btn-primary mb-3">Añadir Empleado</a>
+    <a href="{{ route('cargo.create') }}" class="btn btn-primary mb-3">Añadir Cargo</a>
+    <a href="{{ route('tipoidentificacion.create') }}" class="btn btn-primary mb-3">Añadir Tipo de Identidad</a>
     <table class="table">
         <thead>
             <tr>

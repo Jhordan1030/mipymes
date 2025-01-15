@@ -6,13 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class TipoEmpaque extends Model
 {
-    protected $table = 'tipoempaques'; // Nombre de la tabla
+    protected $table = 'tipoempaques'; // Nombre correcto de la tabla
     protected $primaryKey = 'idtipoempaque'; // Clave primaria personalizada
-    public $incrementing = true; // Autoincremental
-    protected $keyType = 'int'; // Tipo de clave primaria
+    public $incrementing = true;
+    protected $keyType = 'int';
 
     protected $fillable = [
         'nombretipoempaque',
         'codigotipoempaque',
     ];
+
+    // Relación con productos
+    public function productos()
+    {
+        return $this->hasMany(Producto::class, 'idtipoempaque', 'idtipoempaque');
+    }
 }
