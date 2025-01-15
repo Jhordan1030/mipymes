@@ -6,10 +6,10 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Tipo Nota</th>
-                <th>Responsable</th>
-                <th>Fecha Nota</th>
-                <th>Detalle</th>
+                <th>Tipo</th>
+                <th>Solicitante</th>
+                <th>Fecha Solicitud</th>
+                <th>Descripcion</th>
                 <th>Responsable Entrega</th>
                 <th>Fecha Entrega</th>
                 <th>Acciones</th>

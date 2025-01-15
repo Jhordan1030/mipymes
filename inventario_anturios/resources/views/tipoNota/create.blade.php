@@ -14,19 +14,19 @@
     <form action="{{ route('tipoNota.store') }}" method="POST">
         @csrf
         <div class="mb-3">
-            <label for="tiponota" class="form-label">Tipo Nota</label>
+            <label for="tiponota" class="form-label">Tipo</label>
             <input type="text" name="tiponota" id="tiponota" class="form-control" placeholder="Tipo Nota (máx. 10 caracteres)" maxlength="10" required>
         </div>
         <div class="mb-3">
-            <label for="responsable" class="form-label">Responsable</label>
+            <label for="responsable" class="form-label">Solicitante</label>
             <input type="text" name="responsable" id="responsable" class="form-control" placeholder="Responsable (máx. 20 caracteres)" maxlength="20" required>
         </div>
         <div class="mb-3">
-            <label for="fechanota" class="form-label">Fecha Nota</label>
+            <label for="fechanota" class="form-label">Fecha Solicitud</label>
             <input type="date" name="fechanota" id="fechanota" class="form-control" required>
         </div>
         <div class="mb-3">
-            <label for="detalle" class="form-label">Detalle</label>
+            <label for="detalle" class="form-label">Descripcion</label>
             <input type="text" name="detalle" id="detalle" class="form-control" placeholder="Detalle (máx. 50 caracteres)" maxlength="50" required>
         </div>
         <div class="mb-3">
