@@ -10,11 +10,22 @@ class TipoEmpaquesController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tipoEmpaques = TipoEmpaque::orderBy('nombretipoempaque', 'DESC')->paginate(5);
+        $query = TipoEmpaque::query();
+
+        // Filtra por el campo de búsqueda, si se proporciona
+        if ($request->filled('search')) {
+            $query->where('nombretipoempaque', 'like', '%' . $request->search . '%');
+        }
+
+        // Ordena y pagina los resultados
+        $tipoEmpaques = $query->orderBy('nombretipoempaque', 'DESC')->paginate(5);
+
+        // Retorna la vista con los datos
         return view('tipoempaque.index', compact('tipoEmpaques'));
     }
+
 
     /**
      * Show the form for creating a new resource.
