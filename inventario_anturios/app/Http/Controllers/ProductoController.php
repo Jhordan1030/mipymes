@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Producto;
@@ -12,33 +11,35 @@ class ProductoController extends Controller
     {
         $query = Producto::query();
 
-        // Filtrar por nombre si se proporciona
         if ($request->filled('search')) {
-            $query->where('nombreprod', 'like', '%' . $request->search . '%');
+            $query->where('nombre', 'like', '%' . $request->search . '%');
         }
 
-        // Obtener productos con paginación
-        $productos = $query->orderBy('nombreprod', 'ASC')->paginate(5);
+        $productos = $query->orderBy('nombre', 'ASC')->paginate(5);
 
         return view('producto.index', compact('productos'));
     }
 
+   
+
     public function create()
-    {
-        // Obtener los tipos de empaque disponibles
-        $tipoempaques = TipoEmpaque::all();
-        return view('producto.create', compact('tipoempaques'));
-    }
+{
+    // Obtenemos todos los registros de tipoempaques
+    $tipoempaques = \App\Models\TipoEmpaque::all();
+
+    // Pasamos los datos a la vista
+    return view('producto.create', compact('tipoempaques'));
+}
+
 
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'idtipoempaque' => 'nullable|integer|exists:tipoempaques,idtipoempaque',
-            'nombreprod' => 'required|string|max:10',
-            'descripcionprod' => 'required|string|max:30',
-            'precio' => 'required|numeric|min:0',
-            'estadodisponibilidad' => 'required|string|max:20',
-            'cantidadmin' => 'required|integer|min:1',
+            'codigo' => 'required|string|max:10|unique:productos,codigo',
+            'nombre' => 'required|string|max:50',
+            'descripcion' => 'required|string|max:255',
+            'cantidad' => 'required|integer|min:1',
+            'codigotipoempaque' => 'nullable|string|exists:tipoempaques,codigotipoempaque',
         ]);
 
         Producto::create($validatedData);
@@ -46,34 +47,33 @@ class ProductoController extends Controller
         return redirect()->route('producto.index')->with('success', 'Producto creado correctamente.');
     }
 
-    public function edit($idproducto)
+    public function edit($id)
     {
-        $producto = Producto::findOrFail($idproducto);
+        $producto = Producto::findOrFail($id);
         $tipoempaques = TipoEmpaque::all();
 
         return view('producto.edit', compact('producto', 'tipoempaques'));
     }
 
-    public function update(Request $request, $idproducto)
+    public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'idtipoempaque' => 'nullable|integer|exists:tipoempaques,idtipoempaque',
-            'nombreprod' => 'required|string|max:10',
-            'descripcionprod' => 'required|string|max:30',
-            'precio' => 'required|numeric|min:0',
-            'estadodisponibilidad' => 'required|string|max:20',
-            'cantidadmin' => 'required|integer|min:1',
+            'codigo' => 'required|string|max:10|unique:productos,codigo,' . $id,
+            'nombre' => 'required|string|max:50',
+            'descripcion' => 'required|string|max:255',
+            'cantidad' => 'required|integer|min:1',
+            'codigotipoempaque' => 'nullable|string|exists:tipoempaques,codigotipoempaque',
         ]);
 
-        $producto = Producto::findOrFail($idproducto);
+        $producto = Producto::findOrFail($id);
         $producto->update($validatedData);
 
         return redirect()->route('producto.index')->with('success', 'Producto actualizado correctamente.');
     }
 
-    public function destroy($idproducto)
+    public function destroy($id)
     {
-        $producto = Producto::findOrFail($idproducto);
+        $producto = Producto::findOrFail($id);
         $producto->delete();
 
         return redirect()->route('producto.index')->with('success', 'Producto eliminado correctamente.');

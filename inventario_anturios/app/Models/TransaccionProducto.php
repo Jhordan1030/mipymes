@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -14,8 +13,27 @@ class TransaccionProducto extends Model
 
     protected $fillable = [
         'tipotransaccion',
+        'codigoproducto',
         'cantidad',
-        'estadodisponibilidad',
-        'estadoproducto'
+        'idbodega',
+        'idempleado',
     ];
+
+    // Relación con productos
+    public function producto()
+    {
+        return $this->belongsTo(Producto::class, 'codigoproducto', 'codigo');
+    }
+
+    // Relación con bodegas
+    public function bodega()
+    {
+        return $this->belongsTo(Bodega::class, 'idbodega', 'idbodega');
+    }
+
+    // Relación con empleados
+    public function empleado()
+    {
+        return $this->belongsTo(Empleado::class, 'idempleado', 'idempleado');
+    }
 }
