@@ -13,14 +13,15 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->string('name'); // Nombre completo del usuario
+            $table->string('username')->unique(); // Nombre de usuario único
+            $table->string('password'); // Contraseña encriptada
+            $table->rememberToken(); // Token para "remember me"
             $table->timestamps();
         });
 
+        // Si deseas mantener las tablas de restablecimiento de contraseña y sesiones, descomenta las siguientes líneas:
+        /*
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
@@ -35,6 +36,7 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+        */
     }
 
     /**
@@ -43,7 +45,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
-        Schema::dropIfExists('sessions');
+        // Elimina estas líneas si no usas las tablas de restablecimiento de contraseña y sesiones:
+        // Schema::dropIfExists('password_reset_tokens');
+        // Schema::dropIfExists('sessions');
     }
 };
