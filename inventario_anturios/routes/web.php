@@ -19,15 +19,3 @@ Route::resource('transaccion_producto', TransaccionProductoController::class);
 
 
 Route::resource('tipoempaque', TipoEmpaquesController::class);
-Route::get('tipoempaque/{tipoempaque}/edit', [TipoEmpaquesController::class, 'edit'])->name('tipoempaque.edit');
-
-Route::resource('tipoNota', TipoNotaController::class);
-Route::resource('producto', ProductoController::class);
-
-
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
-
