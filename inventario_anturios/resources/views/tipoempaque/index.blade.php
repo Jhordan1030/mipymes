@@ -59,8 +59,8 @@
                     <td>{{ $tipoEmpaque->codigotipoempaque }}</td>
                     <td>{{ $tipoEmpaque->nombretipoempaque }}</td>
                     <td>
-                        <a href="{{ route('tipoempaque.edit', $tipoEmpaque->idtipoempaque) }}" class="btn btn-sm btn-primary">Editar</a>
-                        <form action="{{ route('tipoempaque.destroy', $tipoEmpaque->idtipoempaque) }}" method="POST" class="d-inline-block">
+                        <a href="{{ route('tipoempaque.edit', $tipoEmpaque->codigotipoempaque) }}" class="btn btn-sm btn-primary">Editar</a>
+                        <form action="{{ route('tipoempaque.destroy', $tipoEmpaque->codigotipoempaque) }}" method="POST" class="d-inline-block">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar este tipo de empaque?')">Eliminar</button>

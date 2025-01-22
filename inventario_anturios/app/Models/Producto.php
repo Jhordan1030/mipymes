@@ -1,28 +1,16 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Producto extends Model
 {
-    protected $table = 'productos'; // Nombre correcto de la tabla
-    protected $primaryKey = 'idproducto'; // Clave primaria personalizada
-    public $incrementing = true;
-    protected $keyType = 'int';
+    protected $table = 'productos';
+    protected $fillable = ['codigo', 'nombre', 'descripcion', 'cantidad', 'codigotipoempaque'];
 
-    protected $fillable = [
-        'idtipoempaque',
-        'nombreprod',
-        'descripcionprod',
-        'precio',
-        'estadodisponibilidad',
-        'cantidadmin',
-    ];
-
-    // Relación con tipo de empaque
+    // Relación con TipoEmpaque
     public function tipoEmpaque()
     {
-        return $this->belongsTo(TipoEmpaque::class, 'idtipoempaque', 'idtipoempaque');
+        return $this->belongsTo(TipoEmpaque::class, 'codigotipoempaque', 'codigotipoempaque');
     }
 }

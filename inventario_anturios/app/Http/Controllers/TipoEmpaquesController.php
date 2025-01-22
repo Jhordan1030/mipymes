@@ -52,32 +52,39 @@ class TipoEmpaquesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $idtipoempaque)
+    public function show(string $codigotipoempaque)
     {
-        $idtipoempaque = TipoEmpaque::find($idtipoempaque);
-        return view('tipoempaque.show', compact('idtipoempaque'));
+        $codigotipoempaque = TipoEmpaque::find($codigotipoempaque);
+        return view('tipoempaque.show', compact('tipoEmpaque'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $idtipoempaque)
+    /**public function edit(string $codigotipoempaque)
     {
-        $tipoempaque = TipoEmpaque::findOrFail($idtipoempaque);
+        $tipoempaque = TipoEmpaque::findOrFail($codigotipoempaque);
         return view('tipoempaque.edit', compact('tipoempaque'));
     }
+*/
+public function edit($codigotipoempaque)
+{
+    $tipoEmpaque = TipoEmpaque::where('codigotipoempaque', $codigotipoempaque)->firstOrFail();
+
+    return view('tipoempaque.edit', compact('tipoEmpaque'));
+}
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $idtipoempaque)
+    public function update(Request $request, string $codigotipoempaque)
     {
         $request->validate([
             'nombretipoempaque' => 'required',
             'codigotipoempaque' => 'required'
         ]);
 
-        $tipoEmpaque = TipoEmpaque::find($idtipoempaque);
+        $tipoEmpaque = TipoEmpaque::find($codigotipoempaque);
         $tipoEmpaque->update($request->all());
         return redirect()->route('tipoempaque.index')->with('success', 'Tipo de empaque actualizado con éxito.');
     }
@@ -85,9 +92,9 @@ class TipoEmpaquesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $idtipoempaque)
+    public function destroy(string $codigotipoempaque)
     {
-        $tipoEmpaque = TipoEmpaque::find($idtipoempaque);
+        $tipoEmpaque = TipoEmpaque::find($codigotipoempaque);
         $tipoEmpaque->delete();
         return redirect()->route('tipoempaque.index')->with('success', 'Tipo de empaque eliminado con éxito.');
     }
