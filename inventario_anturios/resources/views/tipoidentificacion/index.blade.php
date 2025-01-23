@@ -36,7 +36,7 @@
         <thead>
             <tr>
                 
-                <th>Nombre Cargo</th>
+                <th>Nombre Identificación</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -51,13 +51,13 @@
                         <form action="{{ route('tipoidentificacion.destroy', $tipoidentificacion->ididentificacion) }}" method="POST" class="d-inline-block">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar este paciente?')">Eliminar</button>
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar este tipo de identificación?')">Eliminar</button>
                         </form>
                     </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6" class="text-center">No hay pacientes registrados.</td>
+                    <td colspan="6" class="text-center">No hay identificación registrados.</td>
                 </tr>
             @endforelse
         </tbody>

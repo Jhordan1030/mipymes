@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('bodegas', function (Blueprint $table) {
             $table->string('idbodega', 10)->primary(); // Clave primaria de 10 caracteres
             $table->char('nombrebodega', 10); // Nombre de la bodega
+            
             $table->timestamps(); // Campos created_at y updated_at (opcional)
         });
     }

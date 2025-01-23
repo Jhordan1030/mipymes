@@ -38,7 +38,7 @@ class TransaccionProductoController extends Controller
             'codigoproducto.*' => 'required|string|exists:productos,codigo',
             'cantidad' => 'required|array|min:1',
             'cantidad.*' => 'required|integer|min:1',
-            'idbodega' => 'required|integer|exists:bodegas,idbodega',
+            'idbodega' => 'required|string|exists:bodegas,idbodega',
             'idempleado' => 'required|integer|exists:empleados,idempleado',
         ]);
 

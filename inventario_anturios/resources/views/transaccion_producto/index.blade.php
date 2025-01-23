@@ -22,10 +22,10 @@
                     <td>{{ $transaccion->tipotransaccion }}</td>
                     <td>{{ $transaccion->producto->codigo ?? 'Sin asignar' }}</td>
                     <td>{{ $transaccion->cantidad }}</td>
-                    <td>{{ $transaccion->bodega->nombre ?? 'Sin asignar' }}</td>
-                    <td>{{ $transaccion->empleado->nombre ?? 'Sin asignar' }}</td>
+                    <td>{{ $transaccion->bodega->nombrebodega ?? 'Sin asignar' }}</td>
+                    <td>{{ $transaccion->empleado->nombreemp ?? 'Sin asignar' }}</td>
                     <td>
-                        <a href="{{ route('transaccion_producto.edit', $transaccion->idtransaccion) }}" class="btn btn-sm btn-primary">Editar</a>
+                        <!-- <a href="{{ route('transaccion_producto.edit', $transaccion->idtransaccion) }}" class="btn btn-sm btn-primary">Editar</a> -->
                         <form action="{{ route('transaccion_producto.destroy', $transaccion->idtransaccion) }}" method="POST" class="d-inline-block">
                             @csrf
                             @method('DELETE')

@@ -15,7 +15,7 @@ return new class extends Migration
            $table->string('email')->unique();
            $table->string('nro_telefono');
            $table->string('direccionemp');
-           $table->string('idbodega'); // Cambia a string para que coincida con la tabla bodegas
+           $table->string('idbodega',10); // Cambia a string para que coincida con la tabla bodegas
            $table->unsignedBigInteger('ididentificacion');
            $table->unsignedBigInteger('idcargo');
            $table->string('nro_identificacion')->unique();

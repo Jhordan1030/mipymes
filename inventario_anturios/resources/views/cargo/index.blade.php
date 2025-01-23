@@ -20,7 +20,7 @@
     <form action="{{ route('cargo.index') }}" method="GET" class="mb-3">
         <div class="row">
             <div class="col-md-4">
-                <input type="text" name="search" class="form-control" placeholder="Buscar por nombre, ciudad o código" value="{{ request()->search }}">
+                <input type="text" name="search" class="form-control" placeholder="Buscar por código cargo" value="{{ request()->search }}">
             </div>
             <div class="col-md-2">
                 <button type="submit" class="btn btn-primary w-100">Buscar</button>
@@ -51,13 +51,13 @@
                         <form action="{{ route('cargo.destroy', $cargo->idcargo) }}" method="POST" class="d-inline-block">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar este paciente?')">Eliminar</button>
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar este cargo?')">Eliminar</button>
                         </form>
                     </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6" class="text-center">No hay pacientes registrados.</td>
+                    <td colspan="6" class="text-center">No hay cargos registrados.</td>
                 </tr>
             @endforelse
         </tbody>
