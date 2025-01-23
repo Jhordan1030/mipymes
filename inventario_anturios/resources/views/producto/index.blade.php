@@ -24,15 +24,15 @@
                 <input type="text" name="search" class="form-control" placeholder="Buscar por nombre de producto" value="{{ request()->search }}">
             </div>
             <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100">Buscar</button>
+                <button type="submit" class="btn btn-primary w-100" style="background-color: #88022D">Buscar</button>
             </div>
         </div>
     </form>
 
     <!-- Botón para crear un nuevo producto -->
     <div class="mb-3 text-right">
-        <a href="{{ route('producto.create') }}" class="btn btn-primary">Añadir Producto</a>
-        <a href="{{ route('tipoempaque.index') }}" class="btn btn-primary">Añadir Empaque</a>
+        <a href="{{ route('producto.create') }}" class="btn btn-primary" style="background-color: #88022D">Añadir Producto</a>
+        <a href="{{ route('tipoempaque.index') }}" class="btn btn-primary" style="background-color: #88022D">Añadir Empaque</a>
     </div>
 
     <!-- Tabla de productos -->

@@ -9,22 +9,22 @@
 @section('content')
 <div class="row justify-content-center">
     <div class="col-md-6">
-        <div class="card shadow mt-5">
-            <div class="card-header text-center bg-primary text-white">
+        <div class="card shadow mt-5" style="border-color: #F9DFAD;">
+            <div class="card-header text-center" style="background-color: #88022D; color: white;">
                 <h3>Inicio de Sesión</h3>
             </div>
-            <div class="card-body">
+            <div class="card-body" style="background-color: #FFF5F7;">
                 <form action="{{ route('login.post') }}" method="POST">
                     @csrf
                     <div class="mb-3">
-                        <label for="username" class="form-label">Usuario</label>
-                        <input type="text" name="username" id="username" class="form-control" required placeholder="Ingresa tu usuario">
+                        <label for="username" class="form-label" style="color: #88022D;">Usuario</label>
+                        <input type="text" name="username" id="username" class="form-control" required placeholder="Ingresa tu usuario" style="border-color: #ffffff;">
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="form-label">Contraseña</label>
-                        <input type="password" name="password" id="password" class="form-control" required placeholder="Ingresa tu contraseña">
+                        <label for="password" class="form-label" style="color: #88022D;">Contraseña</label>
+                        <input type="password" name="password" id="password" class="form-control" required placeholder="Ingresa tu contraseña" style="border-color: #ffffff;">
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
+                    <button type="submit" class="btn w-100" style="background-color: #88022D; color: white;">Iniciar Sesión</button>
                 </form>
 
                 @if ($errors->any())

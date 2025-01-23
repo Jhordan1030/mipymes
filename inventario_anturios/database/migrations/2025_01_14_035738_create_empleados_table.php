@@ -26,8 +26,6 @@ return new class extends Migration
            $table->foreign('idcargo')->references('idcargo')->on('cargos');
        });
 
-
-
     }
 
     public function down(): void

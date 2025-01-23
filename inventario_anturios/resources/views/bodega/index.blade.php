@@ -23,13 +23,13 @@
                 <input type="text" name="search" class="form-control" placeholder="Buscar por ID bodega" value="{{ request()->search }}">
             </div>
             <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100">Buscar</button>
+                <button type="submit" class="btn btn-primary w-100" style="background-color: #88022D">Buscar</button>
             </div>
         </div>
     </form>
 
     <div class="mb-3 text-right">
-        <a href="{{ route('bodega.create') }}" class="btn btn-primary">Añadir Bodega</a>
+        <a href="{{ route('bodega.create') }}" class="btn btn-primary" style="background-color: #88022D">Añadir Bodega</a>
     </div>
 
     <table class="table table-bordered table-striped">

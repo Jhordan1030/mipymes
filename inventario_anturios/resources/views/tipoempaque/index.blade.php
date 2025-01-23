@@ -38,7 +38,7 @@
                     </div>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary mt-3">Guardar</button>
+            <button type="submit" class="btn btn-primary mt-3" style="background-color: #88022D">Guardar</button>
         </form>
     </div>
 
