@@ -24,16 +24,16 @@
                 <input type="text" name="search" class="form-control" placeholder="Buscar por nombre o Nro. de Identificación" value="{{ request()->search }}">
             </div>
             <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100">Buscar</button>
+                <button type="submit" class="btn btn-primary w-100" style="background-color: #88022D">Buscar</button>
             </div>
         </div>
     </form>
 
     <!-- Botones para crear nuevos registros -->
     <div class="mb-3 text-right">
-        <a href="{{ route('empleado.create') }}" class="btn btn-primary">Añadir Empleado</a>
-        <a href="{{ route('cargo.create') }}" class="btn btn-primary">Añadir Cargo</a>
-        <a href="{{ route('tipoidentificacion.create') }}" class="btn btn-primary">Añadir Tipo de Identidad</a>
+        <a href="{{ route('empleado.create') }}" class="btn btn-primary" style="background-color: #88022D">Añadir Empleado</a>
+        <a href="{{ route('cargo.create') }}" class="btn btn-primary" style="background-color: #88022D">Añadir Cargo</a>
+        <a href="{{ route('tipoidentificacion.create') }}" class="btn btn-primary" style="background-color: #88022D">Añadir Tipo de Identidad</a>
     </div>
 
     <!-- Tabla de empleados -->

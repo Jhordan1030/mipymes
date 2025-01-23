@@ -24,14 +24,14 @@
                 <input type="text" name="search" class="form-control" placeholder="Buscar por tipo o responsable" value="{{ request()->search }}">
             </div>
             <div class="col-md-4 col-sm-12 mt-2 mt-md-0">
-                <button type="submit" class="btn btn-primary w-100">Buscar</button>
+                <button type="submit" class="btn btn-primary w-100" style="background-color: #88022D">Buscar</button>
             </div>
         </div>
     </form>
 
     <!-- Botón para crear una nueva nota -->
     <div class="mb-3 text-right">
-        <a href="{{ route('tipoNota.create') }}" class="btn btn-primary">Añadir Nota</a>
+        <a href="{{ route('tipoNota.create') }}" class="btn btn-primary" style="background-color: #88022D"  >Añadir Nota</a>
     </div>
 
     <!-- Tabla de notas -->
