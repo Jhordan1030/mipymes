@@ -14,7 +14,7 @@ class CreateTipoNotaTable extends Migration
     public function up()
     {
         Schema::create('tipo_nota', function (Blueprint $table) {
-            $table->id('idtiponota');
+            $table->id('idtiponota'); // Hacer string unico
             $table->char('tiponota', 10);
             $table->string('responsable', 20);
             $table->date('fechanota');
