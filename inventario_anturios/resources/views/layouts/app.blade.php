@@ -17,11 +17,21 @@
         body {
             padding-top: 70px;
         }
+
+        /* Cambia el color de la letra del botón Cerrar Sesión */
+        .logout-btn {
+            color: #ff6347 !important; /* Cambia este valor por el color que desees */
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            color: #ff4500 !important; /* Cambia el color al pasar el mouse */
+        }
     </style>
 </head>
 <body>
     <!-- Navbar -->
-    @if (!isset($hideNavbar) || !$hideNavbar)
+    @if (Auth::check())
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
             <a class="navbar-brand" href="#">Gestión de Inventario</a>
@@ -40,7 +50,7 @@
                         <a class="nav-link" href="{{ route('empleado.index') }}">Empleados</a>
                     </li>
 
-                    <!-- Bodegas (Desplegable) -->
+                    <!-- Bodegas -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBodegas" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Bodegas
@@ -51,7 +61,7 @@
                         </ul>
                     </li>
 
-                    <!-- Transacción Producto (Desplegable) -->
+                    <!-- Transacción Producto -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownTransaccion" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Transacción Producto
@@ -66,6 +76,16 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('tipoNota.index') }}">Tipo Nota</a>
                     </li>
+
+                    <!-- Cerrar Sesión -->
+                    <li class="nav-item">
+                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-link logout-btn">
+                                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                            </button>
+                        </form>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -76,7 +96,6 @@
     <div class="container">
         @yield('content')
     </div>
-
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
