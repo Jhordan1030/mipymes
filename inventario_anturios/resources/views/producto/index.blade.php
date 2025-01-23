@@ -32,6 +32,7 @@
     <!-- Botón para crear un nuevo producto -->
     <div class="mb-3 text-right">
         <a href="{{ route('producto.create') }}" class="btn btn-primary">Añadir Producto</a>
+        <a href="{{ route('tipoempaque.index') }}" class="btn btn-primary">Añadir Empaque</a>
     </div>
 
     <!-- Tabla de productos -->

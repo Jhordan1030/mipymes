@@ -2,31 +2,28 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Empleado extends Model
 {
-    protected $table = 'empleados';
-    protected $primaryKey = 'idempleado';
-    public $incrementing = true;
-    protected $keyType = 'int';
-    public $timestamps = true;
+    use HasFactory;
+
+    protected $table = 'empleados'; // Nombre de la tabla
+    protected $primaryKey = 'idempleado'; // Clave primaria personalizada
 
     protected $fillable = [
-        'ididentificacion',
-        'idbodega',
-        'idcargo',
-        'idtransaccion',
-        'idtiponota',
         'nombreemp',
         'apellidoemp',
         'email',
         'nro_telefono',
         'direccionemp',
-        'nro_identificacion'
+        'ididentificacion',
+        'idbodega',
+        'idcargo',
+        'nro_identificacion',
     ];
 
-    // Relaciones
     public function tipoIdentificacion()
     {
         return $this->belongsTo(TipoIdentificacion::class, 'ididentificacion', 'ididentificacion');
@@ -42,3 +39,4 @@ class Empleado extends Model
         return $this->belongsTo(Cargo::class, 'idcargo', 'idcargo');
     }
 }
+
