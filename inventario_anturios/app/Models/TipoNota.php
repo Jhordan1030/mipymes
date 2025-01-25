@@ -20,4 +20,15 @@ class TipoNota extends Model
         'responsableentrega',
         'fechaentrega',
     ];
+
+    public function responsableEmpleado()
+    {
+        return $this->belongsTo(Empleado::class, 'responsable', 'idempleado');
+    }
+
+    public function responsableEntregaEmpleado()
+    {
+        return $this->belongsTo(Empleado::class, 'responsableentrega', 'idempleado');
+    }
+
 }

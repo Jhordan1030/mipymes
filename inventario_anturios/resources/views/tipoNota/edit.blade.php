@@ -27,14 +27,20 @@
             </div>
             <div class="col-md-6 col-sm-12">
                 <label for="responsable" class="form-label">Solicitante</label>
-                <input type="text" name="responsable" id="responsable" class="form-control" value="{{ $tipoNota->responsable }}" maxlength="20" required>
+                <select name="responsable" id="responsable" class="form-control" required>
+                    @foreach ($empleados as $empleado)
+                        <option value="{{ $empleado->idempleado }}" {{ $empleado->idempleado == $tipoNota->responsable ? 'selected' : '' }}>
+                            {{ $empleado->nombreemp }} {{ $empleado->apellidoemp }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
         </div>
 
         <div class="row mb-3">
             <div class="col-md-6 col-sm-12">
                 <label for="fechanota" class="form-label">Fecha Solicitud</label>
-                <input type="date" name="fechanota" id="fechanota" class="form-control" value="{{ $tipoNota->fechanota }}" required>
+                <input type="date" name="fechanota" id="fechanota" class="form-control" value="{{ $tipoNota->fechanota }}" required readonly>
             </div>
             <div class="col-md-6 col-sm-12">
                 <label for="fechaentrega" class="form-label">Fecha Entrega</label>
@@ -49,7 +55,13 @@
             </div>
             <div class="col-md-6 col-sm-12">
                 <label for="responsableentrega" class="form-label">Responsable Entrega</label>
-                <input type="text" name="responsableentrega" id="responsableentrega" class="form-control" value="{{ $tipoNota->responsableentrega }}" maxlength="20" required>
+                <select name="responsableentrega" id="responsableentrega" class="form-control" required>
+                    @foreach ($empleados as $empleado)
+                        <option value="{{ $empleado->idempleado }}" {{ $empleado->idempleado == $tipoNota->responsableentrega ? 'selected' : '' }}>
+                            {{ $empleado->nombreemp }} {{ $empleado->apellidoemp }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
         </div>
 
@@ -61,3 +73,4 @@
     </form>
 </div>
 @endsection
+

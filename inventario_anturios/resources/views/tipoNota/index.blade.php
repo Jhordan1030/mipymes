@@ -52,10 +52,10 @@
                 @forelse($tipoNotas as $nota)
                 <tr>
                     <td>{{ $nota->tiponota }}</td>
-                    <td>{{ $nota->responsable }}</td>
+                    <td>{{ $nota->responsableEmpleado->nombreemp }} {{ $nota->responsableEmpleado->apellidoemp }}</td>
                     <td>{{ $nota->fechanota }}</td>
                     <td>{{ $nota->detalle }}</td>
-                    <td>{{ $nota->responsableentrega }}</td>
+                    <td>{{ $nota->responsableEntregaEmpleado->nombreemp }} {{ $nota->responsableEntregaEmpleado->apellidoemp }}</td>
                     <td>{{ $nota->fechaentrega }}</td>
                     <td>
                         <a href="{{ route('tipoNota.edit', $nota->idtiponota) }}" class="btn btn-sm btn-warning">Editar</a>
@@ -71,7 +71,7 @@
                     <td colspan="7" class="text-center">No hay notas registradas.</td>
                 </tr>
                 @endforelse
-            </tbody>
+            </tbody>            
         </table>
     </div>
 

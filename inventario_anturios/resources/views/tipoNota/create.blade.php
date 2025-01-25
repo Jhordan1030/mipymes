@@ -26,18 +26,25 @@
             </div>
             <div class="col-md-6 col-sm-12">
                 <label for="responsable" class="form-label">Solicitante</label>
-                <input type="text" name="responsable" id="responsable" class="form-control" placeholder="Responsable (máx. 20 caracteres)" maxlength="20" required>
+                <select name="responsable" id="responsable" class="form-control" required>
+                    <option value="" disabled selected>Seleccione un solicitante</option>
+                    @foreach ($empleados as $empleado)
+                    <option value="{{ $empleado->idempleado }}">
+                        {{ $empleado->nombreemp }} {{ $empleado->apellidoemp }}
+                    </option>
+                    @endforeach
+                </select>
             </div>
         </div>
 
         <div class="row mb-3">
             <div class="col-md-6 col-sm-12">
                 <label for="fechanota" class="form-label">Fecha Solicitud</label>
-                <input type="date" name="fechanota" id="fechanota" class="form-control" required>
+                <input type="date" name="fechanota" id="fechanota" class="form-control" value="{{ now()->format('Y-m-d') }}" required readonly>
             </div>
             <div class="col-md-6 col-sm-12">
                 <label for="fechaentrega" class="form-label">Fecha Entrega</label>
-                <input type="date" name="fechaentrega" id="fechaentrega" class="form-control" required>
+                <input type="date" name="fechaentrega" id="fechaentrega" class="form-control" min="{{ now()->addDay()->format('Y-m-d') }}" required>
             </div>
         </div>
 
@@ -48,7 +55,14 @@
             </div>
             <div class="col-md-6 col-sm-12">
                 <label for="responsableentrega" class="form-label">Responsable Entrega</label>
-                <input type="text" name="responsableentrega" id="responsableentrega" class="form-control" placeholder="Responsable Entrega (máx. 20 caracteres)" maxlength="20" required>
+                <select name="responsableentrega" id="responsableentrega" class="form-control" required>
+                    <option value="" disabled selected>Seleccione un responsable</option>
+                    @foreach ($empleados as $empleado)
+                    <option value="{{ $empleado->idempleado }}">
+                        {{ $empleado->nombreemp }} {{ $empleado->apellidoemp }}
+                    </option>
+                    @endforeach
+                </select>
             </div>
         </div>
 

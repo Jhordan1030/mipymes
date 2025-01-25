@@ -4,18 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\TipoNota;
+use App\Models\Empleado;
 
 class TipoNotaController extends Controller
 {
     public function index()
     {
-        $tipoNotas = TipoNota::orderBy('idtiponota', 'DESC')->paginate(5);
+        $tipoNotas = TipoNota::with(['responsableEmpleado', 'responsableEntregaEmpleado'])->orderBy('idtiponota', 'DESC')->paginate(5);
         return view('tipoNota.index', compact('tipoNotas'));
     }
 
     public function create()
     {
-        return view('tipoNota.create');
+        $empleados = Empleado::all(); // Obtener todos los empleados
+        return view('tipoNota.create', compact('empleados'));
     }
 
     public function store(Request $request)
@@ -35,8 +37,9 @@ class TipoNotaController extends Controller
 
     public function edit($id)
     {
-        $tipoNota = TipoNota::findOrFail($id);
-        return view('tipoNota.edit', compact('tipoNota'));
+        $tipoNota = TipoNota::with(['responsableEmpleado', 'responsableEntregaEmpleado'])->findOrFail($id);
+        $empleados = Empleado::all(); // Para el dropdown
+        return view('tipoNota.edit', compact('tipoNota', 'empleados'));
     }
 
     public function update(Request $request, $id)
