@@ -24,6 +24,10 @@
                         <label for="password" class="form-label" style="color: #88022D;">Contraseña</label>
                         <input type="password" name="password" id="password" class="form-control" required placeholder="Ingresa tu contraseña" style="border-color: #ffffff;">
                     </div>
+                    <div class="mb-3 form-check">
+                                        <input type="checkbox" class="form-check-input" id="remember_me" name="remember">
+                                        <label class="form-check-label" for="remember_me">Recordar sesión</label>
+                                    </div>
                     <button type="submit" class="btn w-100" style="background-color: #88022D; color: white;">Iniciar Sesión</button>
                 </form>
 
