@@ -12,4 +12,9 @@ class Bodega extends Model
     protected $keyType = 'string'; // Tipo de clave primaria
 
     protected $fillable = ['idbodega', 'nombrebodega', 'descripcion'];
+    public function tipoNotas()
+    {
+        return $this->hasMany(TipoNota::class, 'idbodega', 'idbodega');
+    }
+
 }

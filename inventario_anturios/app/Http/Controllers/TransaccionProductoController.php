@@ -87,4 +87,6 @@ class TransaccionProductoController extends Controller
 
         return redirect()->route('transaccion_producto.index')->with('success', 'Transacción eliminada exitosamente.');
     }
+
+    
 }

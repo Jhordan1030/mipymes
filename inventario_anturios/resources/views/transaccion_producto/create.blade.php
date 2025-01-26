@@ -48,10 +48,6 @@
 
 
 
-
-
-
-
             <div class="form-group">
                 <label for="idempleado">Empleado</label>
                 <select name="idempleado" id="idempleado" class="form-control">

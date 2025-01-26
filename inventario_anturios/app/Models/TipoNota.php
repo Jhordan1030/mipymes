@@ -15,20 +15,33 @@ class TipoNota extends Model
     protected $fillable = [
         'tiponota',
         'responsable',
+        'codigoproducto',
+        'cantidad',
+         'codigotipoempaque',
+         'idbodega',
         'fechanota',
-        'detalle',
-        'responsableentrega',
-        'fechaentrega',
+       
     ];
+
+    public function producto()
+    {
+        return $this->belongsTo(Producto::class, 'codigoproducto', 'codigo');
+    }
 
     public function responsableEmpleado()
     {
         return $this->belongsTo(Empleado::class, 'responsable', 'idempleado');
     }
 
-    public function responsableEntregaEmpleado()
+   
+    public function bodega()
     {
-        return $this->belongsTo(Empleado::class, 'responsableentrega', 'idempleado');
+        return $this->belongsTo(Bodega::class, 'idbodega', 'idbodega');
+    }
+
+    public function tipoEmpaque()
+    {
+        return $this->belongsTo(TipoEmpaque::class, 'codigotipoempaque', 'codigotipoempaque');
     }
 
 }

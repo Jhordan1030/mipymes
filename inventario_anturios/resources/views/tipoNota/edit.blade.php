@@ -2,35 +2,33 @@
 
 @section('content')
 <div class="container">
-    <h3 class="text-center">Editar Tipo de Nota</h3>
+    <h3 class="text-center">Editar Nota</h3>
 
-    <!-- Alertas de validación -->
     @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
     @endif
 
-    <!-- Formulario de edición -->
     <form action="{{ route('tipoNota.update', $tipoNota->idtiponota) }}" method="POST">
         @csrf
-        @method('PATCH')
+        @method('PUT')
 
         <div class="row mb-3">
-            <div class="col-md-6 col-sm-12">
-                <label for="tiponota" class="form-label">Tipo</label>
-                <input type="text" name="tiponota" id="tiponota" class="form-control" value="{{ $tipoNota->tiponota }}" maxlength="10" required>
+            <div class="col-md-6">
+                <label for="tiponota">Tipo</label>
+                <input type="text" name="tiponota" id="tiponota" value="{{ $tipoNota->tiponota }}" class="form-control" required>
             </div>
-            <div class="col-md-6 col-sm-12">
-                <label for="responsable" class="form-label">Solicitante</label>
-                <select name="responsable" id="responsable" class="form-control" required>
+            <div class="col-md-6">
+                <label for="idempleado">Solicitante</label>
+                <select name="idempleado" id="idempleado" class="form-control">
                     @foreach ($empleados as $empleado)
-                        <option value="{{ $empleado->idempleado }}" {{ $empleado->idempleado == $tipoNota->responsable ? 'selected' : '' }}>
-                            {{ $empleado->nombreemp }} {{ $empleado->apellidoemp }}
+                        <option value="{{ $empleado->idempleado }}" {{ $tipoNota->idempleado == $empleado->idempleado ? 'selected' : '' }}>
+                            {{ $empleado->nombreemp }}
                         </option>
                     @endforeach
                 </select>
@@ -38,39 +36,48 @@
         </div>
 
         <div class="row mb-3">
-            <div class="col-md-6 col-sm-12">
-                <label for="fechanota" class="form-label">Fecha Solicitud</label>
-                <input type="date" name="fechanota" id="fechanota" class="form-control" value="{{ $tipoNota->fechanota }}" required readonly>
-            </div>
-            <div class="col-md-6 col-sm-12">
-                <label for="fechaentrega" class="form-label">Fecha Entrega</label>
-                <input type="date" name="fechaentrega" id="fechaentrega" class="form-control" value="{{ $tipoNota->fechaentrega }}" required>
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            <div class="col-md-6 col-sm-12">
-                <label for="detalle" class="form-label">Descripción</label>
-                <input type="text" name="detalle" id="detalle" class="form-control" value="{{ $tipoNota->detalle }}" maxlength="50" required>
-            </div>
-            <div class="col-md-6 col-sm-12">
-                <label for="responsableentrega" class="form-label">Responsable Entrega</label>
-                <select name="responsableentrega" id="responsableentrega" class="form-control" required>
-                    @foreach ($empleados as $empleado)
-                        <option value="{{ $empleado->idempleado }}" {{ $empleado->idempleado == $tipoNota->responsableentrega ? 'selected' : '' }}>
-                            {{ $empleado->nombreemp }} {{ $empleado->apellidoemp }}
+            <div class="col-md-6">
+                <label for="codigoproducto">Código del Producto</label>
+                <select name="codigoproducto" id="codigoproducto" class="form-control">
+                    @foreach ($productos as $producto)
+                        <option value="{{ $producto->codigo }}" {{ $tipoNota->codigoproducto == $producto->codigo ? 'selected' : '' }}>
+                            {{ $producto->codigo }} - {{ $producto->nombre }}
                         </option>
                     @endforeach
                 </select>
             </div>
+            <div class="col-md-6">
+                <label for="cantidad">Cantidad</label>
+                <input type="number" name="cantidad" id="cantidad" value="{{ $tipoNota->cantidad }}" class="form-control" required>
+            </div>
         </div>
 
-        <!-- Botones de acción -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="fechanota">Fecha de Solicitud</label>
+                <input type="date" name="fechanota" id="fechanota" value="{{ $tipoNota->fechanota }}" class="form-control" required>
+            </div>
+           
+
+        <div class="form-group">
+            <label for="idbodega">Bodega</label>
+            <select name="idbodega" id="idbodega" class="form-control">
+                <option value="">Seleccione una bodega</option>
+                @foreach ($bodegas as $bodega)
+                    <option value="{{ $bodega->idbodega }}" {{ $bodega->idbodega == $tipoNota->idbodega ? 'selected' : '' }}>
+                        {{ $bodega->nombrebodega }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+       
+        
+
         <div class="d-flex justify-content-between">
             <a href="{{ route('tipoNota.index') }}" class="btn btn-secondary">Atrás</a>
-            <button type="submit" class="btn btn-primary">Actualizar</button>
+            <button type="submit" class="btn btn-success">Guardar Cambios</button>
         </div>
     </form>
 </div>
 @endsection
-

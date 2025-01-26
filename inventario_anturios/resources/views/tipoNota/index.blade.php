@@ -41,10 +41,14 @@
                 <tr>
                     <th>Tipo</th>
                     <th>Solicitante</th>
+                    <th>Código Producto</th>
+                    <th>Nombre Producto</th>
+                    <th>Cantidad</th>
+                    <th>Tipo Empaque</th>
                     <th>Fecha Solicitud</th>
-                    <th>Descripción</th>
-                    <th>Responsable Entrega</th>
-                    <th>Fecha Entrega</th>
+                    <th>Bodega</th>
+                    <!-- <th>Responsable de entrega</th>
+                    <th>Fecha Entrega</th> -->
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -52,11 +56,15 @@
                 @forelse($tipoNotas as $nota)
                 <tr>
                     <td>{{ $nota->tiponota }}</td>
-                    <td>{{ $nota->responsableEmpleado->nombreemp }} {{ $nota->responsableEmpleado->apellidoemp }}</td>
+                    <td>{{ $nota->responsableEmpleado->nombreemp }} {{ $nota->responsableEmpleado->apellidoemp}}</td>
+                    <td>{{ $nota->producto->codigo ?? 'Sin asignar' }}</td>
+                    <td>{{ $nota->producto->nombre ?? 'Sin asignar' }}</td> 
+                    <td>{{ $nota->cantidad }}</td>
+                    <td>{{ $nota->tipoEmpaque->nombretipoempaque ?? 'Sin asignar' }}</td>
                     <td>{{ $nota->fechanota }}</td>
-                    <td>{{ $nota->detalle }}</td>
-                    <td>{{ $nota->responsableEntregaEmpleado->nombreemp }} {{ $nota->responsableEntregaEmpleado->apellidoemp }}</td>
-                    <td>{{ $nota->fechaentrega }}</td>
+                    
+                    <td>{{ $nota->bodega->nombrebodega ?? 'Sin asignar' }}</td>
+                    
                     <td>
                         <a href="{{ route('tipoNota.edit', $nota->idtiponota) }}" class="btn btn-sm btn-warning">Editar</a>
                         <form action="{{ route('tipoNota.destroy', $nota->idtiponota) }}" method="POST" class="d-inline-block">

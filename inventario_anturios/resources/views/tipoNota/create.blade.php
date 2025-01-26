@@ -6,64 +6,103 @@
 
     <!-- Alertas de validación -->
     @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
     @endif
 
     <!-- Formulario -->
     <form action="{{ route('tipoNota.store') }}" method="POST">
         @csrf
 
-        <div class="row mb-3">
-            <div class="col-md-6 col-sm-12">
-                <label for="tiponota" class="form-label">Tipo</label>
-                <input type="text" name="tiponota" id="tiponota" class="form-control" placeholder="Tipo Nota (máx. 10 caracteres)" maxlength="10" required>
-            </div>
+        
+
+
+            <div class="row mb-3">
+    <div class="col-md-6 col-sm-12">
+        <label for="tiponota" class="form-label">Tipo</label>
+        <select name="tiponota" id="tiponota" class="form-control" required>
+            <option value="" disabled selected>Seleccione un tipo</option>
+            <option value="ENVIO">Envío</option>
+            <option value="DEVOLUCIÓN">Devolución</option>
+        </select>
+    </div>
+
             <div class="col-md-6 col-sm-12">
                 <label for="responsable" class="form-label">Solicitante</label>
                 <select name="responsable" id="responsable" class="form-control" required>
                     <option value="" disabled selected>Seleccione un solicitante</option>
                     @foreach ($empleados as $empleado)
-                    <option value="{{ $empleado->idempleado }}">
-                        {{ $empleado->nombreemp }} {{ $empleado->apellidoemp }}
-                    </option>
+                        <option value="{{ $empleado->idempleado }}">{{ $empleado->nombreemp }} {{ $empleado->apellidoemp }}</option>
                     @endforeach
                 </select>
             </div>
         </div>
 
-        <div class="row mb-3">
+        <!-- Campos dinámicos para Producto, Cantidad y Tipo de Empaque -->
+        <div id="productos-container">
+            <div class="form-group row producto-row">
+                <!-- Código del Producto -->
+                <div class="col-md-4">
+                    <label for="codigoproducto" class="form-label">Código del Producto</label>
+                    <select name="codigoproducto[]" class="form-control" required>
+                        <option value="" disabled selected>Seleccione un producto</option>
+                        @foreach ($productos as $producto)
+                            <option value="{{ $producto->codigo }}">{{ $producto->codigo }} - {{ $producto->nombre }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Cantidad -->
+                <div class="col-md-3">
+                    <label for="cantidad" class="form-label">Cantidad</label>
+                    <input type="number" name="cantidad[]" class="form-control" min="1" placeholder="Cantidad" required>
+                </div>
+
+                <!-- Tipo de Empaque -->
+                <div class="col-md-3">
+                    <label for="codigotipoempaque" class="form-label">Tipo de Empaque</label>
+                    <select name="codigotipoempaque[]" class="form-control" required>
+                        <option value="" disabled selected>Seleccione un tipo de empaque</option>
+                        @foreach ($tipoempaques as $tipoEmpaque)
+                            <option value="{{ $tipoEmpaque->codigotipoempaque }}">{{ $tipoEmpaque->nombretipoempaque }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Botones (+ y x) -->
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="button" class="btn btn-success add-producto me-2">+</button>
+                    <button type="button" class="btn btn-danger remove-producto">x</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fechas -->
+        <div class="row mb-3 mt-4">
             <div class="col-md-6 col-sm-12">
                 <label for="fechanota" class="form-label">Fecha Solicitud</label>
                 <input type="date" name="fechanota" id="fechanota" class="form-control" value="{{ now()->format('Y-m-d') }}" required readonly>
             </div>
-            <div class="col-md-6 col-sm-12">
+            <!-- <div class="col-md-6 col-sm-12">
                 <label for="fechaentrega" class="form-label">Fecha Entrega</label>
                 <input type="date" name="fechaentrega" id="fechaentrega" class="form-control" min="{{ now()->addDay()->format('Y-m-d') }}" required>
             </div>
-        </div>
+        </div> -->
 
-        <div class="row mb-3">
-            <div class="col-md-6 col-sm-12">
-                <label for="detalle" class="form-label">Descripción</label>
-                <input type="text" name="detalle" id="detalle" class="form-control" placeholder="Detalle (máx. 50 caracteres)" maxlength="50" required>
-            </div>
-            <div class="col-md-6 col-sm-12">
-                <label for="responsableentrega" class="form-label">Responsable Entrega</label>
-                <select name="responsableentrega" id="responsableentrega" class="form-control" required>
-                    <option value="" disabled selected>Seleccione un responsable</option>
-                    @foreach ($empleados as $empleado)
-                    <option value="{{ $empleado->idempleado }}">
-                        {{ $empleado->nombreemp }} {{ $empleado->apellidoemp }}
-                    </option>
-                    @endforeach
-                </select>
-            </div>
+        <!-- Bodega -->
+        <div class="form-group mb-3">
+            <label for="idbodega" class="form-label">Bodega</label>
+            <select name="idbodega" id="idbodega" class="form-control" required>
+                <option value="" disabled selected>Seleccione una bodega</option>
+                @foreach ($bodegas as $bodega)
+                    <option value="{{ $bodega->idbodega }}">{{ $bodega->nombrebodega }}</option>
+                @endforeach
+            </select>
         </div>
 
         <!-- Botones -->
@@ -73,4 +112,35 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('add-producto')) {
+            e.preventDefault();
+            const container = document.getElementById('productos-container');
+            const newRow = document.querySelector('.producto-row').cloneNode(true);
+
+            // Limpiar valores
+            newRow.querySelectorAll('select').forEach(select => select.value = '');
+            newRow.querySelectorAll('input').forEach(input => input.value = '');
+
+            // Configurar botones
+            const addButton = newRow.querySelector('.add-producto');
+            addButton.classList.replace('btn-success', 'btn-danger');
+            addButton.textContent = 'x';
+            addButton.classList.add('remove-producto');
+            addButton.classList.remove('add-producto');
+
+            container.appendChild(newRow);
+        }
+
+        if (e.target.classList.contains('remove-producto')) {
+            e.preventDefault();
+            const row = e.target.closest('.producto-row');
+            if (row) {
+                row.remove();
+            }
+        }
+    });
+</script>
 @endsection
