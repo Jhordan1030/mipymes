@@ -43,7 +43,7 @@
                     <tr>
                         <th>Tipo</th>
                         <th>Solicitante</th>
-
+                        <th>Código Producto</th> 
                         <th>Nombre Producto</th>
                         <th>Cantidad</th>
                         <th>Tipo Empaque</th>
@@ -59,6 +59,11 @@
                         <tr>
                             <td>{{ $nota->tiponota }}</td>
                             <td>{{ $nota->responsableEmpleado->nombreemp }} {{ $nota->responsableEmpleado->apellidoemp }}</td>
+                            <td>
+                                @foreach ($nota->productos as $producto)
+                                    <div>{{ $producto->codigo }}</div>
+                                @endforeach
+                            </td>
                             <td>
                                 @foreach ($nota->productos as $producto)
                                     <div>{{ $producto->nombre }}</div>
