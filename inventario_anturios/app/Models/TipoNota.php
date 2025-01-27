@@ -17,10 +17,9 @@ class TipoNota extends Model
         'responsable',
         'codigoproducto',
         'cantidad',
-         'codigotipoempaque',
-         'idbodega',
+        'codigotipoempaque',
+        'idbodega',
         'fechanota',
-       
     ];
 
     public function producto()
@@ -33,7 +32,6 @@ class TipoNota extends Model
         return $this->belongsTo(Empleado::class, 'responsable', 'idempleado');
     }
 
-   
     public function bodega()
     {
         return $this->belongsTo(Bodega::class, 'idbodega', 'idbodega');
@@ -43,5 +41,4 @@ class TipoNota extends Model
     {
         return $this->belongsTo(TipoEmpaque::class, 'codigotipoempaque', 'codigotipoempaque');
     }
-
 }
