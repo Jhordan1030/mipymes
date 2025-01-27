@@ -22,9 +22,9 @@ class TipoNota extends Model
         'fechanota',
     ];
 
-    public function producto()
+    public function productos()
     {
-        return $this->belongsTo(Producto::class, 'codigoproducto', 'codigo');
+        return $this->hasMany(Producto::class, 'codigo', 'codigoproducto');
     }
 
     public function responsableEmpleado()
@@ -41,4 +41,6 @@ class TipoNota extends Model
     {
         return $this->belongsTo(TipoEmpaque::class, 'codigotipoempaque', 'codigotipoempaque');
     }
+
+    
 }

@@ -12,9 +12,13 @@ class TipoNotaController extends Controller
 {
     public function index()
     {
-        $tipoNotas = TipoNota::with(['responsableEmpleado', 'producto', 'bodega'])->orderBy('idtiponota', 'DESC')->paginate(5);
+        $tipoNotas = TipoNota::with(['responsableEmpleado', 'bodega', 'productos', 'tipoEmpaque'])
+            ->orderBy('idtiponota', 'DESC')
+            ->paginate(5);
+
         return view('tipoNota.index', compact('tipoNotas'));
     }
+
 
     public function create()
     {

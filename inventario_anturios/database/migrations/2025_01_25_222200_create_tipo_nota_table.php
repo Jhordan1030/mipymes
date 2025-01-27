@@ -16,9 +16,9 @@ class CreateTipoNotaTable extends Migration
         Schema::create('tipo_nota', function (Blueprint $table) {
             $table->id('idtiponota'); // Hacer string unico
             $table->char('tiponota', 10);
-           // $table->string('responsable', 20);
+            // $table->string('responsable', 20);
             $table->foreign('idempleado')->references('idempleado')->on('empleados')->onDelete('cascade');
-
+            $table->json('productos')->nullable();
             $table->string('codigoproducto'); // Código del producto
             $table->integer('cantidad'); // Cantidad
             $table->string('codigotipoempaque')->nullable(); // Cambiar a codigotipoempaque
@@ -28,13 +28,13 @@ class CreateTipoNotaTable extends Migration
                 ->onDelete('set null'); // Relación con tipoempaques
 
             $table->string('idbodega', 10); // Asegúrate de que tenga una longitud adecuada
-$table->foreign('idbodega')
-    ->references('idbodega')
-    ->on('bodegas')
-    ->onDelete('cascade');
+            $table->foreign('idbodega')
+                ->references('idbodega')
+                ->on('bodegas')
+                ->onDelete('cascade');
 
             $table->date('fechanota');
-           
+
             $table->timestamps();
 
             $table->foreign('codigoproducto')->references('codigo')->on('productos')->onDelete('cascade');
