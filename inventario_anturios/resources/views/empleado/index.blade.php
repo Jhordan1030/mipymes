@@ -32,8 +32,8 @@
     <!-- Botones para crear nuevos registros -->
     <div class="mb-3 text-right">
         <a href="{{ route('empleado.create') }}" class="btn btn-primary" style="background-color: #88022D">Añadir Empleado</a>
-        <a href="{{ route('cargo.create') }}" class="btn btn-primary" style="background-color: #88022D">Añadir Cargo</a>
-        <a href="{{ route('tipoidentificacion.create') }}" class="btn btn-primary" style="background-color: #88022D">Añadir Tipo de Identidad</a>
+        <a href="{{ route('cargo.index') }}" class="btn btn-primary" style="background-color: #88022D">Añadir Cargo</a>
+        <a href="{{ route('tipoidentificacion.index') }}" class="btn btn-primary" style="background-color: #88022D">Añadir Tipo de Identidad</a>
     </div>
 
     <!-- Tabla de empleados -->

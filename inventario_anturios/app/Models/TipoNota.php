@@ -14,7 +14,7 @@ class TipoNota extends Model
 
     protected $fillable = [
         'tiponota',
-        'responsable',
+        'idempleado',
         'codigoproducto',
         'cantidad',
         'codigotipoempaque',
@@ -22,19 +22,14 @@ class TipoNota extends Model
         'fechanota',
     ];
 
-    public function productos()
+    public function producto()
     {
-        return $this->hasMany(Producto::class, 'codigo', 'codigoproducto');
+        return $this->belongsTo(Producto::class, 'codigoproducto', 'codigo');
     }
 
     public function responsableEmpleado()
     {
-        return $this->belongsTo(Empleado::class, 'responsable', 'idempleado');
-    }
-
-    public function bodega()
-    {
-        return $this->belongsTo(Bodega::class, 'idbodega', 'idbodega');
+        return $this->belongsTo(Empleado::class, 'idempleado', 'idempleado');
     }
 
     public function tipoEmpaque()
@@ -42,5 +37,8 @@ class TipoNota extends Model
         return $this->belongsTo(TipoEmpaque::class, 'codigotipoempaque', 'codigotipoempaque');
     }
 
-    
+    public function bodega()
+    {
+        return $this->belongsTo(Bodega::class, 'idbodega', 'idbodega');
+    }
 }

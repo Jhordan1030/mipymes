@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,11 +14,11 @@ class CreateProductosTable extends Migration
             $table->string('nombre', 50);
             $table->text('descripcion');
             $table->integer('cantidad');
-            $table->string('codigotipoempaque')->nullable(); // Cambiar a codigotipoempaque
+            $table->string('codigotipoempaque')->nullable();
             $table->foreign('codigotipoempaque')
                 ->references('codigotipoempaque')
                 ->on('tipoempaques')
-                ->onDelete('set null'); // Relación con tipoempaques
+                ->onDelete('set null');
             $table->timestamps();
         });
     }

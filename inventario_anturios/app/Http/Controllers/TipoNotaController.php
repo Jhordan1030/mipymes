@@ -2,27 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Bodega;
-use Illuminate\Http\Request;
 use App\Models\TipoNota;
 use App\Models\Empleado;
 use App\Models\Producto;
+use App\Models\Bodega;
+use App\Models\TipoEmpaque;
+use Illuminate\Http\Request;
 
 class TipoNotaController extends Controller
 {
     public function index()
     {
-        $tipoNotas = TipoNota::with(['responsableEmpleado', 'bodega', 'productos', 'tipoEmpaque'])
+        $tipoNotas = TipoNota::with(['responsableEmpleado', 'bodega', 'producto', 'tipoEmpaque'])
             ->orderBy('idtiponota', 'DESC')
             ->paginate(5);
 
         return view('tipoNota.index', compact('tipoNotas'));
     }
 
-
     public function create()
     {
-        $tipoempaques = \App\Models\TipoEmpaque::all();
+        $tipoempaques = TipoEmpaque::all();
         $empleados = Empleado::all();
         $productos = Producto::all();
         $bodegas = Bodega::all();
@@ -33,7 +33,7 @@ class TipoNotaController extends Controller
     {
         $request->validate([
             'tiponota' => 'required|in:ENVIO,DEVOLUCION',
-            'responsable' => 'required|integer|exists:empleados,idempleado',
+            'idempleado' => 'required|integer|exists:empleados,idempleado',
             'codigoproducto' => 'required|array|min:1',
             'codigoproducto.*' => 'required|string|exists:productos,codigo',
             'cantidad' => 'required|array|min:1',
@@ -41,18 +41,17 @@ class TipoNotaController extends Controller
             'codigotipoempaque' => 'required|array|min:1',
             'codigotipoempaque.*' => 'required|string|exists:tipoempaques,codigotipoempaque',
             'idbodega' => 'required|string|exists:bodegas,idbodega',
-            'fechanota' => 'required|date',
         ]);
 
         foreach ($request->codigoproducto as $index => $codigoProducto) {
             TipoNota::create([
                 'tiponota' => $request->tiponota,
-                'responsable' => $request->responsable,
+                'idempleado' => $request->idempleado,
                 'codigoproducto' => $codigoProducto,
                 'cantidad' => $request->cantidad[$index],
                 'codigotipoempaque' => $request->codigotipoempaque[$index],
                 'idbodega' => $request->idbodega,
-                'fechanota' => $request->fechanota,
+                'fechanota' => now(),
             ]);
         }
 
@@ -61,11 +60,12 @@ class TipoNotaController extends Controller
 
     public function edit($id)
     {
-        $tipoNota = TipoNota::with(['responsableEmpleado', 'bodega'])->findOrFail($id);
+        $tipoNota = TipoNota::findOrFail($id);
+        $tipoempaques = TipoEmpaque::all();
         $empleados = Empleado::all();
         $productos = Producto::all();
         $bodegas = Bodega::all();
-        $tipoempaques = \App\Models\TipoEmpaque::all();
+
         return view('tipoNota.edit', compact('tipoNota', 'empleados', 'productos', 'bodegas', 'tipoempaques'));
     }
 
@@ -73,24 +73,33 @@ class TipoNotaController extends Controller
     {
         $request->validate([
             'tiponota' => 'required|in:ENVIO,DEVOLUCION',
-            'responsable' => 'required|integer|exists:empleados,idempleado',
-            'codigoproducto' => 'nullable|string|exists:productos,codigo',
-            'cantidad' => 'nullable|integer|min:1',
-            'codigotipoempaque' => 'nullable|string|exists:tipoempaques,codigotipoempaque',
+            'idempleado' => 'required|integer|exists:empleados,idempleado',
+            'codigoproducto' => 'required|array|min:1',
+            'codigoproducto.*' => 'required|string|exists:productos,codigo',
+            'cantidad' => 'required|array|min:1',
+            'cantidad.*' => 'required|integer|min:1',
+            'codigotipoempaque' => 'required|array|min:1',
+            'codigotipoempaque.*' => 'required|string|exists:tipoempaques,codigotipoempaque',
             'idbodega' => 'required|string|exists:bodegas,idbodega',
-            'fechanota' => 'required|date',
         ]);
 
         $tipoNota = TipoNota::findOrFail($id);
-        $tipoNota->update($request->all());
+
+        // Elimina los registros antiguos si es necesario antes de actualizar
+        $tipoNota->delete();
+
+        foreach ($request->codigoproducto as $index => $codigoProducto) {
+            TipoNota::create([
+                'tiponota' => $request->tiponota,
+                'idempleado' => $request->idempleado,
+                'codigoproducto' => $codigoProducto,
+                'cantidad' => $request->cantidad[$index],
+                'codigotipoempaque' => $request->codigotipoempaque[$index],
+                'idbodega' => $request->idbodega,
+                'fechanota' => today(),
+            ]);
+        }
 
         return redirect()->route('tipoNota.index')->with('success', 'Nota actualizada correctamente.');
-    }
-
-    public function destroy($id)
-    {
-        $tipoNota = TipoNota::findOrFail($id);
-        $tipoNota->delete();
-        return redirect()->route('tipoNota.index')->with('success', 'Nota eliminada correctamente.');
     }
 }

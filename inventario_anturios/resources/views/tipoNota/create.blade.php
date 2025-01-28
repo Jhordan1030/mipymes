@@ -19,25 +19,24 @@
     <form action="{{ route('tipoNota.store') }}" method="POST">
         @csrf
 
-        
-
-
-            <div class="row mb-3">
-    <div class="col-md-6 col-sm-12">
-        <label for="tiponota" class="form-label">Tipo</label>
-        <select name="tiponota" id="tiponota" class="form-control" required>
-            <option value="" disabled selected>Seleccione un tipo</option>
-            <option value="ENVIO">Envío</option>
-            <option value="DEVOLUCIÓN">Devolución</option>
-        </select>
-    </div>
+        <div class="row mb-3">
+            <div class="col-md-6 col-sm-12">
+                <label for="tiponota" class="form-label">Tipo</label>
+                <select name="tiponota" id="tiponota" class="form-control" required>
+                    <option value="" disabled selected>Seleccione un tipo</option>
+                    <option value="ENVIO">Envío</option>
+                    <option value="DEVOLUCION">Devolución</option>
+                </select>
+            </div>
 
             <div class="col-md-6 col-sm-12">
-                <label for="responsable" class="form-label">Solicitante</label>
-                <select name="responsable" id="responsable" class="form-control" required>
+                <label for="idempleado" class="form-label">Solicitante</label>
+                <select name="idempleado" id="idempleado" class="form-control" required>
                     <option value="" disabled selected>Seleccione un solicitante</option>
                     @foreach ($empleados as $empleado)
-                        <option value="{{ $empleado->idempleado }}">{{ $empleado->nombreemp }} {{ $empleado->apellidoemp }}</option>
+                        <option value="{{ $empleado->idempleado }}">
+                            {{ $empleado->nombreemp }} {{ $empleado->apellidoemp }}
+                        </option>
                     @endforeach
                 </select>
             </div>
@@ -48,7 +47,7 @@
             <div class="form-group row producto-row">
                 <!-- Código del Producto -->
                 <div class="col-md-4">
-                    <label for="codigoproducto" class="form-label">Código del Producto</label>
+                    <label for="codigoproducto[]" class="form-label">Código del Producto</label>
                     <select name="codigoproducto[]" class="form-control" required>
                         <option value="" disabled selected>Seleccione un producto</option>
                         @foreach ($productos as $producto)
@@ -59,13 +58,13 @@
 
                 <!-- Cantidad -->
                 <div class="col-md-3">
-                    <label for="cantidad" class="form-label">Cantidad</label>
+                    <label for="cantidad[]" class="form-label">Cantidad</label>
                     <input type="number" name="cantidad[]" class="form-control" min="1" placeholder="Cantidad" required>
                 </div>
 
                 <!-- Tipo de Empaque -->
                 <div class="col-md-3">
-                    <label for="codigotipoempaque" class="form-label">Tipo de Empaque</label>
+                    <label for="codigotipoempaque[]" class="form-label">Tipo de Empaque</label>
                     <select name="codigotipoempaque[]" class="form-control" required>
                         <option value="" disabled selected>Seleccione un tipo de empaque</option>
                         @foreach ($tipoempaques as $tipoEmpaque)
@@ -86,13 +85,9 @@
         <div class="row mb-3 mt-4">
             <div class="col-md-6 col-sm-12">
                 <label for="fechanota" class="form-label">Fecha Solicitud</label>
-                <input type="date" name="fechanota" id="fechanota" class="form-control" value="{{ now()->format('Y-m-d') }}" required readonly>
+                <input type="date" name="fechanota" id="fechanota" class="form-control" value="{{ now()->toDateString() }}" required readonly>
             </div>
-            <!-- <div class="col-md-6 col-sm-12">
-                <label for="fechaentrega" class="form-label">Fecha Entrega</label>
-                <input type="date" name="fechaentrega" id="fechaentrega" class="form-control" min="{{ now()->addDay()->format('Y-m-d') }}" required>
-            </div>
-        </div> -->
+        </div>
 
         <!-- Bodega -->
         <div class="form-group mb-3">
