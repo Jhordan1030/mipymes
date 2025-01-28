@@ -20,7 +20,7 @@ class CreateTipoNotaTable extends Migration
             $table->foreign('codigotipoempaque')->references('codigotipoempaque')->on('tipoempaques')->onDelete('set null');
             $table->string('idbodega', 10);
             $table->foreign('idbodega')->references('idbodega')->on('bodegas')->onDelete('cascade');
-            $table->date('fechanota')->default(DB::raw('CURRENT_DATE'));
+            $table->date('fechanota')->useCurrent();  
             $table->timestamps();
         });
     }

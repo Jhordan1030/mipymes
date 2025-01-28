@@ -46,10 +46,11 @@
                         <td>{{ $nota->bodega->nombrebodega ?? 'Sin asignar' }}</td>
                         <td>
                             <a href="{{ route('tipoNota.edit', $nota->idtiponota) }}" class="btn btn-sm btn-warning">Editar</a>
-                            <form action="{{ route('tipoNota.destroy', $nota->idtiponota) }}" method="POST" class="d-inline">
+                            <!-- Formulario de eliminación -->
+                            <form action="{{ route('tipoNota.destroy', $nota->idtiponota) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Está seguro de eliminar esta nota?');">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de eliminar esta nota?')">Eliminar</button>
+                                <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
                             </form>
                         </td>
                     </tr>

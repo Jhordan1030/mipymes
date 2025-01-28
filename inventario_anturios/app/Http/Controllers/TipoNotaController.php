@@ -100,6 +100,27 @@ class TipoNotaController extends Controller
             ]);
         }
 
+
+
+
         return redirect()->route('tipoNota.index')->with('success', 'Nota actualizada correctamente.');
     }
+
+    public function destroy($id)
+{
+    // Buscar la nota por su ID
+    $tipoNota = TipoNota::find($id);
+
+    // Verificar si la nota existe
+    if (!$tipoNota) {
+        return redirect()->route('tipoNota.index')->with('error', 'Tipo de Nota no encontrado.');
+    }
+
+    // Eliminar la nota
+    $tipoNota->delete();
+
+    // Redirigir al índice con un mensaje de éxito
+    return redirect()->route('tipoNota.index')->with('success', 'Tipo de Nota eliminada correctamente.');
+}
+
 }

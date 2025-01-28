@@ -73,6 +73,12 @@
                         @endforeach
                     </select>
                 </div>
+
+                <!-- Botones (+ y x) -->
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="button" class="btn btn-success add-producto me-2">+</button>
+                    <button type="button" class="btn btn-danger remove-producto">x</button>
+                </div>
             </div>
             @endforeach
         </div>
@@ -105,4 +111,35 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('add-producto')) {
+            e.preventDefault();
+            const container = document.getElementById('productos-container');
+            const newRow = document.querySelector('.producto-row').cloneNode(true);
+
+            // Limpiar valores
+            newRow.querySelectorAll('select').forEach(select => select.value = '');
+            newRow.querySelectorAll('input').forEach(input => input.value = '');
+
+            // Configurar botones
+            const addButton = newRow.querySelector('.add-producto');
+            addButton.classList.replace('btn-success', 'btn-danger');
+            addButton.textContent = 'x';
+            addButton.classList.add('remove-producto');
+            addButton.classList.remove('add-producto');
+
+            container.appendChild(newRow);
+        }
+
+        if (e.target.classList.contains('remove-producto')) {
+            e.preventDefault();
+            const row = e.target.closest('.producto-row');
+            if (row) {
+                row.remove();
+            }
+        }
+    });
+</script>
 @endsection
