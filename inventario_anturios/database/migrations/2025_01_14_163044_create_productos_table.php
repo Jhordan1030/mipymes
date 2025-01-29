@@ -15,10 +15,7 @@ class CreateProductosTable extends Migration
             $table->text('descripcion');
             $table->integer('cantidad');
             $table->string('codigotipoempaque')->nullable();
-            $table->foreign('codigotipoempaque')
-                ->references('codigotipoempaque')
-                ->on('tipoempaques')
-                ->onDelete('set null');
+            $table->foreign('codigotipoempaque')->references('codigotipoempaque')->on('tipoempaques')->onDelete('set null');
             $table->timestamps();
         });
     }

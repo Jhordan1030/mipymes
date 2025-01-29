@@ -16,16 +16,13 @@ class TipoNota extends Model
         'codigo',
         'tiponota',
         'idempleado',
-        'codigoproducto',
-        'cantidad',
-        'codigotipoempaque',
         'idbodega',
         'fechanota',
     ];
 
-    public function producto()
+    public function detalles()
     {
-        return $this->belongsTo(Producto::class, 'codigoproducto', 'codigo');
+        return $this->hasMany(DetalleTipoNota::class, 'tipo_nota_id');
     }
 
     public function responsableEmpleado()
@@ -33,13 +30,9 @@ class TipoNota extends Model
         return $this->belongsTo(Empleado::class, 'idempleado', 'idempleado');
     }
 
-    public function tipoEmpaque()
-    {
-        return $this->belongsTo(TipoEmpaque::class, 'codigotipoempaque', 'codigotipoempaque');
-    }
-
     public function bodega()
     {
         return $this->belongsTo(Bodega::class, 'idbodega', 'idbodega');
     }
 }
+
