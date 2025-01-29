@@ -2,91 +2,55 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\TransaccionProducto;
+use App\Models\TipoNota;
 use App\Models\Producto;
 use App\Models\Bodega;
 use App\Models\Empleado;
+use App\Models\TipoEmpaque;
+use Illuminate\Http\Request;
 
 class TransaccionProductoController extends Controller
 {
     public function index()
     {
-        $transacciones = TransaccionProducto::with(['producto', 'bodega', 'empleado'])
-            ->orderBy('idtransaccion', 'DESC')
+        $transacciones = TransaccionProducto::with(['tipoNota', 'producto', 'bodega', 'responsable', 'tipoEmpaque'])
+            ->orderBy('id', 'DESC')
             ->paginate(10);
-
-        return view('transaccion_producto.index', compact('transacciones'));
+        return view('transaccionProducto.index', compact('transacciones'));
     }
 
     public function create()
     {
+        $tipoNotas = TipoNota::all();
         $productos = Producto::all();
         $bodegas = Bodega::all();
         $empleados = Empleado::all();
-
-        return view('transaccion_producto.create', compact('productos', 'bodegas', 'empleados'));
+        $tipoEmpaques = TipoEmpaque::all();
+        return view('transaccionProducto.create', compact('tipoNotas', 'productos', 'bodegas', 'empleados', 'tipoEmpaques'));
     }
 
     public function store(Request $request)
     {
-       // dd($request->all());
-
         $request->validate([
-            'tipotransaccion' => 'required|string|in:envío,devolución',
-            'codigoproducto' => 'required|array|min:1',
-            'codigoproducto.*' => 'required|string|exists:productos,codigo',
-            'cantidad' => 'required|array|min:1',
-            'cantidad.*' => 'required|integer|min:1',
-            'idbodega' => 'required|string|exists:bodegas,idbodega',
-            'idempleado' => 'required|integer|exists:empleados,idempleado',
+            'codigo_tipo_nota' => 'required|exists:tipo_nota,codigo',
+            'codigo_producto' => 'required|exists:productos,codigo',
+            'tipo_empaque' => 'required|exists:tipoempaques,codigotipoempaque',
+            'cantidad' => 'required|integer|min:1',
+            'bodega_destino' => 'required|exists:bodegas,idbodega',
+            'responsable' => 'required|exists:empleados,idempleado',
         ]);
 
-        foreach ($request->codigoproducto as $index => $codigoProducto) {
-            TransaccionProducto::create([
-                'tipotransaccion' => $request->tipotransaccion,
-                'codigoproducto' => $codigoProducto,
-                'cantidad' => $request->cantidad[$index],
-                'idbodega' => $request->idbodega,
-                'idempleado' => $request->idempleado,
-            ]);
-        }
-
-        return redirect()->route('transaccion_producto.index')->with('success', 'Transacción creada exitosamente.');
-    }
-
-    public function edit($idtransaccion)
-    {
-        $transaccion = TransaccionProducto::findOrFail($idtransaccion);
-        $productos = Producto::all();
-        $bodegas = Bodega::all();
-        $empleados = Empleado::all();
-
-        return view('transaccion_producto.edit', compact('transaccion', 'productos', 'bodegas', 'empleados'));
-    }
-
-    public function update(Request $request, $idtransaccion)
-    {
-        $request->validate([
-            'tipotransaccion' => 'required|string|in:envío,devolución',
-            'codigoproducto' => 'nullable|string|exists:productos,codigo',
-            'cantidad' => 'nullable|integer|min:1',
-            'idbodega' => 'required|integer|exists:bodegas,idbodega',
-            'idempleado' => 'required|integer|exists:empleados,idempleado',
+        TransaccionProducto::create([
+            'codigo_tipo_nota' => $request->codigo_tipo_nota,
+            'codigo_producto' => $request->codigo_producto,
+            'tipo_empaque' => $request->tipo_empaque,
+            'cantidad' => $request->cantidad,
+            'bodega_destino' => $request->bodega_destino,
+            'responsable' => $request->responsable,
+            'fecha_entrega' => now(),
         ]);
 
-        $transaccion = TransaccionProducto::findOrFail($idtransaccion);
-        $transaccion->update($request->all());
-
-        return redirect()->route('transaccion_producto.index')->with('success', 'Transacción actualizada exitosamente.');
+        return redirect()->route('transaccionProducto.index')->with('success', 'Transacción guardada correctamente.');
     }
-
-    public function destroy($idtransaccion)
-    {
-        TransaccionProducto::findOrFail($idtransaccion)->delete();
-
-        return redirect()->route('transaccion_producto.index')->with('success', 'Transacción eliminada exitosamente.');
-    }
-
-    
 }

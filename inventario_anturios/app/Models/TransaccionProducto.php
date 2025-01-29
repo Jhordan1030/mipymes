@@ -1,39 +1,50 @@
 <?php
+
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class TransaccionProducto extends Model
 {
-    protected $table = 'transacciones_productos';
-    protected $primaryKey = 'idtransaccion';
-    public $incrementing = true;
-    protected $keyType = 'int';
+    use HasFactory;
+
+    protected $table = 'transacciones_producto';
+    protected $primaryKey = 'id';
     public $timestamps = true;
 
     protected $fillable = [
-        'tipotransaccion',
-        'codigoproducto',
+        'codigo_tipo_nota',
+        'codigo_producto',
+        'tipo_empaque',
         'cantidad',
-        'idbodega',
-        'idempleado',
+        'bodega_destino',
+        'responsable',
+        'fecha_entrega',
     ];
 
-    // Relación con productos
+    public function tipoNota()
+    {
+        return $this->belongsTo(TipoNota::class, 'codigo_tipo_nota', 'codigo');
+    }
+
     public function producto()
     {
-        return $this->belongsTo(Producto::class, 'codigoproducto', 'codigo');
+        return $this->belongsTo(Producto::class, 'codigo_producto', 'codigo');
     }
 
-    // Relación con bodegas
     public function bodega()
     {
-        return $this->belongsTo(Bodega::class, 'idbodega', 'idbodega');
+        return $this->belongsTo(Bodega::class, 'bodega_destino', 'idbodega');
     }
 
-    // Relación con empleados
-    public function empleado()
+    public function responsable()
     {
-        return $this->belongsTo(Empleado::class, 'idempleado', 'idempleado');
+        return $this->belongsTo(Empleado::class, 'responsable', 'idempleado');
+    }
+
+    public function tipoEmpaque()
+    {
+        return $this->belongsTo(TipoEmpaque::class, 'tipo_empaque', 'codigotipoempaque');
     }
 }

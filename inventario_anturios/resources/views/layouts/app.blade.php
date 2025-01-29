@@ -67,7 +67,7 @@
                             Transacción Producto
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownTransaccion">
-                            <li><a class="dropdown-item" href="{{ route('transaccion_producto.index') }}">Registrar Transacción</a></li>
+                            <li><a class="dropdown-item" href="{{ route('transaccionProducto.index') }}">Registrar Transacción</a></li>
                             <li><a class="dropdown-item" href="#">Historial de Transacciones</a></li>
                         </ul>
                     </li>

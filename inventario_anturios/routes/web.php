@@ -40,7 +40,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('cargo', CargoController::class);
     Route::resource('tipoidentificacion', TipoIdentificacionController::class);
     Route::resource('bodega', BodegaController::class);
-    Route::resource('transaccion_producto', TransaccionProductoController::class);
+    Route::resource('transaccionProducto', TransaccionProductoController::class);
     Route::resource('tipoempaque', TipoEmpaquesController::class);
     Route::resource('tipoNota', TipoNotaController::class);
 });
