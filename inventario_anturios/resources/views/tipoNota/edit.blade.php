@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h3 class="text-center">Editar Nota: {{ $tipoNota->codigo }}</h3>
+    <h3 class="text-center">Editar Nota</h3>
 
     @if ($errors->any())
         <div class="alert alert-danger">
@@ -17,6 +17,11 @@
     <form action="{{ route('tipoNota.update', $tipoNota->idtiponota) }}" method="POST">
         @csrf
         @method('PUT')
+
+        <div class="mb-3">
+            <label for="codigo" class="form-label">Código de Nota</label>
+            <input type="text" name="codigo" class="form-control" value="{{ $tipoNota->codigo }}" readonly>
+        </div>
 
         <div class="mb-3">
             <label for="tiponota" class="form-label">Tipo de Nota</label>
@@ -40,6 +45,7 @@
         <div id="productos-container">
             @foreach ($tipoNota->detalles as $detalle)
                 <div class="producto-row row mb-3">
+                    <input type="hidden" name="detalle_ids[]" value="{{ $detalle->id }}">
                     <div class="col-md-4">
                         <label for="codigoproducto[]" class="form-label">Producto</label>
                         <select name="codigoproducto[]" class="form-control" required>
@@ -65,11 +71,47 @@
                             @endforeach
                         </select>
                     </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="button" class="btn btn-danger remove-producto">x</button>
+                    </div>
                 </div>
             @endforeach
         </div>
 
-        <button type="submit" class="btn btn-success">Actualizar Nota</button>
+        <button type="button" class="btn btn-success add-producto mb-3">+ Agregar Producto</button>
+
+        <div class="mb-3">
+            <label for="idbodega" class="form-label">Bodega</label>
+            <select name="idbodega" class="form-control" required>
+                @foreach ($bodegas as $bodega)
+                    <option value="{{ $bodega->idbodega }}" {{ $tipoNota->idbodega == $bodega->idbodega ? 'selected' : '' }}>
+                        {{ $bodega->nombrebodega }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Actualizar Nota</button>
+        <a href="{{ route('tipoNota.index') }}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
+
+<script>
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('add-producto')) {
+            e.preventDefault();
+            const container = document.getElementById('productos-container');
+            const newRow = document.querySelector('.producto-row').cloneNode(true);
+            newRow.querySelectorAll('select, input').forEach(input => input.value = '');
+            container.appendChild(newRow);
+        }
+
+        if (e.target.classList.contains('remove-producto')) {
+            e.preventDefault();
+            if (document.querySelectorAll('.producto-row').length > 1) {
+                e.target.closest('.producto-row').remove();
+            }
+        }
+    });
+</script>
 @endsection

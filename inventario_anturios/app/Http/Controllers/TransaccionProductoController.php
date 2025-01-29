@@ -4,53 +4,81 @@ namespace App\Http\Controllers;
 
 use App\Models\TransaccionProducto;
 use App\Models\TipoNota;
-use App\Models\Producto;
-use App\Models\Bodega;
-use App\Models\Empleado;
-use App\Models\TipoEmpaque;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class TransaccionProductoController extends Controller
 {
-    public function index()
+    /**
+     * Mostrar todas las transacciones con sus productos.
+     */
+    public function index(Request $request)
+        {
+            // Obtener filtros de búsqueda y estado
+            $search = $request->input('search');
+            $estado = $request->input('estado');
+
+            // Filtrar por estado si se selecciona uno
+            $query = TransaccionProducto::with('tipoNota.detalles.producto', 'tipoNota.detalles.tipoEmpaque');
+
+            if ($estado) {
+                $query->where('estado', $estado);
+            }
+
+            // Filtrar por código de nota si se busca uno
+            if ($search) {
+                $query->whereHas('tipoNota', function ($q) use ($search) {
+                    $q->where('codigo', 'LIKE', "%$search%");
+                });
+            }
+
+            // Obtener el número de transacciones pendientes y finalizadas
+            $pendientes = TransaccionProducto::where('estado', 'PENDIENTE')->count();
+            $finalizadas = TransaccionProducto::where('estado', 'FINALIZADA')->count();
+
+            // Paginar resultados
+            $transacciones = $query->orderBy('created_at', 'desc')->paginate(5);
+
+            return view('transaccionProducto.index', compact('transacciones', 'pendientes', 'finalizadas', 'search', 'estado'));
+        }
+
+    /**
+     * Confirmar una nota y moverla a transacción de producto.
+     */
+    public function confirmar($codigo)
     {
-        $transacciones = TransaccionProducto::with(['tipoNota', 'producto', 'bodega', 'responsable', 'tipoEmpaque'])
-            ->orderBy('id', 'DESC')
-            ->paginate(10);
-        return view('transaccionProducto.index', compact('transacciones'));
+        try {
+            $tipoNota = TipoNota::where('codigo', $codigo)->firstOrFail();
+
+            // Verificar si ya existe una transacción para esta nota
+            if (TransaccionProducto::where('tipo_nota_id', $tipoNota->codigo)->exists()) {
+                return redirect()->route('tipoNota.index')->withErrors(['error' => 'La nota ya ha sido confirmada.']);
+            }
+
+            // Crear la transacción
+            TransaccionProducto::create([
+                'tipo_nota_id' => $tipoNota->codigo,
+                'estado' => 'PENDIENTE',
+            ]);
+
+            return redirect()->route('tipoNota.index')->with('success', 'Nota confirmada y enviada a transacciones.');
+        } catch (QueryException $e) {
+            return back()->withErrors(['error' => 'Error al confirmar la nota: ' . $e->getMessage()]);
+        }
     }
 
-    public function create()
+    /**
+     * Finalizar una transacción.
+     */
+    public function finalizar($id)
     {
-        $tipoNotas = TipoNota::all();
-        $productos = Producto::all();
-        $bodegas = Bodega::all();
-        $empleados = Empleado::all();
-        $tipoEmpaques = TipoEmpaque::all();
-        return view('transaccionProducto.create', compact('tipoNotas', 'productos', 'bodegas', 'empleados', 'tipoEmpaques'));
-    }
+        try {
+            $transaccion = TransaccionProducto::findOrFail($id);
+            $transaccion->update(['estado' => 'FINALIZADA']);
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'codigo_tipo_nota' => 'required|exists:tipo_nota,codigo',
-            'codigo_producto' => 'required|exists:productos,codigo',
-            'tipo_empaque' => 'required|exists:tipoempaques,codigotipoempaque',
-            'cantidad' => 'required|integer|min:1',
-            'bodega_destino' => 'required|exists:bodegas,idbodega',
-            'responsable' => 'required|exists:empleados,idempleado',
-        ]);
-
-        TransaccionProducto::create([
-            'codigo_tipo_nota' => $request->codigo_tipo_nota,
-            'codigo_producto' => $request->codigo_producto,
-            'tipo_empaque' => $request->tipo_empaque,
-            'cantidad' => $request->cantidad,
-            'bodega_destino' => $request->bodega_destino,
-            'responsable' => $request->responsable,
-            'fecha_entrega' => now(),
-        ]);
-
-        return redirect()->route('transaccionProducto.index')->with('success', 'Transacción guardada correctamente.');
+            return redirect()->route('transaccionProducto.index')->with('success', 'Transacción finalizada correctamente.');
+        } catch (QueryException $e) {
+            return back()->withErrors(['error' => 'Error al finalizar la transacción: ' . $e->getMessage()]);
+        }
     }
 }

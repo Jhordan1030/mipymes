@@ -16,6 +16,7 @@
                 <th>TIPO EMPAQUE</th>
                 <th>BODEGA</th>
                 <th>FECHA</th>
+                <th>ESTADO</th>
                 <th>ACCIONES</th>
             </tr>
         </thead>
@@ -49,8 +50,21 @@
                     <td>{{ $nota->bodega->nombrebodega ?? 'N/A' }}</td>
                     <td>{{ $nota->fechanota }}</td>
                     <td>
-                        <a href="{{ route('tipoNota.edit', $nota->idtiponota) }}" class="btn btn-warning">Editar</a>
-                        <form action="{{ route('tipoNota.destroy', $nota->idtiponota) }}" method="POST" style="display:inline;">
+                        @if($nota->transaccionProducto)
+                            <span class="badge bg-info">{{ $nota->transaccionProducto->estado }}</span>
+                        @else
+                            <span class="badge bg-secondary">Sin Confirmar</span>
+                        @endif
+                    </td>
+                    <td>
+                        @if(!$nota->transaccionProducto)
+                            <form action="{{ route('tipoNota.confirmar', $nota->codigo) }}" method="POST" style="display:inline;">
+                                @csrf
+                                <button type="submit" class="btn btn-success">Confirmar</button>
+                            </form>
+                        @endif
+                        <a href="{{ route('tipoNota.edit', $nota->codigo) }}" class="btn btn-warning">Editar</a>
+                        <form action="{{ route('tipoNota.destroy', $nota->codigo) }}" method="POST" style="display:inline;">
                             @csrf @method('DELETE')
                             <button type="submit" class="btn btn-danger">Eliminar</button>
                         </form>

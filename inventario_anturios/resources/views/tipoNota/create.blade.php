@@ -38,15 +38,16 @@
             <div class="producto-row row mb-3">
                 <div class="col-md-4">
                     <label for="codigoproducto[]" class="form-label">Producto</label>
-                    <select name="codigoproducto[]" class="form-control" required>
+                    <select name="codigoproducto[]" class="form-control producto-select" required>
+                        <option value="">Seleccione un producto</option>
                         @foreach ($productos as $producto)
-                            <option value="{{ $producto->codigo }}">{{ $producto->nombre }}</option>
+                            <option value="{{ $producto->codigo }}" data-stock="{{ $producto->cantidad }}">{{ $producto->nombre }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="col-md-2">
                     <label for="cantidad[]" class="form-label">Cantidad</label>
-                    <input type="number" name="cantidad[]" class="form-control" required>
+                    <input type="number" name="cantidad[]" class="form-control cantidad-input" min="1" required>
                 </div>
                 <div class="col-md-3">
                     <label for="codigotipoempaque[]" class="form-label">Tipo de Empaque</label>
@@ -78,21 +79,45 @@
 </div>
 
 <script>
-    document.addEventListener('click', function (e) {
-        if (e.target.classList.contains('add-producto')) {
-            e.preventDefault();
-            const container = document.getElementById('productos-container');
-            const newRow = document.querySelector('.producto-row').cloneNode(true);
-            newRow.querySelectorAll('select, input').forEach(input => input.value = '');
-            container.appendChild(newRow);
-        }
+    document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('add-producto')) {
+                e.preventDefault();
+                const container = document.getElementById('productos-container');
+                const newRow = document.querySelector('.producto-row').cloneNode(true);
 
-        if (e.target.classList.contains('remove-producto')) {
-            e.preventDefault();
-            if (document.querySelectorAll('.producto-row').length > 1) {
-                e.target.closest('.producto-row').remove();
+                newRow.querySelectorAll('select, input').forEach(input => input.value = '');
+
+                container.appendChild(newRow);
             }
-        }
+
+            if (e.target.classList.contains('remove-producto')) {
+                e.preventDefault();
+                if (document.querySelectorAll('.producto-row').length > 1) {
+                    e.target.closest('.producto-row').remove();
+                }
+            }
+        });
+
+        // Validar cantidad según stock disponible
+        document.addEventListener('change', function (e) {
+            if (e.target.classList.contains('producto-select')) {
+                let selectedOption = e.target.options[e.target.selectedIndex];
+                let stock = selectedOption.getAttribute('data-stock');
+                let cantidadInput = e.target.closest('.producto-row').querySelector('.cantidad-input');
+                cantidadInput.setAttribute('max', stock);
+            }
+        });
+
+        document.addEventListener('input', function (e) {
+            if (e.target.classList.contains('cantidad-input')) {
+                let maxStock = e.target.getAttribute('max');
+                if (parseInt(e.target.value) > parseInt(maxStock)) {
+                    alert('La cantidad ingresada supera el stock disponible.');
+                    e.target.value = maxStock;
+                }
+            }
+        });
     });
 </script>
 @endsection

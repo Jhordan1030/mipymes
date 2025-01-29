@@ -9,42 +9,11 @@ class TransaccionProducto extends Model
 {
     use HasFactory;
 
-    protected $table = 'transacciones_producto';
-    protected $primaryKey = 'id';
-    public $timestamps = true;
-
-    protected $fillable = [
-        'codigo_tipo_nota',
-        'codigo_producto',
-        'tipo_empaque',
-        'cantidad',
-        'bodega_destino',
-        'responsable',
-        'fecha_entrega',
-    ];
+    protected $table = 'transaccion_producto'; // Asegura que coincide con la migración
+    protected $fillable = ['tipo_nota_id', 'estado'];
 
     public function tipoNota()
     {
-        return $this->belongsTo(TipoNota::class, 'codigo_tipo_nota', 'codigo');
-    }
-
-    public function producto()
-    {
-        return $this->belongsTo(Producto::class, 'codigo_producto', 'codigo');
-    }
-
-    public function bodega()
-    {
-        return $this->belongsTo(Bodega::class, 'bodega_destino', 'idbodega');
-    }
-
-    public function responsable()
-    {
-        return $this->belongsTo(Empleado::class, 'responsable', 'idempleado');
-    }
-
-    public function tipoEmpaque()
-    {
-        return $this->belongsTo(TipoEmpaque::class, 'tipo_empaque', 'codigotipoempaque');
+        return $this->belongsTo(TipoNota::class, 'tipo_nota_id', 'codigo')->with('detalles.producto', 'detalles.tipoEmpaque');
     }
 }
