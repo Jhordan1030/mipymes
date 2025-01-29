@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -10,6 +9,7 @@ class CreateTipoNotaTable extends Migration
     {
         Schema::create('tipo_nota', function (Blueprint $table) {
             $table->id('idtiponota');
+            $table->string('codigo', 10)->unique();
             $table->char('tiponota', 10);
             $table->unsignedBigInteger('idempleado');
             $table->foreign('idempleado')->references('idempleado')->on('empleados')->onDelete('cascade');

@@ -13,6 +13,7 @@ class TipoNota extends Model
     protected $primaryKey = 'idtiponota';
 
     protected $fillable = [
+        'codigo',
         'tiponota',
         'idempleado',
         'codigoproducto',

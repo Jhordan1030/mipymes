@@ -20,13 +20,54 @@ class TipoNotaController extends Controller
         return view('tipoNota.index', compact('tipoNotas'));
     }
 
+    public function edit($id)
+    {
+        $tipoNota = TipoNota::findOrFail($id);
+        $tipoempaques = TipoEmpaque::all();
+        $empleados = Empleado::all();
+        $productos = Producto::all();
+        $bodegas = Bodega::all();
+
+        return view('tipoNota.edit', compact('tipoNota', 'empleados', 'productos', 'bodegas', 'tipoempaques'));
+    }
+
     public function create()
     {
         $tipoempaques = TipoEmpaque::all();
         $empleados = Empleado::all();
         $productos = Producto::all();
         $bodegas = Bodega::all();
-        return view('tipoNota.create', compact('empleados', 'productos', 'bodegas', 'tipoempaques'));
+
+        $ultimoCodigo = TipoNota::latest()->first();
+        $numero = $ultimoCodigo ? (int) substr($ultimoCodigo->codigo, -3) + 1 : 1;
+        $codigoNota = sprintf('TN-%03d', $numero);
+
+        return view('tipoNota.create', compact('empleados', 'productos', 'bodegas', 'tipoempaques', 'codigoNota'));
+    }
+
+    public function destroy($id)
+    {
+        $tipoNota = TipoNota::findOrFail($id);
+        $tipoNota->delete();
+
+        return redirect()->route('tipoNota.index')->with('success', 'Tipo de Nota eliminada correctamente.');
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'tiponota' => 'required|in:ENVIO,DEVOLUCION',
+            'idempleado' => 'required|integer|exists:empleados,idempleado',
+            'codigoproducto' => 'required|string|exists:productos,codigo',
+            'cantidad' => 'required|integer|min:1',
+            'codigotipoempaque' => 'required|string|exists:tipoempaques,codigotipoempaque',
+            'idbodega' => 'required|string|exists:bodegas,idbodega',
+        ]);
+
+        $tipoNota = TipoNota::findOrFail($id);
+        $tipoNota->update($request->all());
+
+        return redirect()->route('tipoNota.index')->with('success', 'Nota actualizada correctamente.');
     }
 
     public function store(Request $request)
@@ -43,8 +84,14 @@ class TipoNotaController extends Controller
             'idbodega' => 'required|string|exists:bodegas,idbodega',
         ]);
 
+        $ultimoCodigo = TipoNota::latest()->first();
+        $numero = $ultimoCodigo ? (int) substr($ultimoCodigo->codigo, -3) + 1 : 1;
+        $letras = range('A', 'Z');
+
         foreach ($request->codigoproducto as $index => $codigoProducto) {
+            $codigoGenerado = count($request->codigoproducto) > 1 ? 'TN' . $letras[$index] . '-' . sprintf('%03d', $numero) : sprintf('TN-%03d', $numero);
             TipoNota::create([
+                'codigo' => $codigoGenerado,
                 'tiponota' => $request->tiponota,
                 'idempleado' => $request->idempleado,
                 'codigoproducto' => $codigoProducto,
@@ -55,62 +102,8 @@ class TipoNotaController extends Controller
             ]);
         }
 
+        
+
         return redirect()->route('tipoNota.index')->with('success', 'Nota creada correctamente.');
-    }
-
-    public function edit($id)
-    {
-        $tipoNota = TipoNota::findOrFail($id);
-        $tipoempaques = TipoEmpaque::all();
-        $empleados = Empleado::all();
-        $productos = Producto::all();
-        $bodegas = Bodega::all();
-
-        return view('tipoNota.edit', compact('tipoNota', 'empleados', 'productos', 'bodegas', 'tipoempaques'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'tiponota' => 'required|in:ENVIO,DEVOLUCION',
-            'idempleado' => 'required|integer|exists:empleados,idempleado',
-            'codigoproducto' => 'required|string|exists:productos,codigo',
-            'cantidad' => 'required|integer|min:1',
-            'codigotipoempaque' => 'required|string|exists:tipoempaques,codigotipoempaque',
-            'idbodega' => 'required|string|exists:bodegas,idbodega',
-        ]);
-
-        $tipoNota = TipoNota::findOrFail($id);
-
-        // Actualiza los valores directamente sin eliminar el registro
-        $tipoNota->update([
-            'tiponota' => $request->tiponota,
-            'idempleado' => $request->idempleado,
-            'codigoproducto' => $request->codigoproducto,
-            'cantidad' => $request->cantidad,
-            'codigotipoempaque' => $request->codigotipoempaque,
-            'idbodega' => $request->idbodega,
-            'fechanota' => $tipoNota->fechanota, // Mantiene la fecha original
-        ]);
-
-        return redirect()->route('tipoNota.index')->with('success', 'Nota actualizada correctamente.');
-    }
-
-
-    public function destroy($id)
-    {
-        // Buscar la nota por su ID
-        $tipoNota = TipoNota::find($id);
-
-        // Verificar si la nota existe
-        if (!$tipoNota) {
-            return redirect()->route('tipoNota.index')->with('error', 'Tipo de Nota no encontrado.');
-        }
-
-        // Eliminar la nota
-        $tipoNota->delete();
-
-        // Redirigir al índice con un mensaje de éxito
-        return redirect()->route('tipoNota.index')->with('success', 'Tipo de Nota eliminada correctamente.');
     }
 }
