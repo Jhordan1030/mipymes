@@ -2,60 +2,175 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TransaccionProducto;
 use App\Models\TipoNota;
+use App\Models\Empleado;
+use App\Models\Bodega;
+use App\Models\Producto;
+use App\Models\DetalleTipoNota;
+use App\Models\TipoEmpaque;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 
-class TransaccionProductoController extends Controller
+class TipoNotaController extends Controller
 {
     /**
-     * Muestra todas las transacciones con su estado y productos asociados.
+     * Muestra la lista de tipos de notas.
      */
     public function index()
     {
-        $pendientes = TransaccionProducto::where('estado', 'PENDIENTE')->count();
-        $finalizadas = TransaccionProducto::where('estado', 'FINALIZADO')->count();
+        $tipoNotas = TipoNota::with(['responsableEmpleado', 'bodega', 'detalles.producto', 'transaccionProducto'])
+            ->paginate(10); // Se usa paginación para mejorar rendimiento
 
-        $transacciones = TransaccionProducto::with([
-            'tipoNota.detalles.producto',
-            'tipoNota.detalles.tipoEmpaque'
-        ])->paginate(5);
-
-        return view('transaccionProducto.index', compact('transacciones', 'pendientes', 'finalizadas'));
+        return view('tipoNota.index', compact('tipoNotas'));
     }
 
     /**
-     * Confirma la transacción de una nota.
+     * Muestra el formulario para crear una nueva nota.
      */
-    public function confirmar($codigo)
+    public function create()
     {
-        try {
-            $tipoNota = TipoNota::where('codigo', $codigo)->firstOrFail();
+        $empleados = Empleado::all();
+        $bodegas = Bodega::all();
+        $productos = Producto::all();
+        $tipoempaques = TipoEmpaque::all();
 
-            $transaccion = TransaccionProducto::create([
-                'tipo_nota_id' => $tipoNota->codigo,
-                'estado' => 'PENDIENTE', // Estado inicial
+        return view('tipoNota.create', compact('empleados', 'bodegas', 'productos', 'tipoempaques'));
+    }
+
+    /**
+     * Guarda una nueva nota en la base de datos.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'tiponota' => 'required|string|max:255',
+            'idempleado' => 'required|exists:empleados,idempleado',
+            'idbodega' => 'required|exists:bodegas,idbodega',
+            'codigoproducto' => 'required|array',
+            'cantidad' => 'required|array',
+        ]);
+
+        try {
+            DB::beginTransaction(); // Inicia la transacción para garantizar la consistencia
+
+            // ✅ Generar automáticamente el código en formato TN-1, TN-2, TN-3...
+            $ultimoCodigo = TipoNota::latest('codigo')->first();
+            if ($ultimoCodigo) {
+                $numero = intval(str_replace('TN-', '', $ultimoCodigo->codigo)) + 1;
+            } else {
+                $numero = 1;
+            }
+            $codigoGenerado = 'TN-' . $numero;
+
+            // ✅ Crear la nueva nota con la fecha actual del sistema
+            $nota = TipoNota::create([
+                'codigo' => $codigoGenerado,
+                'tiponota' => $request->tiponota,
+                'idempleado' => $request->idempleado,
+                'idbodega' => $request->idbodega,
+                'fechanota' => now(), // Fecha actual del sistema
             ]);
 
-            return redirect()->route('transaccionProducto.index')->with('success', 'Transacción confirmada.');
+            // ✅ Guardar los productos en la tabla de detalles
+            foreach ($request->codigoproducto as $index => $productoId) {
+                DetalleTipoNota::create([
+                    'tipo_nota_id' => $nota->codigo,
+                    'codigoproducto' => $productoId,
+                    'cantidad' => $request->cantidad[$index],
+                    'codigotipoempaque' => $request->codigotipoempaque[$index] ?? null,
+                ]);
+            }
+
+            DB::commit(); // Confirma la transacción
+            return redirect()->route('tipoNota.index')->with('success', 'Nota creada exitosamente.');
         } catch (QueryException $e) {
-            return back()->withErrors(['error' => 'Error al confirmar transacción: ' . $e->getMessage()]);
+            DB::rollBack(); // Revertir transacción en caso de error
+            return redirect()->back()->with('error', 'Error al crear la nota.');
         }
     }
 
     /**
-     * Finaliza una transacción pendiente.
+     * Muestra una nota específica.
      */
-    public function finalizar($id)
+    public function show($codigo)
+    {
+        $tipoNota = TipoNota::with(['responsableEmpleado', 'bodega', 'detalles.producto'])->findOrFail($codigo);
+        return view('tipoNota.show', compact('tipoNota'));
+    }
+
+    /**
+     * Muestra el formulario para editar una nota.
+     */
+    public function edit($codigo)
+    {
+        $tipoNota = TipoNota::with('detalles')->findOrFail($codigo);
+        $empleados = Empleado::all();
+        $bodegas = Bodega::all();
+        $productos = Producto::all();
+        $tipoempaques = TipoEmpaque::all();
+
+        return view('tipoNota.edit', compact('tipoNota', 'empleados', 'bodegas', 'productos', 'tipoempaques'));
+    }
+
+    /**
+     * Actualiza una nota en la base de datos.
+     */
+    public function update(Request $request, $codigo)
+    {
+        $request->validate([
+            'tiponota' => 'required|string|max:255',
+            'idempleado' => 'required|exists:empleados,idempleado',
+            'idbodega' => 'required|exists:bodegas,idbodega',
+            'codigoproducto' => 'required|array',
+            'cantidad' => 'required|array',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $nota = TipoNota::findOrFail($codigo);
+            $nota->update([
+                'tiponota' => $request->tiponota,
+                'idempleado' => $request->idempleado,
+                'idbodega' => $request->idbodega,
+            ]);
+
+            // Eliminar detalles existentes y añadir los nuevos
+            $nota->detalles()->delete();
+            foreach ($request->codigoproducto as $index => $productoId) {
+                DetalleTipoNota::create([
+                    'tipo_nota_id' => $nota->codigo,
+                    'codigoproducto' => $productoId,
+                    'cantidad' => $request->cantidad[$index],
+                    'codigotipoempaque' => $request->codigotipoempaque[$index] ?? null,
+                ]);
+            }
+
+            DB::commit();
+            return redirect()->route('tipoNota.index')->with('success', 'Nota actualizada correctamente.');
+        } catch (QueryException $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Error al actualizar la nota.');
+        }
+    }
+
+    /**
+     * Elimina una nota.
+     */
+    public function destroy($codigo)
     {
         try {
-            $transaccion = TransaccionProducto::findOrFail($id);
-            $transaccion->update(['estado' => 'FINALIZADO']);
+            DB::beginTransaction();
+            $nota = TipoNota::findOrFail($codigo);
+            $nota->detalles()->delete(); // Elimina los detalles antes de eliminar la nota
+            $nota->delete();
+            DB::commit();
 
-            return redirect()->route('transaccionProducto.index')->with('success', 'Transacción finalizada correctamente.');
+            return redirect()->route('tipoNota.index')->with('success', 'Nota eliminada correctamente.');
         } catch (QueryException $e) {
-            return back()->withErrors(['error' => 'Error al finalizar transacción: ' . $e->getMessage()]);
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Error al eliminar la nota.');
         }
     }
 }
