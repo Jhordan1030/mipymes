@@ -73,7 +73,6 @@
                         @if($transaccion->estado == 'PENDIENTE')
                             <form action="{{ route('transaccionProducto.finalizar', $transaccion->id) }}" method="POST" style="display:inline;">
                                 @csrf
-                                @method('PUT')
                                 <button type="submit" class="btn btn-success">Finalizar</button>
                             </form>
                         @else
@@ -85,6 +84,9 @@
         </tbody>
     </table>
 
-    {{ $transacciones->appends(['estado' => request('estado'), 'search' => request('search')])->links() }}
+    <!-- Paginación -->
+    <div class="d-flex justify-content-center">
+        {{ $transacciones->appends(['estado' => request('estado'), 'search' => request('search')])->links() }}
+    </div>
 </div>
 @endsection

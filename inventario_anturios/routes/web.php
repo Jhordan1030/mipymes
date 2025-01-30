@@ -30,28 +30,29 @@ Route::middleware(['auth'])->group(function () {
         return view('home');
     })->name('home');
 
-    // 🔹 Rutas para los módulos
+    // 🔹 Rutas para los módulos principales
     Route::resource('producto', ProductoController::class);
     Route::resource('empleado', EmpleadoController::class);
     Route::resource('cargo', CargoController::class);
     Route::resource('tipoidentificacion', TipoIdentificacionController::class);
     Route::resource('bodega', BodegaController::class);
-    Route::resource('transaccionProducto', TransaccionProductoController::class);
     Route::resource('tipoempaque', TipoEmpaquesController::class);
     Route::resource('tipoNota', TipoNotaController::class);
 
-    // 🔹 Ruta específica para confirmar una Nota y enviarla a transacciones
-    Route::post('/tipoNota/confirmar/{codigo}', [TipoNotaController::class, 'confirmar'])->name('tipoNota.confirmar');
-    // Rutas para Transacción Producto
+    // 🔹 Ruta para confirmar una Nota y crear una transacción
+    Route::post('/tipoNota/confirmar/{codigo}', [TransaccionProductoController::class, 'confirmar'])
+        ->name('tipoNota.confirmar');
 
-    // Ruta para confirmar una nota y crear una transacción
-    Route::post('/tipoNota/confirmar/{codigo}', [TransaccionProductoController::class, 'confirmar'])->name('tipoNota.confirmar');
+    // 🔹 Rutas para Transacción Producto
+    Route::get('/transaccionProducto', [TransaccionProductoController::class, 'index'])
+        ->name('transaccionProducto.index');
 
-    // Ruta para finalizar una transacción
-    Route::get('/transaccionProducto', [TransaccionProductoController::class, 'index'])->name('transaccionProducto.index');
-    Route::post('/transaccionProducto/confirmar/{codigo}', [TransaccionProductoController::class, 'confirmar'])->name('transaccionProducto.confirmar');
-    Route::post('/transaccionProducto/finalizar/{id}', [TransaccionProductoController::class, 'finalizar'])->name('transaccionProducto.finalizar');
+    Route::post('/transaccionProducto/confirmar/{codigo}', [TransaccionProductoController::class, 'confirmar'])
+        ->name('transaccionProducto.confirmar');
 
+    // ✅ Cambiado a POST para corregir el error "Method Not Allowed"
+    Route::post('/transaccionProducto/finalizar/{id}', [TransaccionProductoController::class, 'finalizar'])
+        ->name('transaccionProducto.finalizar');
 });
 
 // 🔹 Redirigir la raíz al login si no está autenticado
