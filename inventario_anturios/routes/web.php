@@ -53,6 +53,8 @@ Route::middleware(['auth'])->group(function () {
     // ✅ Cambiado a POST para corregir el error "Method Not Allowed"
     Route::post('/transaccionProducto/finalizar/{id}', [TransaccionProductoController::class, 'finalizar'])
         ->name('transaccionProducto.finalizar');
+
+    Route::get('tipoNota/pdf/{codigo}', [TipoNotaController::class, 'generarPDF'])->name('tipoNota.pdf');
 });
 
 // 🔹 Redirigir la raíz al login si no está autenticado

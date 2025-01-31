@@ -32,7 +32,7 @@ class TransaccionProductoController extends Controller
         $pendientes = TransaccionProducto::where('estado', 'PENDIENTE')->count();
         $finalizadas = TransaccionProducto::where('estado', 'FINALIZADA')->count();
 
-        $transacciones = $query->orderBy('created_at', 'desc')->paginate(5);
+        $transacciones = $query->orderBy('created_at', 'desc')->paginate(1000);
 
         return view('transaccionProducto.index', compact('transacciones', 'pendientes', 'finalizadas', 'search', 'estado'));
     }

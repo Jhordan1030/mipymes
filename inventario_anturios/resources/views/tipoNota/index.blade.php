@@ -1,12 +1,20 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h3 class="text-center">Lista de Notas</h3>
-    <a href="{{ route('tipoNota.create') }}" class="btn btn-primary mb-3">Crear Nota</a>
+    <div class="container">
+        <h3 class="text-center">Lista de Notas</h3>
+        <a href="{{ route('tipoNota.create') }}" class="btn btn-primary mb-3">Crear Nota</a>
 
-    <table class="table table-bordered">
-        <thead>
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
+
+        <table class="table table-bordered">
+            <thead>
             <tr>
                 <th>CÓDIGO</th>
                 <th>TIPO</th>
@@ -18,9 +26,10 @@
                 <th>FECHA</th>
                 <th>ESTADO</th>
                 <th>ACCIONES</th>
+                <th>PDF</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             @foreach ($tipoNotas as $nota)
                 <tr>
                     <td>{{ $nota->codigo }}</td>
@@ -66,14 +75,17 @@
                         <a href="{{ route('tipoNota.edit', $nota->codigo) }}" class="btn btn-warning">Editar</a>
                         <form action="{{ route('tipoNota.destroy', $nota->codigo) }}" method="POST" style="display:inline;">
                             @csrf @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de eliminar esta nota?')">Eliminar</button>
                         </form>
+                    </td>
+                    <td>
+                        <a href="{{ route('tipoNota.pdf', $nota->codigo) }}" class="btn btn-danger">Descargar PDF</a>
                     </td>
                 </tr>
             @endforeach
-        </tbody>
-    </table>
+            </tbody>
+        </table>
 
-    {{ $tipoNotas->links() }}
-</div>
+        {{ $tipoNotas->links() }}
+    </div>
 @endsection

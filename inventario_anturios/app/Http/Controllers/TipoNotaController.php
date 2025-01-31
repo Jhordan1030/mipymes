@@ -11,6 +11,7 @@ use App\Models\TipoEmpaque;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
+use PDF;
 
 class TipoNotaController extends Controller
 {
@@ -20,7 +21,7 @@ class TipoNotaController extends Controller
     public function index()
     {
         $tipoNotas = TipoNota::with(['responsableEmpleado', 'bodega', 'detalles.producto', 'transaccionProducto'])
-            ->paginate(10); // Se usa paginación para mejorar rendimiento
+            ->paginate(1000); // Se usa paginación para mejorar rendimiento
 
         return view('tipoNota.index', compact('tipoNotas'));
     }
@@ -129,6 +130,7 @@ class TipoNotaController extends Controller
         try {
             DB::beginTransaction();
 
+            // Buscar la nota
             $nota = TipoNota::findOrFail($codigo);
             $nota->update([
                 'tiponota' => $request->tiponota,
@@ -136,8 +138,10 @@ class TipoNotaController extends Controller
                 'idbodega' => $request->idbodega,
             ]);
 
-            // Eliminar detalles existentes y añadir los nuevos
+            // ✅ Eliminar detalles anteriores
             $nota->detalles()->delete();
+
+            // ✅ Guardar nuevos detalles
             foreach ($request->codigoproducto as $index => $productoId) {
                 DetalleTipoNota::create([
                     'tipo_nota_id' => $nota->codigo,
@@ -154,6 +158,7 @@ class TipoNotaController extends Controller
             return redirect()->back()->with('error', 'Error al actualizar la nota.');
         }
     }
+
 
     /**
      * Elimina una nota.
@@ -172,5 +177,18 @@ class TipoNotaController extends Controller
             DB::rollBack();
             return redirect()->back()->with('error', 'Error al eliminar la nota.');
         }
+    }
+
+    /**
+     * Genera un PDF con la información de una nota.
+     */
+    public function generarPDF($codigo)
+    {
+        $nota = TipoNota::with(['responsableEmpleado', 'bodega', 'detalles.producto', 'detalles.tipoEmpaque', 'transaccionProducto'])
+            ->findOrFail($codigo);
+
+        $pdf = PDF::loadView('tipoNota.pdf', compact('nota'));
+
+        return $pdf->download("Nota_{$nota->codigo}.pdf");
     }
 }

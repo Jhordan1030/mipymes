@@ -39,7 +39,6 @@
     <table class="table table-bordered mt-3">
         <thead>
             <tr>
-                <th>ID</th>
                 <th>CÓDIGO NOTA</th>
                 <th>TIPO NOTA</th>
                 <th>ESTADO</th>
@@ -50,7 +49,6 @@
         <tbody>
             @foreach ($transacciones as $transaccion)
                 <tr>
-                    <td>{{ $transaccion->id }}</td>
                     <td>{{ $transaccion->tipoNota->codigo }}</td>
                     <td>{{ $transaccion->tipoNota->tiponota }}</td>
                     <td>
