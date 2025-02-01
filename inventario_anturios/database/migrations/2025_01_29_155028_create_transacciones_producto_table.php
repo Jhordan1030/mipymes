@@ -9,9 +9,9 @@ return new class extends Migration {
     {
         Schema::create('transaccion_producto', function (Blueprint $table) {
             $table->id();
-            $table->string('tipo_nota_id', 50); // Clave foránea a 'tipo_nota'
+            $table->string('tipo_nota_id', 50);
             $table->foreign('tipo_nota_id')->references('codigo')->on('tipo_nota')->onDelete('cascade');
-            $table->enum('estado', ['PENDIENTE', 'FINALIZADA'])->default('PENDIENTE'); // Estado de la transacción
+            $table->enum('estado', ['PENDIENTE', 'FINALIZADA'])->default('PENDIENTE');
             $table->timestamps();
         });
     }

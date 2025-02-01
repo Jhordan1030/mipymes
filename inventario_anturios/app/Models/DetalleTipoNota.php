@@ -19,7 +19,7 @@ class DetalleTipoNota extends Model
 
     public function tipoNota()
     {
-        return $this->belongsTo(TipoNota::class, 'tipo_nota_id');
+        return $this->belongsTo(TipoNota::class, 'tipo_nota_id', 'codigo');
     }
 
     public function producto()

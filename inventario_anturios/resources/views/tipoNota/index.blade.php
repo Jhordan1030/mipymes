@@ -34,14 +34,18 @@
                 <tr>
                     <td>{{ $nota->codigo }}</td>
                     <td>{{ $nota->tiponota }}</td>
-                    <td>{{ $nota->responsableEmpleado->nombreemp ?? 'N/A' }} {{ $nota->responsableEmpleado->apellidoemp ?? '' }}</td>
+                    <td>{{ optional($nota->responsableEmpleado)->nombreemp ?? 'N/A' }} {{ optional($nota->responsableEmpleado)->apellidoemp ?? '' }}</td>
+
+                    {{-- 🔹 Mostrar productos asociados a la nota --}}
                     <td>
                         <ul>
                             @foreach ($nota->detalles as $detalle)
-                                <li>{{ $detalle->producto->nombre ?? 'N/A' }}</li>
+                                <li>{{ optional($detalle->producto)->nombre ?? 'N/A' }}</li>
                             @endforeach
                         </ul>
                     </td>
+
+                    {{-- 🔹 Mostrar cantidad de productos --}}
                     <td>
                         <ul>
                             @foreach ($nota->detalles as $detalle)
@@ -49,24 +53,31 @@
                             @endforeach
                         </ul>
                     </td>
+
+                    {{-- 🔹 Mostrar tipo de empaque --}}
                     <td>
                         <ul>
                             @foreach ($nota->detalles as $detalle)
-                                <li>{{ $detalle->producto->tipoempaque ?? 'Sin Empaque' }}</li>
+                                <li>{{ optional($detalle->producto)->tipoempaque ?? 'Sin Empaque' }}</li>
                             @endforeach
                         </ul>
                     </td>
-                    <td>{{ $nota->bodega->nombrebodega ?? 'N/A' }}</td>
+
+                    <td>{{ optional($nota->bodega)->nombrebodega ?? 'N/A' }}</td>
                     <td>{{ $nota->fechanota }}</td>
+
+                    {{-- 🔹 Estado de la nota --}}
                     <td>
-                        @if($nota->transaccionProducto)
-                            <span class="badge bg-info">{{ $nota->transaccionProducto->estado }}</span>
+                        @if(optional($nota->transaccion)->estado)
+                            <span class="badge bg-info">{{ $nota->transaccion->estado }}</span>
                         @else
                             <span class="badge bg-secondary">Sin Confirmar</span>
                         @endif
                     </td>
+
+                    {{-- 🔹 Acciones --}}
                     <td>
-                        @if(!$nota->transaccionProducto)
+                        @if(!$nota->transaccion)
                             <form action="{{ route('tipoNota.confirmar', $nota->codigo) }}" method="POST" style="display:inline;">
                                 @csrf
                                 <button type="submit" class="btn btn-success">Confirmar</button>
@@ -78,6 +89,7 @@
                             <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de eliminar esta nota?')">Eliminar</button>
                         </form>
                     </td>
+
                     <td>
                         <a href="{{ route('tipoNota.pdf', $nota->codigo) }}" class="btn btn-danger">Descargar PDF</a>
                     </td>

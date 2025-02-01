@@ -26,10 +26,10 @@
             </div>
 
             <div class="mb-3">
-                <label for="idempleado" class="form-label">Solicitante</label>
-                <select name="idempleado" class="form-control" required>
+                <label for="nro_identificacion" class="form-label">Solicitante</label>
+                <select name="nro_identificacion" class="form-control" required>
                     @foreach ($empleados as $empleado)
-                        <option value="{{ $empleado->idempleado }}">{{ $empleado->nombreemp }} {{ $empleado->apellidoemp }}</option>
+                        <option value="{{ $empleado->nro_identificacion }}">{{ $empleado->nombreemp }} {{ $empleado->apellidoemp }}</option>
                     @endforeach
                 </select>
             </div>
@@ -96,7 +96,6 @@
                 }
             });
 
-            // Actualizar tipo de empaque y validar cantidad según stock disponible
             document.addEventListener('change', function (e) {
                 if (e.target.classList.contains('producto-select')) {
                     let selectedOption = e.target.options[e.target.selectedIndex];
@@ -107,16 +106,6 @@
 
                     cantidadInput.setAttribute('max', stock);
                     tipoempaqueInput.value = tipoempaque;
-                }
-            });
-
-            document.addEventListener('input', function (e) {
-                if (e.target.classList.contains('cantidad-input')) {
-                    let maxStock = e.target.getAttribute('max');
-                    if (parseInt(e.target.value) > parseInt(maxStock)) {
-                        alert('La cantidad ingresada supera el stock disponible.');
-                        e.target.value = maxStock;
-                    }
                 }
             });
         });

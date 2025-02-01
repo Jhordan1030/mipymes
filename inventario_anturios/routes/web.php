@@ -39,11 +39,11 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('tipoempaque', TipoEmpaquesController::class);
     Route::resource('tipoNota', TipoNotaController::class);
 
-    // 🔹 Ruta para confirmar una Nota y crear una transacción
+    // ✅ Ruta para confirmar una Nota y crear una transacción
     Route::post('/tipoNota/confirmar/{codigo}', [TransaccionProductoController::class, 'confirmar'])
         ->name('tipoNota.confirmar');
 
-    // 🔹 Rutas para Transacción Producto
+    // ✅ Rutas para Transacción Producto
     Route::get('/transaccionProducto', [TransaccionProductoController::class, 'index'])
         ->name('transaccionProducto.index');
 
@@ -54,6 +54,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/transaccionProducto/finalizar/{id}', [TransaccionProductoController::class, 'finalizar'])
         ->name('transaccionProducto.finalizar');
 
+    // ✅ Generar PDF de Tipo Nota
     Route::get('tipoNota/pdf/{codigo}', [TipoNotaController::class, 'generarPDF'])->name('tipoNota.pdf');
 });
 

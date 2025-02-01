@@ -32,10 +32,10 @@
             </div>
 
             <div class="mb-3">
-                <label for="idempleado" class="form-label">Solicitante</label>
-                <select name="idempleado" class="form-control" required>
+                <label for="nro_identificacion" class="form-label">Solicitante</label>
+                <select name="nro_identificacion" class="form-control" required>
                     @foreach ($empleados as $empleado)
-                        <option value="{{ $empleado->idempleado }}" {{ $tipoNota->idempleado == $empleado->idempleado ? 'selected' : '' }}>
+                        <option value="{{ $empleado->nro_identificacion }}" {{ $tipoNota->nro_identificacion == $empleado->nro_identificacion ? 'selected' : '' }}>
                             {{ $empleado->nombreemp }} {{ $empleado->apellidoemp }}
                         </option>
                     @endforeach
@@ -50,7 +50,8 @@
                             <label for="codigoproducto[]" class="form-label">Producto</label>
                             <select name="codigoproducto[]" class="form-control producto-select" required>
                                 @foreach ($productos as $producto)
-                                    <option value="{{ $producto->codigo }}" data-stock="{{ $producto->cantidad }}" data-tipoempaque="{{ $producto->tipoempaque }}" {{ $detalle->codigoproducto == $producto->codigo ? 'selected' : '' }}>
+                                    <option value="{{ $producto->codigo }}" data-stock="{{ $producto->cantidad }}" data-tipoempaque="{{ $producto->tipoempaque }}"
+                                        {{ $detalle->codigoproducto == $producto->codigo ? 'selected' : '' }}>
                                         {{ $producto->nombre }}
                                     </option>
                                 @endforeach
