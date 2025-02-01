@@ -7,77 +7,62 @@ use App\Models\Cargo;
 
 class CargoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $cargos = Cargo::orderBy('nombrecargo', 'DESC')->paginate(3);
+        $cargos = Cargo::paginate(10);
         return view('cargo.index', compact('cargos'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('cargo.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
-            'codigocargo' => 'required',
-            'nombrecargo' => 'required|max:1024',
+            'codigocargo' => 'required|string|max:50|unique:cargos,codigocargo',
+            'nombrecargo' => 'required|string|max:100|unique:cargos,nombrecargo|regex:/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/',
+        ], [
+            'codigocargo.unique' => 'El código del cargo ya existe.',
+            'nombrecargo.unique' => 'El nombre del cargo ya existe.',
+            'nombrecargo.regex' => 'El nombre del cargo solo puede contener letras y espacios.',
         ]);
 
         Cargo::create($request->all());
-        return redirect()->route('cargo.index')->with('success', 'Registro creado satisfactoriamente');
+
+        return redirect()->route('cargo.index')->with('success', 'Cargo creado con éxito.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $idcargo)
+    public function edit($codigocargo)
     {
-        $cargo = Cargo::findOrFail($idcargo); // Cambia a findOrFail para manejar errores si no se encuentra
-        return view('cargo.show', compact('cargo'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $idcargo)
-    {
-        $cargo = Cargo::findOrFail($idcargo); // Cambia a findOrFail para mayor seguridad
+        $cargo = Cargo::where('codigocargo', $codigocargo)->firstOrFail();
         return view('cargo.edit', compact('cargo'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $idcargo)
+    public function update(Request $request, $codigocargo)
     {
+        $cargo = Cargo::where('codigocargo', $codigocargo)->firstOrFail();
+
         $request->validate([
-            'codigocargo' => 'required',
-            'nombrecargo' => 'required|max:1024',
+            'codigocargo' => "required|string|max:50|unique:cargos,codigocargo,$codigocargo,codigocargo",
+            'nombrecargo' => "required|string|max:100|unique:cargos,nombrecargo,$codigocargo,codigocargo|regex:/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/",
+        ], [
+            'codigocargo.unique' => 'El código del cargo ya existe.',
+            'nombrecargo.unique' => 'El nombre del cargo ya existe.',
+            'nombrecargo.regex' => 'El nombre del cargo solo puede contener letras y espacios.',
         ]);
 
-        $cargo = Cargo::findOrFail($idcargo); // Cambia a findOrFail para manejar errores si no se encuentra
         $cargo->update($request->all());
 
-        return redirect()->route('cargo.index')->with('success', 'Registro actualizado satisfactoriamente');
+        return redirect()->route('cargo.index')->with('success', 'Cargo actualizado con éxito.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $idcargo)
+    public function destroy($codigocargo)
     {
-        Cargo::findOrFail($idcargo)->delete(); // Cambia a findOrFail para manejar errores si no se encuentra
-        return redirect()->route('cargo.index')->with('success', 'Registro eliminado satisfactoriamente');
+        $cargo = Cargo::where('codigocargo', $codigocargo)->firstOrFail();
+        $cargo->delete();
+
+        return redirect()->route('cargo.index')->with('success', 'Cargo eliminado con éxito.');
     }
 }

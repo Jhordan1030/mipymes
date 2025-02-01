@@ -23,13 +23,13 @@ class ProductoController extends Controller
 
 
     public function create()
-    {
-        // Definir las opciones de tipo de empaque
-        $tipoempaques = ['Paquete', 'Caja', 'Unidad'];
+{
+    // Obtenemos todos los registros de tipoempaques
+    $tipoempaques = \App\Models\TipoEmpaque::all();
 
-        // Pasar las opciones a la vista
-        return view('producto.create', compact('tipoempaques'));
-    }
+    // Pasamos los datos a la vista
+    return view('producto.create', compact('tipoempaques'));
+}
 
 
     public function store(Request $request)
@@ -39,7 +39,7 @@ class ProductoController extends Controller
             'nombre' => 'required|string|max:50',
             'descripcion' => 'required|string|max:255',
             'cantidad' => 'required|integer|min:1',
-            'tipoempaque' => 'nullable|in:Paquete,Caja,Unidad', // Validar las opciones
+            'codigotipoempaque' => 'nullable|string|exists:tipoempaques,codigotipoempaque',
         ]);
 
         Producto::create($validatedData);
@@ -50,9 +50,7 @@ class ProductoController extends Controller
     public function edit($id)
     {
         $producto = Producto::findOrFail($id);
-
-        // Definir las opciones de tipo de empaque
-        $tipoempaques = ['Paquete', 'Caja', 'Unidad'];
+        $tipoempaques = TipoEmpaque::all();
 
         return view('producto.edit', compact('producto', 'tipoempaques'));
     }
@@ -64,7 +62,7 @@ class ProductoController extends Controller
             'nombre' => 'required|string|max:50',
             'descripcion' => 'required|string|max:255',
             'cantidad' => 'required|integer|min:1',
-            'tipoempaque' => 'nullable|in:Paquete,Caja,Unidad', // Validar las opciones
+            'codigotipoempaque' => 'nullable|string|exists:tipoempaques,codigotipoempaque',
         ]);
 
         $producto = Producto::findOrFail($id);
