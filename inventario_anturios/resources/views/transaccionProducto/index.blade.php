@@ -84,6 +84,7 @@
                                 <span class="badge bg-secondary">Completado</span>
                             @endif
                         </td>
+
                     </tr>
                 @endforeach
                 </tbody>

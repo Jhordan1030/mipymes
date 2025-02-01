@@ -4,12 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\TransaccionProducto;
 use App\Models\TipoNota;
+use App\Models\Producto;
+use App\Models\DetalleTipoNota;
 use Illuminate\Http\Request;
-use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 
 class TransaccionProductoController extends Controller
 {
+    /**
+     * Lista todas las transacciones
+     */
     public function index(Request $request)
     {
         $search = $request->input('search');
@@ -34,6 +38,10 @@ class TransaccionProductoController extends Controller
 
         return view('transaccionProducto.index', compact('transacciones', 'pendientes', 'finalizadas', 'search', 'estado'));
     }
+
+    /**
+     * Confirma la nota, pero NO modifica el stock.
+     */
     public function confirmar($codigo)
     {
         try {
@@ -42,53 +50,63 @@ class TransaccionProductoController extends Controller
             // Buscar la nota
             $nota = TipoNota::with('detalles')->where('codigo', $codigo)->firstOrFail();
 
-            // Crear la transacción
-            $transaccion = TransaccionProducto::create([
+            // Crear la transacción sin modificar el stock aún
+            TransaccionProducto::create([
                 'tipo_nota_id' => $nota->codigo,
                 'estado' => 'PENDIENTE',
             ]);
 
             DB::commit();
-            return redirect()->route('tipoNota.index')->with('success', 'Nota confirmada y transacción creada.');
+            return redirect()->route('tipoNota.index')->with('success', 'Nota confirmada. Ahora debes finalizar la transacción.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Error al confirmar la nota.');
+            return redirect()->back()->with('error', 'Error al confirmar la nota: ' . $e->getMessage());
         }
     }
 
+    /**
+     * Finaliza la transacción y ACTUALIZA el stock
+     */
     public function finalizar($id)
     {
         try {
             DB::beginTransaction();
 
-            $transaccion = TransaccionProducto::with('tipoNota.detalles.producto')->findOrFail($id);
+            // 🔹 Buscar la transacción
+            $transaccion = TransaccionProducto::findOrFail($id);
+            $nota = $transaccion->tipoNota;
 
-            // Verificar el tipo de nota (ENVIO o DEVOLUCION)
-            $tipoNota = $transaccion->tipoNota;
+            // 🔹 Buscar los detalles asociados a la nota
+            $detalles = DetalleTipoNota::where('tipo_nota_id', $nota->codigo)->get();
 
-            foreach ($tipoNota->detalles as $detalle) {
-                $producto = $detalle->producto;
-                if ($producto) {
-                    if ($tipoNota->tiponota === 'ENVIO') {
-                        // Restar del stock en caso de ENVIO
-                        $producto->cantidad -= $detalle->cantidad;
-                    } elseif ($tipoNota->tiponota === 'DEVOLUCION') {
-                        // Sumar al stock en caso de DEVOLUCION
-                        $producto->cantidad += $detalle->cantidad;
+            foreach ($detalles as $detalle) {
+                $producto = Producto::where('codigo', $detalle->codigoproducto)->firstOrFail();
+
+                // 🔹 Modificar cantidad según el tipo de nota
+                if ($nota->tiponota === 'ENVIO') {
+                    if ($producto->cantidad < $detalle->cantidad) {
+                        DB::rollBack();
+                        return redirect()->back()->with('error', "Stock insuficiente para el producto: {$producto->nombre}.");
                     }
-                    $producto->save(); // Guardar la actualización del stock
+                    $producto->cantidad -= $detalle->cantidad;
+                } elseif ($nota->tiponota === 'DEVOLUCION') {
+                    $producto->cantidad += $detalle->cantidad;
                 }
+
+                $producto->save();
             }
 
-            // Marcar la transacción como FINALIZADA
-            $transaccion->update(['estado' => 'FINALIZADA']);
+            // 🔹 Marcar la transacción como finalizada
+            $transaccion->estado = 'FINALIZADA';
+            $transaccion->save();
 
             DB::commit();
-
-            return redirect()->route('transaccionProducto.index')->with('success', 'Transacción finalizada correctamente y stock actualizado.');
+            return redirect()->route('transaccionProducto.index')->with('success', 'Transacción finalizada correctamente.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['error' => 'Error al finalizar la transacción: ' . $e->getMessage()]);
+            return redirect()->back()->with('error', 'Error al finalizar la transacción: ' . $e->getMessage());
         }
     }
+
+
 }

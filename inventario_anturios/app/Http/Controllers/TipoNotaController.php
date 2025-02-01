@@ -25,7 +25,6 @@ class TipoNotaController extends Controller
         return view('tipoNota.index', compact('tipoNotas'));
     }
 
-
     /**
      * Muestra el formulario para crear una nueva nota.
      */
@@ -43,23 +42,27 @@ class TipoNotaController extends Controller
      */
     public function store(Request $request)
     {
+        // 🔹 Verificar los datos recibidos (descomentar para pruebas)
+        // dd($request->all());
+
+        // 🔹 Validar los datos
         $request->validate([
             'tiponota' => 'required|string|max:255',
             'nro_identificacion' => 'required|exists:empleados,nro_identificacion',
-            'idbodega' => 'required|exists:bodegas,idbodega',
-            'codigoproducto' => 'required|array',
-            'cantidad' => 'required|array',
+            'idbodega' => 'required|string|exists:bodegas,idbodega',
+            'codigoproducto' => 'required|array|min:1',
+            'cantidad' => 'required|array|min:1',
         ]);
 
         try {
             DB::beginTransaction();
 
-            // 🔹 Generar automáticamente el código en formato TN-1, TN-2...
+            // 🔹 Generar el código único (TN-1, TN-2, ...)
             $ultimoCodigo = TipoNota::latest('codigo')->first();
             $numero = $ultimoCodigo ? intval(str_replace('TN-', '', $ultimoCodigo->codigo)) + 1 : 1;
             $codigoGenerado = 'TN-' . $numero;
 
-            // 🔹 Crear la nueva nota con la fecha actual
+            // 🔹 Crear la nueva nota
             $nota = TipoNota::create([
                 'codigo' => $codigoGenerado,
                 'tiponota' => $request->tiponota,
@@ -68,7 +71,7 @@ class TipoNotaController extends Controller
                 'fechanota' => now(),
             ]);
 
-            // 🔹 Guardar los productos en la tabla de detalles
+            // 🔹 Guardar los detalles sin modificar el stock
             foreach ($request->codigoproducto as $index => $productoId) {
                 DetalleTipoNota::create([
                     'tipo_nota_id' => $nota->codigo,
@@ -79,9 +82,9 @@ class TipoNotaController extends Controller
 
             DB::commit();
             return redirect()->route('tipoNota.index')->with('success', 'Nota creada exitosamente.');
-        } catch (QueryException $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Error al crear la nota.');
+            return redirect()->back()->with('error', 'Error al crear la nota: ' . $e->getMessage());
         }
     }
 
@@ -115,12 +118,13 @@ class TipoNotaController extends Controller
      */
     public function update(Request $request, $codigo)
     {
+        // 🔹 Validar los datos
         $request->validate([
             'tiponota' => 'required|string|max:255',
             'nro_identificacion' => 'required|exists:empleados,nro_identificacion',
-            'idbodega' => 'required|exists:bodegas,idbodega',
-            'codigoproducto' => 'required|array',
-            'cantidad' => 'required|array',
+            'idbodega' => 'required|string|exists:bodegas,idbodega',
+            'codigoproducto' => 'required|array|min:1',
+            'cantidad' => 'required|array|min:1',
         ]);
 
         try {

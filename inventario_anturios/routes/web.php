@@ -56,6 +56,10 @@ Route::middleware(['auth'])->group(function () {
 
     // ✅ Generar PDF de Tipo Nota
     Route::get('tipoNota/pdf/{codigo}', [TipoNotaController::class, 'generarPDF'])->name('tipoNota.pdf');
+
+    Route::post('/transaccionProducto/finalizar/{id}', [TransaccionProductoController::class, 'finalizar'])
+        ->name('transaccionProducto.finalizar');
+
 });
 
 // 🔹 Redirigir la raíz al login si no está autenticado

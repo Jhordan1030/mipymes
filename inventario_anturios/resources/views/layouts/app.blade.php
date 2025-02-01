@@ -27,13 +27,40 @@
         .logout-btn:hover {
             color: #ff4500 !important; /* Cambia el color al pasar el mouse */
         }
+
+        /* Ajustes para dispositivos móviles */
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.2rem; /* Tamaño más pequeño para el logo */
+            }
+
+            .navbar-nav .nav-link {
+                padding: 0.5rem 1rem; /* Espaciado más pequeño para los enlaces */
+            }
+
+            .dropdown-menu {
+                background-color: #343a40; /* Fondo oscuro para el menú desplegable */
+            }
+
+            .dropdown-item {
+                color: #fff !important; /* Texto blanco para los elementos del menú desplegable */
+            }
+
+            .dropdown-item:hover {
+                background-color: #495057; /* Color de fondo al pasar el mouse */
+            }
+
+            .logout-btn {
+                padding: 0.5rem 1rem; /* Espaciado para el botón de cerrar sesión */
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-    @if (Auth::check())
+<!-- Navbar -->
+@if (Auth::check())
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <div class="container">
+        <div class="container-fluid">
             <a class="navbar-brand" href="#">Gestión de Inventario</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -90,14 +117,14 @@
             </div>
         </div>
     </nav>
-    @endif
+@endif
 
-    <!-- Content -->
-    <div class="container">
-        @yield('content')
-    </div>
+<!-- Content -->
+<div class="container">
+    @yield('content')
+</div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

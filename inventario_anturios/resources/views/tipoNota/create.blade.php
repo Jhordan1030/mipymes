@@ -19,7 +19,7 @@
 
             <div class="mb-3">
                 <label for="tiponota" class="form-label">Tipo de Nota</label>
-                <select name="tiponota" class="form-control" required>
+                <select name="tiponota" id="tiponota-select" class="form-control" required>
                     <option value="ENVIO">Envío</option>
                     <option value="DEVOLUCION">Devolución</option>
                 </select>
@@ -29,7 +29,9 @@
                 <label for="nro_identificacion" class="form-label">Solicitante</label>
                 <select name="nro_identificacion" class="form-control" required>
                     @foreach ($empleados as $empleado)
-                        <option value="{{ $empleado->nro_identificacion }}">{{ $empleado->nombreemp }} {{ $empleado->apellidoemp }}</option>
+                        <option value="{{ $empleado->nro_identificacion }}">
+                            {{ $empleado->nombreemp }} {{ $empleado->apellidoemp }}
+                        </option>
                     @endforeach
                 </select>
             </div>
@@ -77,15 +79,13 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const productosContainer = document.getElementById('productos-container');
+            const tipoNotaSelect = document.getElementById('tiponota-select');
+
             document.addEventListener('click', function (e) {
                 if (e.target.classList.contains('add-producto')) {
                     e.preventDefault();
-                    const container = document.getElementById('productos-container');
-                    const newRow = document.querySelector('.producto-row').cloneNode(true);
-
-                    newRow.querySelectorAll('select, input').forEach(input => input.value = '');
-
-                    container.appendChild(newRow);
+                    agregarProducto();
                 }
 
                 if (e.target.classList.contains('remove-producto')) {
@@ -98,14 +98,67 @@
 
             document.addEventListener('change', function (e) {
                 if (e.target.classList.contains('producto-select')) {
-                    let selectedOption = e.target.options[e.target.selectedIndex];
-                    let stock = selectedOption.getAttribute('data-stock');
-                    let tipoempaque = selectedOption.getAttribute('data-tipoempaque');
-                    let cantidadInput = e.target.closest('.producto-row').querySelector('.cantidad-input');
-                    let tipoempaqueInput = e.target.closest('.producto-row').querySelector('.tipoempaque-input');
+                    actualizarDatosProducto(e.target);
+                }
+            });
 
-                    cantidadInput.setAttribute('max', stock);
-                    tipoempaqueInput.value = tipoempaque;
+            tipoNotaSelect.addEventListener('change', function () {
+                actualizarValidacionCantidad();
+            });
+
+            function agregarProducto() {
+                const firstRow = document.querySelector('.producto-row');
+                const newRow = firstRow.cloneNode(true);
+
+                newRow.querySelectorAll('select, input').forEach(input => {
+                    if (input.tagName === 'SELECT') {
+                        input.selectedIndex = 0;
+                    } else {
+                        input.value = '';
+                    }
+                });
+
+                productosContainer.appendChild(newRow);
+                actualizarValidacionCantidad();
+            }
+
+            function actualizarDatosProducto(selectElement) {
+                let selectedOption = selectElement.options[selectElement.selectedIndex];
+                let stock = selectedOption.getAttribute('data-stock') || 0;
+                let tipoEmpaque = selectedOption.getAttribute('data-tipoempaque');
+
+                let cantidadInput = selectElement.closest('.producto-row').querySelector('.cantidad-input');
+                let tipoEmpaqueInput = selectElement.closest('.producto-row').querySelector('.tipoempaque-input');
+
+                cantidadInput.setAttribute('max', stock);
+                tipoEmpaqueInput.value = tipoEmpaque;
+
+                actualizarValidacionCantidad();
+            }
+
+            function actualizarValidacionCantidad() {
+                let tipoNota = tipoNotaSelect.value;
+                document.querySelectorAll('.cantidad-input').forEach(input => {
+                    let productoSelect = input.closest('.producto-row').querySelector('.producto-select');
+                    let maxStock = parseInt(productoSelect.selectedOptions[0].getAttribute('data-stock')) || 0;
+
+                    if (tipoNota === 'ENVIO') {
+                        input.setAttribute('max', maxStock);
+                    } else {
+                        input.removeAttribute('max');
+                    }
+                });
+            }
+
+            document.addEventListener('input', function (e) {
+                if (e.target.classList.contains('cantidad-input')) {
+                    let tipoNota = tipoNotaSelect.value;
+                    let maxStock = parseInt(e.target.getAttribute('max')) || 0;
+
+                    if (tipoNota === 'ENVIO' && parseInt(e.target.value) > maxStock) {
+                        alert('La cantidad ingresada supera el stock disponible.');
+                        e.target.value = maxStock;
+                    }
                 }
             });
         });
