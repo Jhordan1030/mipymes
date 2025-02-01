@@ -33,36 +33,35 @@
     <div class="mb-3 text-right">
         <a href="{{ route('empleado.create') }}" class="btn btn-primary" style="background-color: #88022D">Añadir Empleado</a>
         <a href="{{ route('cargo.index') }}" class="btn btn-primary" style="background-color: #88022D">Añadir Cargo</a>
-        <a href="{{ route('tipoidentificacion.index') }}" class="btn btn-primary" style="background-color: #88022D">Añadir Tipo de Identidad</a>
     </div>
 
     <!-- Tabla de empleados -->
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
+                <th>Nro. Identificación</th>
                 <th>Nombre</th>
                 <th>Apellido</th>
                 <th>Tipo de Identificación</th>
                 <th>Bodega</th>
                 <th>Cargo</th>
                 <th>Email</th>
-                <th>Nro. Identificación</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
             @forelse ($empleados as $empleado)
             <tr>
+                <td>{{ $empleado->nro_identificacion }}</td>
                 <td>{{ $empleado->nombreemp }}</td>
                 <td>{{ $empleado->apellidoemp }}</td>
-                <td>{{ $empleado->tipoIdentificacion->nombreidentificacion ?? 'N/A' }}</td>
+                <td>{{ $empleado->tipo_identificacion }}</td> 
                 <td>{{ $empleado->bodega->nombrebodega ?? 'N/A' }}</td>
                 <td>{{ $empleado->cargo->nombrecargo ?? 'N/A' }}</td>
                 <td>{{ $empleado->email }}</td>
-                <td>{{ $empleado->nro_identificacion }}</td>
                 <td>
-                    <a href="{{ route('empleado.edit', $empleado->idempleado) }}" class="btn btn-sm btn-primary">Editar</a>
-                    <form action="{{ route('empleado.destroy', $empleado->idempleado) }}" method="POST" class="d-inline-block">
+                    <a href="{{ route('empleado.edit', $empleado->nro_identificacion) }}" class="btn btn-sm btn-primary">Editar</a> 
+                    <form action="{{ route('empleado.destroy', $empleado->nro_identificacion) }}" method="POST" class="d-inline-block"> 
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de eliminar este empleado?')">Eliminar</button>
@@ -83,3 +82,4 @@
     </div>
 </div>
 @endsection
+

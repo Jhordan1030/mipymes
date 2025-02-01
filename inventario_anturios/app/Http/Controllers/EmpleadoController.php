@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Empleado;
-use App\Models\TipoIdentificacion;
 use App\Models\Bodega;
 use App\Models\Cargo;
 
@@ -13,7 +12,7 @@ class EmpleadoController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $empleados = Empleado::with('tipoIdentificacion', 'bodega', 'cargo')
+        $empleados = Empleado::with('bodega', 'cargo')
             ->when($search, function ($query, $search) {
                 return $query->where('nombreemp', 'like', "%{$search}%")
                     ->orWhere('nro_identificacion', 'like', "%{$search}%");
@@ -25,55 +24,52 @@ class EmpleadoController extends Controller
 
     public function create()
     {
-        $tipoIdentificaciones = TipoIdentificacion::all();
         $bodegas = Bodega::all();
         $cargos = Cargo::all();
-        return view('empleado.create', compact('tipoIdentificaciones', 'bodegas', 'cargos'));
+        return view('empleado.create', compact('bodegas', 'cargos'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'nombreemp' => 'required|max:50',
-            'apellidoemp' => 'required|max:50',
-            'email' => 'required|email|max:100',
-            'nro_telefono' => 'required|max:20',
-            'direccionemp' => 'required|max:255',
-            'ididentificacion' => 'required|exists:tipoidentificaciones,ididentificacion',
-            'idbodega' => 'required|exists:bodegas,idbodega',
-            'idcargo' => 'required|exists:cargos,idcargo',
-            'nro_identificacion' => 'required|max:20|unique:empleados,nro_identificacion',
+            'nombreemp' => 'required|regex:/^[a-zA-ZÁÉÍÓÚáéíóúÑñ ]+$/',
+            'apellidoemp' => 'required|regex:/^[a-zA-ZÁÉÍÓÚáéíóúÑñ ]+$/',
+            'email' => 'required|email|max:100|unique:empleados,email',
+            'nro_telefono' => 'required|digits:10',
+            'direccionemp' => 'required|string|min:5|max:100',
+            'tipo_identificacion' => 'required|in:Cedula,RUC,Pasaporte',
+            'nro_identificacion' => 'required',
+            'idbodega' => 'required',
+            'codigocargo' => 'required|exists:cargos,codigocargo', // Cambio de idcargo a codigocargo
         ]);
 
         Empleado::create($request->all());
 
-        return redirect()->route('empleado.index')->with('success', 'Empleado creado exitosamente.');
+        return redirect()->route('empleado.index')->with('success', 'Empleado creado con éxito.');
     }
 
-    public function edit($idempleado)
+    public function edit($nro_identificacion)
     {
-        $empleado = Empleado::findOrFail($idempleado);
-        $tipoIdentificaciones = TipoIdentificacion::all();
+        $empleado = Empleado::findOrFail($nro_identificacion);
         $bodegas = Bodega::all();
         $cargos = Cargo::all();
 
-        return view('empleado.edit', compact('empleado', 'tipoIdentificaciones', 'bodegas', 'cargos'));
+        return view('empleado.edit', compact('empleado', 'bodegas', 'cargos'));
     }
 
-    public function update(Request $request, $idempleado)
+    public function update(Request $request, $nro_identificacion)
     {
-        $empleado = Empleado::findOrFail($idempleado);
+        $empleado = Empleado::findOrFail($nro_identificacion);
 
         $request->validate([
-            'nombreemp' => 'required|max:50',
-            'apellidoemp' => 'required|max:50',
-            'email' => 'required|email|max:100',
-            'nro_telefono' => 'required|max:20',
-            'direccionemp' => 'required|max:255',
-            'ididentificacion' => 'required|exists:tipoidentificaciones,ididentificacion',
-            'idbodega' => 'required|exists:bodegas,idbodega',
-            'idcargo' => 'required|exists:cargos,idcargo',
-            'nro_identificacion' => "required|max:20|unique:empleados,nro_identificacion,$idempleado,idempleado",
+            'nombreemp' => 'required|regex:/^[a-zA-ZÁÉÍÓÚáéíóúÑñ ]+$/|max:50',
+            'apellidoemp' => 'required|regex:/^[a-zA-ZÁÉÍÓÚáéíóúÑñ ]+$/|max:50',
+            'email' => 'required|email|max:100|unique:empleados,email,' . $nro_identificacion . ',nro_identificacion',
+            'nro_telefono' => 'required|digits:10',
+            'direccionemp' => 'required|string|min:5|max:100',
+            'tipo_identificacion' => 'required|in:Cedula,RUC,Pasaporte',
+            'nro_identificacion' => 'required',
+            'codigocargo' => 'required|exists:cargos,codigocargo', // Cambio de idcargo a codigocargo
         ]);
 
         $empleado->update($request->all());
@@ -81,12 +77,10 @@ class EmpleadoController extends Controller
         return redirect()->route('empleado.index')->with('success', 'Empleado actualizado exitosamente.');
     }
 
-
-    public function destroy($idempleado)
+    public function destroy($nro_identificacion)
     {
-        Empleado::findOrFail($idempleado)->delete();
+        Empleado::findOrFail($nro_identificacion)->delete();
 
         return redirect()->route('empleado.index')->with('success', 'Empleado eliminado exitosamente.');
     }
 }
-

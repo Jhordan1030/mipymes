@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Producto;
@@ -20,32 +21,56 @@ class ProductoController extends Controller
         return view('producto.index', compact('productos'));
     }
 
-   
+
 
     public function create()
-{
-    // Obtenemos todos los registros de tipoempaques
-    $tipoempaques = \App\Models\TipoEmpaque::all();
+    {
+        // Obtenemos todos los registros de tipoempaques
+        $tipoempaques = \App\Models\TipoEmpaque::all();
 
-    // Pasamos los datos a la vista
-    return view('producto.create', compact('tipoempaques'));
-}
+        // Pasamos los datos a la vista
+        return view('producto.create', compact('tipoempaques'));
+    }
 
 
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
+        $request->validate([
             'codigo' => 'required|string|max:10|unique:productos,codigo',
-            'nombre' => 'required|string|max:50',
-            'descripcion' => 'required|string|max:255',
+            'nombre' => 'required|regex:/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/|unique:productos,nombre|max:50',
+            'descripcion' => 'nullable|string',
             'cantidad' => 'required|integer|min:1',
-            'codigotipoempaque' => 'nullable|string|exists:tipoempaques,codigotipoempaque',
+            'codigotipoempaque' => 'nullable|exists:tipoempaques,codigotipoempaque'
+        ], [
+            'nombre.regex' => 'El nombre del producto solo puede contener letras y espacios.',
+            'nombre.unique' => 'El nombre del producto ya existe en la base de datos.'
         ]);
 
-        Producto::create($validatedData);
+        Producto::create($request->all());
 
-        return redirect()->route('producto.index')->with('success', 'Producto creado correctamente.');
+        return redirect()->route('producto.index')->with('success', 'Producto creado con éxito.');
     }
+
+    public function update(Request $request, $id)
+    {
+        $producto = Producto::findOrFail($id);
+
+        $request->validate([
+            'codigo' => "required|string|max:10|unique:productos,codigo,$id,id",
+            'nombre' => "required|regex:/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/|unique:productos,nombre,$id,id|max:50",
+            'descripcion' => 'nullable|string',
+            'cantidad' => 'required|integer|min:1',
+            'codigotipoempaque' => 'nullable|exists:tipoempaques,codigotipoempaque'
+        ], [
+            'nombre.regex' => 'El nombre del producto solo puede contener letras y espacios.',
+            'nombre.unique' => 'El nombre del producto ya existe en la base de datos.'
+        ]);
+
+        $producto->update($request->all());
+
+        return redirect()->route('producto.index')->with('success', 'Producto actualizado con éxito.');
+    }
+
 
     public function edit($id)
     {
@@ -53,22 +78,6 @@ class ProductoController extends Controller
         $tipoempaques = TipoEmpaque::all();
 
         return view('producto.edit', compact('producto', 'tipoempaques'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        $validatedData = $request->validate([
-            'codigo' => 'required|string|max:10|unique:productos,codigo,' . $id,
-            'nombre' => 'required|string|max:50',
-            'descripcion' => 'required|string|max:255',
-            'cantidad' => 'required|integer|min:1',
-            'codigotipoempaque' => 'nullable|string|exists:tipoempaques,codigotipoempaque',
-        ]);
-
-        $producto = Producto::findOrFail($id);
-        $producto->update($validatedData);
-
-        return redirect()->route('producto.index')->with('success', 'Producto actualizado correctamente.');
     }
 
     public function destroy($id)
