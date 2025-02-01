@@ -7,7 +7,6 @@ use App\Models\Empleado;
 use App\Models\Bodega;
 use App\Models\Producto;
 use App\Models\DetalleTipoNota;
-use App\Models\TipoEmpaque;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -34,9 +33,8 @@ class TipoNotaController extends Controller
         $empleados = Empleado::all();
         $bodegas = Bodega::all();
         $productos = Producto::all();
-        $tipoempaques = TipoEmpaque::all();
 
-        return view('tipoNota.create', compact('empleados', 'bodegas', 'productos', 'tipoempaques'));
+        return view('tipoNota.create', compact('empleados', 'bodegas', 'productos'));
     }
 
     /**
@@ -53,9 +51,9 @@ class TipoNotaController extends Controller
         ]);
 
         try {
-            DB::beginTransaction(); // Inicia la transacción para garantizar la consistencia
+            DB::beginTransaction();
 
-            // ✅ Generar automáticamente el código en formato TN-1, TN-2, TN-3...
+            // Generar automáticamente el código en formato TN-1, TN-2, TN-3...
             $ultimoCodigo = TipoNota::latest('codigo')->first();
             if ($ultimoCodigo) {
                 $numero = intval(str_replace('TN-', '', $ultimoCodigo->codigo)) + 1;
@@ -64,7 +62,7 @@ class TipoNotaController extends Controller
             }
             $codigoGenerado = 'TN-' . $numero;
 
-            // ✅ Crear la nueva nota con la fecha actual del sistema
+            // Crear la nueva nota con la fecha actual del sistema
             $nota = TipoNota::create([
                 'codigo' => $codigoGenerado,
                 'tiponota' => $request->tiponota,
@@ -73,20 +71,19 @@ class TipoNotaController extends Controller
                 'fechanota' => now(), // Fecha actual del sistema
             ]);
 
-            // ✅ Guardar los productos en la tabla de detalles
+            // Guardar los productos en la tabla de detalles
             foreach ($request->codigoproducto as $index => $productoId) {
                 DetalleTipoNota::create([
                     'tipo_nota_id' => $nota->codigo,
                     'codigoproducto' => $productoId,
                     'cantidad' => $request->cantidad[$index],
-                    'codigotipoempaque' => $request->codigotipoempaque[$index] ?? null,
                 ]);
             }
 
-            DB::commit(); // Confirma la transacción
+            DB::commit();
             return redirect()->route('tipoNota.index')->with('success', 'Nota creada exitosamente.');
         } catch (QueryException $e) {
-            DB::rollBack(); // Revertir transacción en caso de error
+            DB::rollBack();
             return redirect()->back()->with('error', 'Error al crear la nota.');
         }
     }
@@ -109,9 +106,8 @@ class TipoNotaController extends Controller
         $empleados = Empleado::all();
         $bodegas = Bodega::all();
         $productos = Producto::all();
-        $tipoempaques = TipoEmpaque::all();
 
-        return view('tipoNota.edit', compact('tipoNota', 'empleados', 'bodegas', 'productos', 'tipoempaques'));
+        return view('tipoNota.edit', compact('tipoNota', 'empleados', 'bodegas', 'productos'));
     }
 
     /**
@@ -138,16 +134,15 @@ class TipoNotaController extends Controller
                 'idbodega' => $request->idbodega,
             ]);
 
-            // ✅ Eliminar detalles anteriores
+            // Eliminar detalles anteriores
             $nota->detalles()->delete();
 
-            // ✅ Guardar nuevos detalles
+            // Guardar nuevos detalles
             foreach ($request->codigoproducto as $index => $productoId) {
                 DetalleTipoNota::create([
                     'tipo_nota_id' => $nota->codigo,
                     'codigoproducto' => $productoId,
                     'cantidad' => $request->cantidad[$index],
-                    'codigotipoempaque' => $request->codigotipoempaque[$index] ?? null,
                 ]);
             }
 
@@ -158,7 +153,6 @@ class TipoNotaController extends Controller
             return redirect()->back()->with('error', 'Error al actualizar la nota.');
         }
     }
-
 
     /**
      * Elimina una nota.
@@ -184,7 +178,7 @@ class TipoNotaController extends Controller
      */
     public function generarPDF($codigo)
     {
-        $nota = TipoNota::with(['responsableEmpleado', 'bodega', 'detalles.producto', 'detalles.tipoEmpaque', 'transaccionProducto'])
+        $nota = TipoNota::with(['responsableEmpleado', 'bodega', 'detalles.producto', 'transaccionProducto'])
             ->findOrFail($codigo);
 
         $pdf = PDF::loadView('tipoNota.pdf', compact('nota'));

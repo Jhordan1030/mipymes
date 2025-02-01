@@ -10,9 +10,9 @@ class TipoNota extends Model
     use HasFactory;
 
     protected $table = 'tipo_nota';
-    protected $primaryKey = 'codigo'; // Usar 'codigo' como clave primaria
-    public $incrementing = false; // No es autoincremental
-    protected $keyType = 'string'; // Definirlo como string
+    protected $primaryKey = 'codigo';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
         'codigo',

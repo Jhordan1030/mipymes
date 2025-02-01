@@ -34,7 +34,7 @@
                 <tr>
                     <td>{{ $nota->codigo }}</td>
                     <td>{{ $nota->tiponota }}</td>
-                    <td>{{ $nota->responsableEmpleado->nombreemp ?? 'N/A' }}</td>
+                    <td>{{ $nota->responsableEmpleado->nombreemp ?? 'N/A' }} {{ $nota->responsableEmpleado->apellidoemp ?? '' }}</td>
                     <td>
                         <ul>
                             @foreach ($nota->detalles as $detalle)
@@ -52,7 +52,7 @@
                     <td>
                         <ul>
                             @foreach ($nota->detalles as $detalle)
-                                <li>{{ $detalle->tipoEmpaque->nombretipoempaque ?? 'Sin Empaque' }}</li>
+                                <li>{{ $detalle->producto->tipoempaque ?? 'Sin Empaque' }}</li>
                             @endforeach
                         </ul>
                     </td>

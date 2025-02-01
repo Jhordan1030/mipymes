@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,7 +15,6 @@ class DetalleTipoNota extends Model
         'tipo_nota_id',
         'codigoproducto',
         'cantidad',
-        'codigotipoempaque',
     ];
 
     public function tipoNota()
@@ -26,10 +26,4 @@ class DetalleTipoNota extends Model
     {
         return $this->belongsTo(Producto::class, 'codigoproducto', 'codigo');
     }
-
-    public function tipoEmpaque()
-    {
-        return $this->belongsTo(TipoEmpaque::class, 'codigotipoempaque', 'codigotipoempaque');
-    }
 }
-

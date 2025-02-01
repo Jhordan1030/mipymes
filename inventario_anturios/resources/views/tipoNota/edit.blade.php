@@ -48,9 +48,9 @@
                         <input type="hidden" name="detalle_ids[]" value="{{ $detalle->id }}">
                         <div class="col-md-4">
                             <label for="codigoproducto[]" class="form-label">Producto</label>
-                            <select name="codigoproducto[]" class="form-control" required>
+                            <select name="codigoproducto[]" class="form-control producto-select" required>
                                 @foreach ($productos as $producto)
-                                    <option value="{{ $producto->codigo }}" {{ $detalle->codigoproducto == $producto->codigo ? 'selected' : '' }}>
+                                    <option value="{{ $producto->codigo }}" data-stock="{{ $producto->cantidad }}" data-tipoempaque="{{ $producto->tipoempaque }}" {{ $detalle->codigoproducto == $producto->codigo ? 'selected' : '' }}>
                                         {{ $producto->nombre }}
                                     </option>
                                 @endforeach
@@ -58,18 +58,11 @@
                         </div>
                         <div class="col-md-2">
                             <label for="cantidad[]" class="form-label">Cantidad</label>
-                            <input type="number" name="cantidad[]" class="form-control" value="{{ $detalle->cantidad }}" required>
+                            <input type="number" name="cantidad[]" class="form-control cantidad-input" value="{{ $detalle->cantidad }}" required>
                         </div>
                         <div class="col-md-3">
-                            <label for="codigotipoempaque[]" class="form-label">Tipo de Empaque</label>
-                            <select name="codigotipoempaque[]" class="form-control">
-                                <option value="">Sin Empaque</option>
-                                @foreach ($tipoempaques as $tipoEmpaque)
-                                    <option value="{{ $tipoEmpaque->codigotipoempaque }}" {{ $detalle->codigotipoempaque == $tipoEmpaque->codigotipoempaque ? 'selected' : '' }}>
-                                        {{ $tipoEmpaque->nombretipoempaque }}
-                                    </option>
-                                @endforeach
-                            </select>
+                            <label for="tipoempaque[]" class="form-label">Tipo de Empaque</label>
+                            <input type="text" name="tipoempaque[]" class="form-control tipoempaque-input" value="{{ $detalle->producto->tipoempaque }}" readonly>
                         </div>
                         <div class="col-md-2 d-flex align-items-end">
                             <button type="button" class="btn btn-danger remove-producto">x</button>
@@ -110,6 +103,30 @@
                 e.preventDefault();
                 if (document.querySelectorAll('.producto-row').length > 1) {
                     e.target.closest('.producto-row').remove();
+                }
+            }
+        });
+
+        // Actualizar tipo de empaque y validar cantidad según stock disponible
+        document.addEventListener('change', function (e) {
+            if (e.target.classList.contains('producto-select')) {
+                let selectedOption = e.target.options[e.target.selectedIndex];
+                let stock = selectedOption.getAttribute('data-stock');
+                let tipoempaque = selectedOption.getAttribute('data-tipoempaque');
+                let cantidadInput = e.target.closest('.producto-row').querySelector('.cantidad-input');
+                let tipoempaqueInput = e.target.closest('.producto-row').querySelector('.tipoempaque-input');
+
+                cantidadInput.setAttribute('max', stock);
+                tipoempaqueInput.value = tipoempaque;
+            }
+        });
+
+        document.addEventListener('input', function (e) {
+            if (e.target.classList.contains('cantidad-input')) {
+                let maxStock = e.target.getAttribute('max');
+                if (parseInt(e.target.value) > parseInt(maxStock)) {
+                    alert('La cantidad ingresada supera el stock disponible.');
+                    e.target.value = maxStock;
                 }
             }
         });

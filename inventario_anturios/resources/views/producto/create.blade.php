@@ -1,64 +1,39 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h2 class="text-center">Crear Nuevo Producto</h2>
+    <div class="container">
+        <h2 class="text-center">Crear Nuevo Producto</h2>
 
-    <!-- Alertas de validación -->
-    @if ($errors->any())
-    <div class="alert alert-danger">
-        <strong>Error!</strong> Hay problemas con los datos ingresados.<br><br>
-        <ul>
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
-
-    <!-- Formulario -->
-    <form action="{{ route('producto.store') }}" method="POST">
-        @csrf
-
-        <div class="row mb-3">
-            <div class="col-md-6 col-sm-12">
-                <label for="codigo" class="form-label">Código</label>
-                <input type="text" name="codigo" id="codigo" class="form-control" required>
+        <!-- Formulario para crear un producto -->
+        <form action="{{ route('producto.store') }}" method="POST">
+            @csrf
+            <div class="form-group">
+                <label for="codigo">Código</label>
+                <input type="text" name="codigo" class="form-control" required>
             </div>
-            <div class="col-md-6 col-sm-12">
-                <label for="nombre" class="form-label">Nombre</label>
-                <input type="text" name="nombre" id="nombre" class="form-control" required>
+            <div class="form-group">
+                <label for="nombre">Nombre</label>
+                <input type="text" name="nombre" class="form-control" required>
             </div>
-        </div>
-
-        <div class="row mb-3">
-            <div class="col-md-12 col-sm-12">
-                <label for="descripcion" class="form-label">Descripción</label>
-                <textarea name="descripcion" id="descripcion" class="form-control" rows="3" required></textarea>
+            <div class="form-group">
+                <label for="descripcion">Descripción</label>
+                <textarea name="descripcion" class="form-control" required></textarea>
             </div>
-        </div>
-
-        <div class="row mb-3">
-            <div class="col-md-6 col-sm-12">
-                <label for="cantidad" class="form-label">Cantidad</label>
-                <input type="number" name="cantidad" id="cantidad" class="form-control" required>
+            <div class="form-group">
+                <label for="cantidad">Cantidad</label>
+                <input type="number" name="cantidad" class="form-control" required>
             </div>
-            <div class="col-md-6 col-sm-12">
-                <label for="codigotipoempaque" class="form-label">Tipo de Empaque</label>
-                <select name="codigotipoempaque" id="codigotipoempaque" class="form-control">
+            <div class="form-group">
+                <label for="tipoempaque">Tipo de Empaque</label>
+                <select name="tipoempaque" class="form-control">
                     <option value="">Seleccione un tipo de empaque</option>
-                    @foreach ($tipoempaques as $tipoEmpaque)
-                    <option value="{{ $tipoEmpaque->codigotipoempaque }}">{{ $tipoEmpaque->nombretipoempaque }}</option>
-                    @endforeach
+                    <option value="Paquete">Paquete</option>
+                    <option value="Caja">Caja</option>
+                    <option value="Unidad">Unidad</option>
                 </select>
             </div>
-        </div>
-
-        <!-- Botones -->
-        <div class="d-flex justify-content-between mt-3">
-            <a href="{{ route('producto.index') }}" class="btn btn-info">Atrás</a>
-            <button type="submit" class="btn btn-success">Guardar</button>
-        </div>
-    </form>
-</div>
+            <button type="submit" class="btn btn-primary" style="background-color: #88022D">Guardar</button>
+            <a href="{{ route('producto.index') }}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
 @endsection

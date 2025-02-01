@@ -19,9 +19,6 @@ return new class extends Migration {
             $table->foreign('codigoproducto')->references('codigo')->on('productos')->onDelete('cascade');
 
             $table->integer('cantidad');
-            $table->string('codigotipoempaque')->nullable();
-            $table->foreign('codigotipoempaque')->references('codigotipoempaque')->on('tipoempaques')->onDelete('set null');
-
             $table->timestamps();
         });
 
