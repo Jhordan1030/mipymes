@@ -6,9 +6,19 @@ use Illuminate\Http\Request;
 use App\Models\Empleado;
 use App\Models\Bodega;
 use App\Models\Cargo;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests; // Asegúrate de importar esto
 
 class EmpleadoController extends Controller
 {
+     //Aqu[i es donde estoy dando permisos
+    
+     use AuthorizesRequests; 
+     public function __construct()
+ {
+     
+     $this->authorizeResource(Empleado::class, 'empleado'); // ✅ Debe coincidir con la ruta
+ }
+
     public function index(Request $request)
     {
         $search = $request->input('search');

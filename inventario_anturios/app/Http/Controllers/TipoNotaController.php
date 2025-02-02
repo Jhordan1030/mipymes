@@ -7,13 +7,22 @@ use App\Models\Empleado;
 use App\Models\Bodega;
 use App\Models\Producto;
 use App\Models\DetalleTipoNota;
+use Barryvdh\DomPDF\Facade\Pdf; // ✅ Importación corregida
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
-use PDF;
+//use Illuminate\Foundation\Auth\Access\AuthorizesRequests; // Asegúrate de importar esto
 
 class TipoNotaController extends Controller
 {
+//     use AuthorizesRequests; 
+//     public function __construct()
+// {
+    
+//     $this->authorizeResource(TipoNota::class, 'tipoNota'); // ✅ Debe coincidir con la ruta
+// }
+
+    
     /**
      * Muestra la lista de notas.
      */
@@ -42,10 +51,6 @@ class TipoNotaController extends Controller
      */
     public function store(Request $request)
     {
-        // 🔹 Verificar los datos recibidos (descomentar para pruebas)
-        // dd($request->all());
-
-        // 🔹 Validar los datos
         $request->validate([
             'tiponota' => 'required|string|max:255',
             'nro_identificacion' => 'required|exists:empleados,nro_identificacion',
@@ -57,12 +62,10 @@ class TipoNotaController extends Controller
         try {
             DB::beginTransaction();
 
-            // 🔹 Generar el código único (TN-1, TN-2, ...)
             $ultimoCodigo = TipoNota::latest('codigo')->first();
             $numero = $ultimoCodigo ? intval(str_replace('TN-', '', $ultimoCodigo->codigo)) + 1 : 1;
             $codigoGenerado = 'TN-' . $numero;
 
-            // 🔹 Crear la nueva nota
             $nota = TipoNota::create([
                 'codigo' => $codigoGenerado,
                 'tiponota' => $request->tiponota,
@@ -71,7 +74,6 @@ class TipoNotaController extends Controller
                 'fechanota' => now(),
             ]);
 
-            // 🔹 Guardar los detalles sin modificar el stock
             foreach ($request->codigoproducto as $index => $productoId) {
                 DetalleTipoNota::create([
                     'tipo_nota_id' => $nota->codigo,
@@ -118,7 +120,6 @@ class TipoNotaController extends Controller
      */
     public function update(Request $request, $codigo)
     {
-        // 🔹 Validar los datos
         $request->validate([
             'tiponota' => 'required|string|max:255',
             'nro_identificacion' => 'required|exists:empleados,nro_identificacion',
@@ -137,10 +138,8 @@ class TipoNotaController extends Controller
                 'idbodega' => $request->idbodega,
             ]);
 
-            // 🔹 Eliminar detalles anteriores
             $nota->detalles()->delete();
 
-            // 🔹 Guardar nuevos detalles
             foreach ($request->codigoproducto as $index => $productoId) {
                 DetalleTipoNota::create([
                     'tipo_nota_id' => $nota->codigo,
@@ -185,7 +184,7 @@ class TipoNotaController extends Controller
             ->where('codigo', $codigo)
             ->firstOrFail();
 
-        $pdf = PDF::loadView('tipoNota.pdf', compact('nota'));
+        $pdf = Pdf::loadView('tipoNota.pdf', compact('nota')); // ✅ Corrección en `PDF::loadView()`
 
         return $pdf->download("Nota_{$nota->codigo}.pdf");
     }

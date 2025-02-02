@@ -10,6 +10,8 @@ use App\Http\Controllers\BodegaController;
 use App\Http\Controllers\TransaccionProductoController;
 use App\Http\Controllers\TipoEmpaquesController;
 use App\Http\Controllers\TipoNotaController;
+use App\Http\Controllers\UserController;
+
 
 // 🔹 Ruta para la página de inicio de sesión
 Route::get('/login', function () {
@@ -34,10 +36,12 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('producto', ProductoController::class);
     Route::resource('empleado', EmpleadoController::class);
     Route::resource('cargo', CargoController::class);
-    Route::resource('tipoidentificacion', TipoIdentificacionController::class);
+    //Route::resource('tipoidentificacion', TipoIdentificacionController::class);
     Route::resource('bodega', BodegaController::class);
-    Route::resource('tipoempaque', TipoEmpaquesController::class);
+   // Route::resource('tipoempaque', TipoEmpaquesController::class);
     Route::resource('tipoNota', TipoNotaController::class);
+    Route::resource('users', UserController::class);
+
 
     // ✅ Ruta para confirmar una Nota y crear una transacción
     Route::post('/tipoNota/confirmar/{codigo}', [TransaccionProductoController::class, 'confirmar'])
