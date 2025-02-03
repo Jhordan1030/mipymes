@@ -19,12 +19,6 @@ class Cargo extends Model
         'nombrecargo',
     ];
 
-    public function setNombrecargoAttribute($value)
-    {
-        if (!preg_match('/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/', $value)) {
-            throw new \InvalidArgumentException('El nombre del cargo solo puede contener letras y espacios.');
-        }
-        $this->attributes['nombrecargo'] = ucfirst(strtolower($value)); 
-    }
+    
 }
 

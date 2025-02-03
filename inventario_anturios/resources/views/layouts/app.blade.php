@@ -78,14 +78,8 @@
                     </li>
 
                     <!-- Bodegas -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBodegas" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Bodegas
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownBodegas">
-                            <li><a class="dropdown-item" href="{{ route('bodega.index') }}">Listado de Bodegas</a></li>
-                            <li><a class="dropdown-item" href="{{ route('bodega.create') }}">Añadir Nueva Bodega</a></li>
-                        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('bodega.index') }}">Bodegas</a>
                     </li>
 
                     <!-- Transacción Producto -->

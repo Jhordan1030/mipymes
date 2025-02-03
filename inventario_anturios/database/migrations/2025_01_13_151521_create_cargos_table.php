@@ -11,11 +11,11 @@ return new class extends Migration
     {
         Schema::create('cargos', function (Blueprint $table) {
             $table->string('codigocargo', 10)->primary(); // Clave primaria como 'codigocargo'
-            $table->string('nombrecargo')->unique();
+            $table->string('nombrecargo');
             $table->timestamps();
         });
 
-        // Crear función PL/pgSQL para validar nombre del cargo
+        // Crear función PL/pgSQL para validar nombre del cargo y codigocargo
         DB::unprepared("
             CREATE OR REPLACE FUNCTION validar_nombre_cargo()
             RETURNS TRIGGER AS $$
@@ -24,6 +24,17 @@ return new class extends Migration
                 IF NEW.nombrecargo !~ '^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$' THEN
                     RAISE EXCEPTION 'El nombre del cargo solo puede contener letras y espacios.';
                 END IF;
+
+                -- Validar que el código del cargo sea único
+                IF EXISTS (SELECT 1 FROM cargos WHERE codigocargo = NEW.codigocargo) THEN
+                    RAISE EXCEPTION 'El código del cargo ya existe.';
+                END IF;
+
+                -- Validar que el nombre del cargo sea único
+                IF EXISTS (SELECT 1 FROM cargos WHERE nombrecargo = NEW.nombrecargo) THEN
+                    RAISE EXCEPTION 'El nombre del cargo ya existe.';
+                END IF;
+
                 RETURN NEW;
             END;
             $$ LANGUAGE plpgsql;

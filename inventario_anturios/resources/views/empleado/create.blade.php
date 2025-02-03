@@ -14,6 +14,16 @@
             </div>
         @endif
 
+        @if (session('error'))
+            <div class="alert alert-danger">
+                <ul>
+                    <li>{{ session('error') }}</li>
+                </ul>
+            </div>
+        @endif
+
+
+
         <form action="{{ route('empleado.store') }}" method="POST" class="row g-3">
             @csrf
 
@@ -69,12 +79,12 @@
                 <select name="codigocargo" id="codigocargo" class="form-select" required>
                     <option value="">Seleccione una opción</option>
                     @foreach ($cargos as $cargo)
-                        <option value="{{ $cargo->codigocargo }}" {{ old('codigocargo', $empleado->codigocargo ?? '') == $cargo->codigocargo ? 'selected' : '' }}>
-                            {{ $cargo->nombrecargo }}
-                        </option>
+                        <option value="{{ $cargo->codigocargo }}"
+                            {{ old('codigocargo', $empleado->codigocargo ?? '') == $cargo->codigocargo ? 'selected' : '' }}>
+                            {{ $cargo->nombrecargo }}</option>
                     @endforeach
                 </select>
-            </div>            
+            </div>
 
             <div class="col-md-6">
                 <label for="nro_telefono" class="form-label">Teléfono</label>

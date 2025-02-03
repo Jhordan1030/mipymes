@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Empleado;
 use App\Models\Bodega;
 use App\Models\Cargo;
+use Illuminate\Support\Facades\DB;
 
 class EmpleadoController extends Controller
 {
@@ -31,22 +32,39 @@ class EmpleadoController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nombreemp' => 'required|regex:/^[a-zA-ZÁÉÍÓÚáéíóúÑñ ]+$/',
-            'apellidoemp' => 'required|regex:/^[a-zA-ZÁÉÍÓÚáéíóúÑñ ]+$/',
-            'email' => 'required|email|max:100|unique:empleados,email',
-            'nro_telefono' => 'required|digits:10',
-            'direccionemp' => 'required|string|min:5|max:100',
-            'tipo_identificacion' => 'required|in:Cedula,RUC,Pasaporte',
-            'nro_identificacion' => 'required',
+        $validatedData = $request->validate([
+            'email' => 'required',
             'idbodega' => 'required',
-            'codigocargo' => 'required|exists:cargos,codigocargo', // Cambio de idcargo a codigocargo
+            'codigocargo' => 'required|exists:cargos,codigocargo',
         ]);
 
-        Empleado::create($request->all());
+        try {
+            DB::insert("INSERT INTO empleados (nro_identificacion, nombreemp, apellidoemp, email, nro_telefono, direccionemp, idbodega, tipo_identificacion, codigocargo, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())", [
+                $request->nro_identificacion,
+                $request->nombreemp,
+                $request->apellidoemp,
+                $validatedData['email'],
+                $request->nro_telefono,
+                $request->direccionemp,
+                $validatedData['idbodega'],
+                $request->tipo_identificacion,
+                $validatedData['codigocargo']
+            ]);
+            return redirect()->route('empleado.index')->with('success', 'Empleado creado con éxito.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Extraer solo el mensaje exacto del trigger en PostgreSQL
+            $errorMessage = $e->getMessage();
 
-        return redirect()->route('empleado.index')->with('success', 'Empleado creado con éxito.');
+            if (preg_match("/ERROR:  (.*?)\\n/", $errorMessage, $matches)) {
+                $errorText = trim($matches[1]);
+            } else {
+                $errorText = 'Error al crear el empleado.';
+            }
+
+            return redirect()->back()->withInput()->with('error', $errorText);
+        }
     }
+
 
     public function edit($nro_identificacion)
     {
@@ -59,28 +77,54 @@ class EmpleadoController extends Controller
 
     public function update(Request $request, $nro_identificacion)
     {
-        $empleado = Empleado::findOrFail($nro_identificacion);
-
-        $request->validate([
-            'nombreemp' => 'required|regex:/^[a-zA-ZÁÉÍÓÚáéíóúÑñ ]+$/|max:50',
-            'apellidoemp' => 'required|regex:/^[a-zA-ZÁÉÍÓÚáéíóúÑñ ]+$/|max:50',
-            'email' => 'required|email|max:100|unique:empleados,email,' . $nro_identificacion . ',nro_identificacion',
-            'nro_telefono' => 'required|digits:10',
-            'direccionemp' => 'required|string|min:5|max:100',
+        // Validar los datos
+        $validatedData = $request->validate([
+            'email' => 'required',
+            'nro_telefono' => 'required',
+            'direccionemp' => 'required',
             'tipo_identificacion' => 'required|in:Cedula,RUC,Pasaporte',
             'nro_identificacion' => 'required',
-            'codigocargo' => 'required|exists:cargos,codigocargo', // Cambio de idcargo a codigocargo
+            'codigocargo' => 'required|exists:cargos,codigocargo',
+            'idbodega' => 'required|exists:bodegas,idbodega',
         ]);
 
-        $empleado->update($request->all());
+        try {
+            // Buscar el empleado y actualizar sus datos
+            $empleado = Empleado::findOrFail($nro_identificacion);
+            $empleado->update([
+                'nro_identificacion' => $request->nro_identificacion, 
+                'nombreemp' => $request->nombreemp,
+                'apellidoemp' => $request->apellidoemp,
+                'email' => $validatedData['email'],
+                'nro_telefono' => $validatedData['nro_telefono'],
+                'direccionemp' => $validatedData['direccionemp'],
+                'tipo_identificacion' => $validatedData['tipo_identificacion'],
+                'codigocargo' => $validatedData['codigocargo'],
+                'idbodega' => $validatedData['idbodega'],
+            ]);
 
-        return redirect()->route('empleado.index')->with('success', 'Empleado actualizado exitosamente.');
+            return redirect()->route('empleado.index')->with('success', 'Empleado actualizado exitosamente.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Capturar el mensaje de error del trigger
+            $errorMessage = $e->getMessage();
+
+            // Extraer solo el mensaje específico del error en PostgreSQL
+            if (preg_match("/ERROR:  (.*?)\\n/", $errorMessage, $matches)) {
+                $errorText = trim($matches[1]);  // Mensaje exacto del trigger
+            } else {
+                $errorText = 'Error al actualizar el empleado.';
+            }
+
+            return redirect()->back()->withInput()->with('error', $errorText);
+        }
     }
+
+
+
 
     public function destroy($nro_identificacion)
     {
         Empleado::findOrFail($nro_identificacion)->delete();
-
         return redirect()->route('empleado.index')->with('success', 'Empleado eliminado exitosamente.');
     }
 }

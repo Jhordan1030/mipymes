@@ -4,17 +4,14 @@
     <div class="container">
         <h3 class="text-center">Editar Producto</h3>
 
-        @if ($errors->any())
+        <!-- Mostrar mensaje del trigger si se activa -->
+        @if (session('error'))
             <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+                {{ session('error') }}
             </div>
         @endif
 
-        <form action="{{ route('producto.update', $producto->id) }}" method="POST">
+        <form action="{{ route('producto.update', $producto->codigo) }}" method="POST">
             @csrf
             @method('PUT')
 
@@ -35,15 +32,16 @@
 
             <div class="form-group">
                 <label for="cantidad">Cantidad</label>
-                <input type="number" name="cantidad" class="form-control" value="{{ $producto->cantidad }}" required>
-            </div>
+                <input type="number" name="cantidad" class="form-control" value="{{ $producto->cantidad }}" required min="1">
+            </div>            
 
             <div class="form-group">
                 <label for="tipoempaque">Tipo de Empaque</label>
                 <select name="tipoempaque" class="form-control">
                     <option value="">Seleccione un tipo de empaque</option>
                     @foreach ($tipoempaques as $tipo)
-                        <option value="{{ $tipo }}" {{ $producto->tipoempaque == $tipo ? 'selected' : '' }}>{{ $tipo }}</option>
+                        <option value="{{ $tipo }}" {{ $producto->tipoempaque == $tipo ? 'selected' : '' }}>
+                            {{ $tipo }}</option>
                     @endforeach
                 </select>
             </div>

@@ -20,42 +20,65 @@ class CargoController extends Controller
 
     public function store(Request $request)
     {
+        // Solo validamos que los campos sean obligatorios (sin restricciones adicionales)
         $request->validate([
-            'codigocargo' => 'required|string|max:50|unique:cargos,codigocargo',
-            'nombrecargo' => 'required|string|max:100|unique:cargos,nombrecargo|regex:/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/',
-        ], [
-            'codigocargo.unique' => 'El código del cargo ya existe.',
-            'nombrecargo.unique' => 'El nombre del cargo ya existe.',
-            'nombrecargo.regex' => 'El nombre del cargo solo puede contener letras y espacios.',
+            'codigocargo' => 'required', // Solo obligatorio
+            'nombrecargo' => 'required', // Solo obligatorio
         ]);
 
-        Cargo::create($request->all());
+        try {
+            // Llamamos al trigger de la base de datos
+            Cargo::create($request->all());
 
-        return redirect()->route('cargo.index')->with('success', 'Cargo creado con éxito.');
-    }
+            return redirect()->route('cargo.index')->with('success', 'Cargo creado con éxito.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Captura el error y extrae el mensaje del trigger
+            $errorMessage = $e->getMessage();
 
-    public function edit($codigocargo)
-    {
-        $cargo = Cargo::where('codigocargo', $codigocargo)->firstOrFail();
-        return view('cargo.edit', compact('cargo'));
+            // Verificamos si el error es del trigger, y extraemos el mensaje adecuado
+            if (preg_match("/ERROR:  (.*?)\\n/", $errorMessage, $matches)) {
+                // Extraemos el mensaje de error del trigger
+                $errorText = trim($matches[1]);
+            } else {
+                // Si no es el error esperado, mostramos un error genérico
+                $errorText = 'Error al crear el cargo.';
+            }
+
+            // Retorna con el error capturado
+            return redirect()->back()->withInput()->with('error', $errorText);
+        }
     }
 
     public function update(Request $request, $codigocargo)
     {
         $cargo = Cargo::where('codigocargo', $codigocargo)->firstOrFail();
 
-        $request->validate([
-            'codigocargo' => "required|string|max:50|unique:cargos,codigocargo,$codigocargo,codigocargo",
-            'nombrecargo' => "required|string|max:100|unique:cargos,nombrecargo,$codigocargo,codigocargo|regex:/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/",
-        ], [
-            'codigocargo.unique' => 'El código del cargo ya existe.',
-            'nombrecargo.unique' => 'El nombre del cargo ya existe.',
-            'nombrecargo.regex' => 'El nombre del cargo solo puede contener letras y espacios.',
-        ]);
+        try {
+            // Llamar al trigger de la base de datos
+            $cargo->update($request->all());
 
-        $cargo->update($request->all());
+            return redirect()->route('cargo.index')->with('success', 'Cargo actualizado con éxito.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Captura el error y extrae el mensaje del trigger
+            $errorMessage = $e->getMessage();
 
-        return redirect()->route('cargo.index')->with('success', 'Cargo actualizado con éxito.');
+            if (preg_match("/ERROR:  (.*?)\\n/", $errorMessage, $matches)) {
+                // Extraemos el mensaje de error del trigger
+                $errorText = trim($matches[1]);
+            } else {
+                // Si no es el error esperado, mostramos un error genérico
+                $errorText = 'Error al actualizar el cargo.';
+            }
+
+            // Retorna con el error capturado
+            return redirect()->back()->withInput()->with('error', $errorText);
+        }
+    }
+
+    public function edit($codigocargo)
+    {
+        $cargo = Cargo::where('codigocargo', $codigocargo)->firstOrFail();
+        return view('cargo.edit', compact('cargo'));
     }
 
     public function destroy($codigocargo)

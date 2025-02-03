@@ -36,7 +36,7 @@
         <thead>
             <tr>
 
-                <th>Id Bodega</th>
+                <th>Código Bodega</th>
                 <th>Nombre Bodega</th>
                 <th>Acciones</th>
             </tr>

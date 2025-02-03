@@ -4,13 +4,23 @@
     <div class="row">
         <section class="content">
             <div class="col-md-8 col-md-offset-2">
-                @if (count($errors) > 0)
+                <!-- Mostrar los errores de validación -->
+                @if ($errors->any())
                     <div class="alert alert-danger">
                         <strong>Error!</strong> Revise los campos obligatorios.<br><br>
                         <ul>
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <!-- Mostrar el error específico que venga desde el controlador -->
+                @if (session('error'))
+                    <div class="alert alert-danger">
+                        <ul>
+                            <li>{{ session('error') }}</li>
                         </ul>
                     </div>
                 @endif
@@ -27,13 +37,15 @@
                                     <div class="col-xs-6 col-sm-6 col-md-6">
                                         <div class="form-group">
                                             <input type="text" name="codigocargo" id="codigocargo"
-                                                class="form-control input-sm" placeholder="Código del cargo">
+                                                class="form-control input-sm" placeholder="Código del cargo"
+                                                value="{{ old('codigocargo') }}">
                                         </div>
                                     </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6">
                                         <div class="form-group">
                                             <input type="text" name="nombrecargo" id="nombrecargo"
-                                                class="form-control input-sm" placeholder="Nombre del cargo">
+                                                class="form-control input-sm" placeholder="Nombre del cargo"
+                                                value="{{ old('nombrecargo') }}">
                                         </div>
                                     </div>
                                 </div>
@@ -49,4 +61,6 @@
                 </div>
             </div>
         </section>
-    @endsection
+    </div>
+@endsection
+

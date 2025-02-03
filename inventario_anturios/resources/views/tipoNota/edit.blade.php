@@ -59,7 +59,7 @@
                         </div>
                         <div class="col-md-2">
                             <label for="cantidad[]" class="form-label">Cantidad</label>
-                            <input type="number" name="cantidad[]" class="form-control cantidad-input" value="{{ $detalle->cantidad }}" required>
+                            <input type="number" name="cantidad[]" class="form-control cantidad-input" value="{{ $detalle->cantidad }}" required min="1">
                         </div>
                         <div class="col-md-3">
                             <label for="tipoempaque[]" class="form-label">Tipo de Empaque</label>
