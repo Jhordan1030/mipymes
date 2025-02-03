@@ -4,24 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Producto;
 use Illuminate\Http\Request;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests; // Asegúrate de importar esto
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 
 class ProductoController extends Controller
 {
+    use AuthorizesRequests;
 
-      //Autoriza las acciones del controllador realcionadas con el modelo producto
-    
-      use AuthorizesRequests; 
-      public function __construct()
-  {
-      //Se aplica la política 
-      $this->authorizeResource(Producto::class, 'producto'); //Autoriza los recursos del modelo producto
-  }
- 
+    public function __construct()
+    {
+        $this->authorizeResource(Producto::class, 'producto');
+    }
+
     public function index(Request $request)
     {
-        
         $query = Producto::query();
 
         if ($request->filled('search')) {
@@ -35,108 +32,100 @@ class ProductoController extends Controller
 
     public function create()
     {
-        // Definir las opciones de tipo de empaque directamente
         $tipoempaques = ['Paquete', 'Caja', 'Unidad'];
-
         return view('producto.create', compact('tipoempaques'));
     }
 
     public function store(Request $request)
     {
-        // Validar los datos antes de insertarlos, incluyendo la validación de cantidad
+        // Validaciones de Laravel
         $validatedData = $request->validate([
-            'codigo' => 'required',
-            'nombre' => 'required',
-            'descripcion' => 'required',
-            'cantidad' => 'required|integer|min:1', // Aseguramos que la cantidad sea un número entero y mayor a 0
+            'codigo' => 'required|string|max:10',
+            'nombre' => 'required|string|max:50',
+            'descripcion' => 'required|string',
+            'cantidad' => 'required|integer|min:1',
             'tipoempaque' => 'nullable|in:Paquete,Caja,Unidad',
         ]);
 
-        // Verificar si la cantidad es negativa y mostrar un mensaje de error
-        if ($request->cantidad < 1) {
-            return redirect()->back()->withInput()->with('error', 'No se puede ingresar cantidades negativas');
-        }
-
         try {
-            // Insertando directamente para que active el trigger
-            DB::insert("INSERT INTO productos (codigo, nombre, descripcion, cantidad, tipoempaque, created_at, updated_at) VALUES (?, ?, ?, ?, ?, NOW(), NOW())", [
+            // Inserción en la base de datos, activando el trigger
+            DB::insert("
+                INSERT INTO productos (codigo, nombre, descripcion, cantidad, tipoempaque, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, NOW(), NOW())
+            ", [
                 $validatedData['codigo'],
                 $validatedData['nombre'],
                 $validatedData['descripcion'],
-                $request->cantidad,
+                $validatedData['cantidad'],
                 $validatedData['tipoempaque']
             ]);
 
             return redirect()->route('producto.index')->with('success', 'Producto creado correctamente.');
-        } catch (\Illuminate\Database\QueryException $e) {
-            $errorMessage = $e->getMessage();
-
-            // Extraer solo el mensaje del trigger
-            if (strpos($errorMessage, 'El código del producto ya existe.') !== false) {
-                return redirect()->back()->withInput()->with('error', 'El código del producto ya existe.');
-            }
-
-            return redirect()->back()->withInput()->with('error', 'Error al crear el producto.');
+        } catch (QueryException $e) {
+            return $this->handleDatabaseException($e);
         }
     }
 
     public function update(Request $request, $id)
     {
-        // Validar los datos antes de actualizarlos
+        // Validaciones de Laravel
         $validatedData = $request->validate([
-            'codigo' => 'required',
-            'nombre' => 'required',
-            'descripcion' => 'required',
-            'cantidad' => 'required|integer|min:1', // Aseguramos que la cantidad sea un número entero y mayor a 0
+            'codigo' => 'required|string|max:10',
+            'nombre' => 'required|string|max:50',
+            'descripcion' => 'required|string',
+            'cantidad' => 'required|integer|min:1',
             'tipoempaque' => 'nullable|in:Paquete,Caja,Unidad',
         ]);
 
-        // Verificar si la cantidad es negativa y mostrar un mensaje de error
-        if ($request->cantidad < 1) {
-            return redirect()->back()->withInput()->with('error', 'No se puede ingresar cantidades negativas');
-        }
-
         try {
-            // Buscar el producto y actualizar sus datos
+            // Buscar producto y actualizar
             $producto = Producto::findOrFail($id);
-            $producto->update([
-                'codigo' => $validatedData['codigo'],
-                'nombre' => $validatedData['nombre'],
-                'descripcion' => $validatedData['descripcion'],
-                'cantidad' => $validatedData['cantidad'],
-                'tipoempaque' => $validatedData['tipoempaque']
-            ]);
+            $producto->update($validatedData);
 
             return redirect()->route('producto.index')->with('success', 'Producto actualizado correctamente.');
-        } catch (\Illuminate\Database\QueryException $e) {
-            $errorMessage = $e->getMessage();
-
-            // Extraer solo el mensaje del trigger
-            if (strpos($errorMessage, 'El código del producto ya existe.') !== false) {
-                return redirect()->back()->withInput()->with('error', 'El código del producto ya existe.');
-            }
-
-            return redirect()->back()->withInput()->with('error', 'Error al actualizar el producto.');
+        } catch (QueryException $e) {
+            return $this->handleDatabaseException($e);
         }
     }
-
-
-
 
     public function edit($id)
     {
         $producto = Producto::findOrFail($id);
         $tipoempaques = ['Paquete', 'Caja', 'Unidad'];
-
         return view('producto.edit', compact('producto', 'tipoempaques'));
     }
-
 
     public function destroy($id)
     {
         $producto = Producto::findOrFail($id);
         $producto->delete();
-
         return redirect()->route('producto.index')->with('success', 'Producto eliminado correctamente.');
+    }
+
+    /**
+     * Manejo de errores de la base de datos (PostgreSQL)
+     */
+    private function handleDatabaseException(QueryException $e)
+    {
+        $errorMessage = $e->getMessage();
+
+        // Detectar errores del trigger PostgreSQL y mostrarlos al usuario
+        if (strpos($errorMessage, 'El código del producto ya existe.') !== false) {
+            return redirect()->back()->withInput()->with('error', 'El código del producto ya está en uso.');
+        }
+
+        if (strpos($errorMessage, 'El nombre del producto solo puede contener letras y espacios.') !== false) {
+            return redirect()->back()->withInput()->with('error', 'El nombre del producto solo puede contener letras y espacios.');
+        }
+
+        if (strpos($errorMessage, 'La cantidad no puede ser negativa.') !== false) {
+            return redirect()->back()->withInput()->with('error', 'No se pueden ingresar cantidades negativas.');
+        }
+
+        if (strpos($errorMessage, 'Todos los campos obligatorios deben estar llenos.') !== false) {
+            return redirect()->back()->withInput()->with('error', 'Todos los campos son obligatorios.');
+        }
+
+        return redirect()->back()->withInput()->with('error', 'Error inesperado en la base de datos.');
     }
 }

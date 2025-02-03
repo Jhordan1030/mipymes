@@ -36,7 +36,7 @@ return new class extends Migration
                 RAISE EXCEPTION 'El apellido solo puede contener letras y espacios';
             END IF;
             IF NEW.email !~ '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$' THEN
-                RAISE EXCEPTION 'El email no es válido';
+                RAISE EXCEPTION 'El email no es válido: ejemplo@gamil.com';
             END IF;
             IF NEW.nro_telefono !~ '^[0-9]{10}$' THEN
                 RAISE EXCEPTION 'El número de teléfono debe tener exactamente 10 dígitos';
