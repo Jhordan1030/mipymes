@@ -17,6 +17,9 @@ class ProductoController extends Controller
         $this->authorizeResource(Producto::class, 'producto');
     }
 
+    /**
+     * Muestra la lista de productos con búsqueda y paginación.
+     */
     public function index(Request $request)
     {
         $query = Producto::query();
@@ -30,15 +33,21 @@ class ProductoController extends Controller
         return view('producto.index', compact('productos'));
     }
 
+    /**
+     * Muestra el formulario para crear un nuevo producto.
+     */
     public function create()
     {
         $tipoempaques = ['Paquete', 'Caja', 'Unidad'];
         return view('producto.create', compact('tipoempaques'));
     }
 
+    /**
+     * Almacena un nuevo producto en la base de datos.
+     */
     public function store(Request $request)
     {
-        // Validaciones de Laravel
+        // Validaciones en Laravel antes de la inserción
         $validatedData = $request->validate([
             'codigo' => 'required|string|max:10',
             'nombre' => 'required|string|max:50',
@@ -48,7 +57,7 @@ class ProductoController extends Controller
         ]);
 
         try {
-            // Inserción en la base de datos, activando el trigger
+            // Inserción en la base de datos para activar el trigger
             DB::insert("
                 INSERT INTO productos (codigo, nombre, descripcion, cantidad, tipoempaque, created_at, updated_at)
                 VALUES (?, ?, ?, ?, ?, NOW(), NOW())
@@ -66,9 +75,15 @@ class ProductoController extends Controller
         }
     }
 
+    public function edit($id)
+    {
+        $producto = Producto::findOrFail($id);
+        $tipoempaques = ['Paquete', 'Caja', 'Unidad'];
+        return view('producto.edit', compact('producto', 'tipoempaques'));
+    }
+
     public function update(Request $request, $id)
     {
-        // Validaciones de Laravel
         $validatedData = $request->validate([
             'codigo' => 'required|string|max:10',
             'nombre' => 'required|string|max:50',
@@ -78,7 +93,6 @@ class ProductoController extends Controller
         ]);
 
         try {
-            // Buscar producto y actualizar
             $producto = Producto::findOrFail($id);
             $producto->update($validatedData);
 
@@ -86,13 +100,6 @@ class ProductoController extends Controller
         } catch (QueryException $e) {
             return $this->handleDatabaseException($e);
         }
-    }
-
-    public function edit($id)
-    {
-        $producto = Producto::findOrFail($id);
-        $tipoempaques = ['Paquete', 'Caja', 'Unidad'];
-        return view('producto.edit', compact('producto', 'tipoempaques'));
     }
 
     public function destroy($id)
@@ -103,27 +110,15 @@ class ProductoController extends Controller
     }
 
     /**
-     * Manejo de errores de la base de datos (PostgreSQL)
+     * Captura automáticamente los errores del trigger PostgreSQL y los muestra en Laravel.
      */
     private function handleDatabaseException(QueryException $e)
     {
         $errorMessage = $e->getMessage();
 
-        // Detectar errores del trigger PostgreSQL y mostrarlos al usuario
-        if (strpos($errorMessage, 'El código del producto ya existe.') !== false) {
-            return redirect()->back()->withInput()->with('error', 'El código del producto ya está en uso.');
-        }
-
-        if (strpos($errorMessage, 'El nombre del producto solo puede contener letras y espacios.') !== false) {
-            return redirect()->back()->withInput()->with('error', 'El nombre del producto solo puede contener letras y espacios.');
-        }
-
-        if (strpos($errorMessage, 'La cantidad no puede ser negativa.') !== false) {
-            return redirect()->back()->withInput()->with('error', 'No se pueden ingresar cantidades negativas.');
-        }
-
-        if (strpos($errorMessage, 'Todos los campos obligatorios deben estar llenos.') !== false) {
-            return redirect()->back()->withInput()->with('error', 'Todos los campos son obligatorios.');
+        // Extraer el mensaje exacto del trigger PostgreSQL
+        if (preg_match("/ERROR:\s(.*?)\sCONTEXT:/", $errorMessage, $matches)) {
+            return redirect()->back()->withInput()->with('error', trim($matches[1]));
         }
 
         return redirect()->back()->withInput()->with('error', 'Error inesperado en la base de datos.');

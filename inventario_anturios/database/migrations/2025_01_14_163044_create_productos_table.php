@@ -23,22 +23,27 @@ class CreateProductosTable extends Migration
             CREATE OR REPLACE FUNCTION validar_producto()
             RETURNS TRIGGER AS $$
             BEGIN
-                -- Validar que codigo solo contenga letras y números y no más de 10 caracteres
+                -- Validar que código solo contenga letras y números, tenga al menos una letra y un número, y no más de 10 caracteres
                 IF NEW.codigo !~ '^[A-Za-z0-9]{1,10}$' THEN
                     RAISE EXCEPTION 'El código del producto solo puede contener letras y números y no debe superar 10 caracteres.';
                 END IF;
 
-                -- Validar que nombre solo contenga letras y espacios
+                -- Verificar que el código tenga al menos una letra y un número
+                IF NEW.codigo !~ '[A-Za-z]' OR NEW.codigo !~ '[0-9]' THEN
+                    RAISE EXCEPTION 'El código del producto debe contener al menos una letra y un número.';
+                END IF;
+
+                -- Validar que el nombre solo contenga letras y espacios
                 IF NEW.nombre !~ '^[A-Za-z ]+$' THEN
                     RAISE EXCEPTION 'El nombre del producto solo puede contener letras y espacios.';
                 END IF;
 
-                -- Validar que cantidad no sea negativa
+                -- Validar que la cantidad no sea negativa
                 IF NEW.cantidad < 0 THEN
                     RAISE EXCEPTION 'La cantidad no puede ser negativa.';
                 END IF;
 
-                -- Validar que los campos no estén vacíos
+                -- Validar que los campos obligatorios no sean NULL
                 IF NEW.codigo IS NULL OR NEW.nombre IS NULL OR NEW.descripcion IS NULL OR NEW.cantidad IS NULL THEN
                     RAISE EXCEPTION 'Todos los campos obligatorios deben estar llenos.';
                 END IF;
