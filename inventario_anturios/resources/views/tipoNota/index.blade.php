@@ -83,11 +83,19 @@
                                 <button type="submit" class="btn btn-success">Confirmar</button>
                             </form>
                         @endif
-                        <a href="{{ route('tipoNota.edit', $nota->codigo) }}" class="btn btn-warning">Editar</a>
-                        <form action="{{ route('tipoNota.destroy', $nota->codigo) }}" method="POST" style="display:inline;">
-                            @csrf @method('DELETE')
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de eliminar esta nota?')">Eliminar</button>
-                        </form>
+
+                        {{-- Botón de Editar con Permisos --}}
+                
+                            <a href="{{ route('tipoNota.edit', $nota->codigo) }}" class="btn btn-warning">Editar</a>
+                        
+
+                        {{-- Botón de Eliminar con Permisos - Ubicación Correcta --}}
+                        @can('eliminar TipoNota')
+                            <form action="{{ route('tipoNota.destroy', $nota->codigo) }}" method="POST" style="display:inline;">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de eliminar esta nota?')">Eliminar</button>
+                            </form>
+                         @endcan
                     </td>
 
                     <td>

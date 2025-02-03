@@ -17,9 +17,10 @@
                 <form action="{{ route('login.post') }}" method="POST">
                     @csrf
                     <div class="mb-3">
-                        <label for="username" class="form-label" style="color: #88022D;">Usuario</label>
-                        <input type="text" name="username" id="username" class="form-control" required placeholder="Ingresa tu usuario" style="border-color: #ffffff;">
-                    </div>
+            <label for="email" class="form-label" style="color: #88022D;">Correo Electrónico</label>
+            <input type="email" name="email" id="email" class="form-control" required placeholder="Ingresa tu correo electrónico" style="border-color: #ffffff;">
+        </div>
+
                     <div class="mb-3">
                         <label for="password" class="form-label" style="color: #88022D;">Contraseña</label>
                         <input type="password" name="password" id="password" class="form-control" required placeholder="Ingresa tu contraseña" style="border-color: #ffffff;">

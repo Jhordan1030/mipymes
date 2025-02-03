@@ -31,7 +31,7 @@
                             <div class="row">
                                 <div class="col-xs-12 col-sm-12 col-md-12">
                                     <input type="submit" value="Actualizar" class="btn btn-success btn-block">
-                                    <a href="{{ route('tipoidentificacion.index') }}" class="btn btn-info btn-block">Atrás</a>
+                                    <a href="{{ route('bodega.index') }}" class="btn btn-info btn-block">Atrás</a>
                                 </div>
                             </div>
                         </form>

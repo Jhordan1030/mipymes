@@ -5,8 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Bodega;
 use Illuminate\Http\Request;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests; // Asegúrate de importar esto
+
 class BodegaController extends Controller
 {
+
+    use AuthorizesRequests; 
+    public function __construct()
+{
+    
+    $this->authorizeResource(Bodega::class, 'bodega'); // ✅ Debe coincidir con la ruta
+}
     /**
      * Display a listing of the resource.
      */

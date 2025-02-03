@@ -8,9 +8,18 @@ use App\Models\Producto;
 use App\Models\DetalleTipoNota;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests; // Asegúrate de importar esto
 
 class TransaccionProductoController extends Controller
 {
+
+    use AuthorizesRequests; 
+    public function __construct()
+{
+    
+    $this->authorizeResource(TransaccionProducto::class, 'transaccionProducto'); // ✅ Debe coincidir con la ruta
+}
+
     /**
      * Lista todas las transacciones
      */

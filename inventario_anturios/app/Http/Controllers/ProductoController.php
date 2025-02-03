@@ -4,12 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\Producto;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests; // Asegúrate de importar esto
 use Illuminate\Support\Facades\DB;
 
 class ProductoController extends Controller
 {
+
+      //Autoriza las acciones del controllador realcionadas con el modelo producto
+    
+      use AuthorizesRequests; 
+      public function __construct()
+  {
+      //Se aplica la política 
+      $this->authorizeResource(Producto::class, 'producto'); //Autoriza los recursos del modelo producto
+  }
+ 
     public function index(Request $request)
     {
+        
         $query = Producto::query();
 
         if ($request->filled('search')) {

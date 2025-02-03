@@ -5,8 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Cargo;
 
+
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests; // Asegúrate de importar esto
 class CargoController extends Controller
 {
+    //Aqu[i es donde estoy dando permisos
+    
+    use AuthorizesRequests; 
+    public function __construct()
+{
+    
+    $this->authorizeResource(Cargo::class, 'cargo'); // ✅ Debe coincidir con la ruta
+}
     public function index()
     {
         $cargos = Cargo::paginate(10);
