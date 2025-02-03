@@ -33,12 +33,17 @@ Route::middleware(['auth'])->group(function () {
     })->name('home');
 
     // 🔹 Rutas para los módulos principales
-    Route::resource('producto', ProductoController::class);
+    //Route::resource('producto', ProductoController::class);
+    Route::resource('producto', ProductoController::class)->parameters([
+        'producto' => 'codigo' // Define que 'producto' usa 'cod_Prod' como identificador
+    ]);
+    
+
     Route::resource('empleado', EmpleadoController::class);
     Route::resource('cargo', CargoController::class);
     //Route::resource('tipoidentificacion', TipoIdentificacionController::class);
     Route::resource('bodega', BodegaController::class);
-   // Route::resource('tipoempaque', TipoEmpaquesController::class);
+    //Route::resource('tipoempaque', TipoEmpaquesController::class);
     Route::resource('tipoNota', TipoNotaController::class);
     Route::resource('users', UserController::class);
 

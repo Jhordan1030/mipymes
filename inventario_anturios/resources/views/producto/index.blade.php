@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+
     <div class="container">
         <h2 class="text-center">Listado de Productos</h2>
 

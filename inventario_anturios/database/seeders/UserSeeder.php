@@ -11,6 +11,8 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 //use Spatie\Permission\Models\User;
 
+
+//Aquí se crean los roles y permisos para los usuarios 
 class UserSeeder extends Seeder
 {
     /**
@@ -27,6 +29,7 @@ class UserSeeder extends Seeder
         Permission::create(['name'=>'crear empleado']);
         Permission::create(['name'=>'editar empleado']);
         Permission::create(['name'=>'eliminar empleado']);
+
 
         //creamos un usuario
         $adminUser = User ::query()->create([
@@ -59,7 +62,10 @@ class UserSeeder extends Seeder
         $roleVendedor= Role::create(['name'=>'vendedor']);
         //El rol vendedor se asigna al usuario vendedorUser 
         $vendedorUser->assignRole($roleVendedor);
+        //Asigna el permiso ver producto al rol vendedor 
         $roleVendedor->syncPermissions(['ver producto']);
+        
+       
 
     }
 }

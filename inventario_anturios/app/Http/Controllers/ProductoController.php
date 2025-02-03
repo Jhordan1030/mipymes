@@ -9,13 +9,13 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests; // Asegúrate de impor
 class ProductoController extends Controller
 {
 
-      //Aqu[i es donde estoy dando permisos
+      //Autoriza las acciones del controllador realcionadas con el modelo producto
     
       use AuthorizesRequests; 
       public function __construct()
   {
-      
-      $this->authorizeResource(Producto::class, 'producto'); // ✅ Debe coincidir con la ruta
+      //Se aplica la política 
+      $this->authorizeResource(Producto::class, 'producto'); //Autoriza los recursos del modelo producto
   }
  
     public function index(Request $request)

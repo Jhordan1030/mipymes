@@ -9,6 +9,7 @@ class BodegaPolicy
     public function view(User $user, Bodega $bodega)
     {
         // Verificar si el usuario tiene permiso para ver una bodega
+        return $user-> can('ver bodega');
         return $user->role === 'admin'; // Ejemplo
     }
 
