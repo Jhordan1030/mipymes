@@ -52,7 +52,7 @@ class ProductoController extends Controller
             'codigo' => 'required|string|max:10',
             'nombre' => 'required|string|max:50',
             'descripcion' => 'required|string',
-            'cantidad' => 'required|integer|min:1',
+            'cantidad' => 'required|integer',
             'tipoempaque' => 'nullable|in:Paquete,Caja,Unidad',
         ]);
 

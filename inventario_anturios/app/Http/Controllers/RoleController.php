@@ -4,9 +4,16 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\Permission;
 use Illuminate\Http\Request;
-
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests; // Asegúrate de importar esto
 class RoleController extends Controller
 {
+    
+    use AuthorizesRequests; 
+    public function __construct()
+{
+    
+    $this->authorizeResource(Role::class, 'roles'); // ✅ Debe coincidir con la ruta
+}
     public function index()
     {
         $roles = Role::paginate(10);

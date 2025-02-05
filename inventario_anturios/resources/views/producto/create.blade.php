@@ -50,7 +50,7 @@
             <div class="form-group">
                 <label for="cantidad">Cantidad</label>
                 <input type="number" name="cantidad" class="form-control @error('cantidad') is-invalid @enderror"
-                       required value="{{ old('cantidad') }}" min="1">
+                       required value="{{ old('cantidad') }}">
                 @error('cantidad')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
