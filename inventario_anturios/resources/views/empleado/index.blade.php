@@ -22,7 +22,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <input type="text" name="search" class="form-control"
-                        placeholder="Buscar por nombre o Nro. de Identificación" value="{{ request()->search }}">
+                           placeholder="Buscar por nombre o Nro. de Identificación" value="{{ request()->search }}">
                 </div>
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-primary w-100" style="background-color: #88022D">Buscar</button>
@@ -40,78 +40,79 @@
         <!-- Tabla de empleados -->
         <table class="table table-bordered table-striped">
             <thead>
-                <tr>
-                    <th>Nro. Identificación</th>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>Tipo de Identificación</th>
-                    <th>Bodega</th>
-                    <th>Cargo</th>
-                    <th>Email</th>
-                    <th>Acciones</th>
-                </tr>
+            <tr>
+                <th>Nro. Identificación</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Tipo de Identificación</th>
+                <th>Bodega</th>
+                <th>Cargo</th>
+                <th>Email</th>
+                <th>Número Celular</th> <!-- Agregando columna de Celular -->
+                <th>Acciones</th>
+            </tr>
             </thead>
             <tbody>
-                @forelse ($empleados as $empleado)
-                    <tr>
-                        <td>{{ $empleado->nro_identificacion }}</td>
-                        <td>{{ $empleado->nombreemp }}</td>
-                        <td>{{ $empleado->apellidoemp }}</td>
-                        <td>{{ $empleado->tipo_identificacion }}</td>
-                        <td>{{ $empleado->bodega->nombrebodega ?? 'N/A' }}</td>
-                        <td>{{ $empleado->cargo->nombrecargo ?? 'N/A' }}</td>
+            @forelse ($empleados as $empleado)
+                <tr>
+                    <td>{{ $empleado->nro_identificacion }}</td>
+                    <td>{{ $empleado->nombreemp }}</td>
+                    <td>{{ $empleado->apellidoemp }}</td>
+                    <td>{{ $empleado->tipo_identificacion }}</td>
+                    <td>{{ $empleado->bodega->nombrebodega ?? 'N/A' }}</td>
+                    <td>{{ $empleado->cargo->nombrecargo ?? 'N/A' }}</td>
 
-                        <!-- Columna de Email con ícono para copiar -->
-                        <td>
-                            <span id="email-{{ $empleado->nro_identificacion }}">{{ $empleado->email }}</span>
-                            <button class="btn btn-sm btn-secondary"
+                    <!-- Columna de Email con ícono para copiar -->
+                    <td>
+                        <span id="email-{{ $empleado->nro_identificacion }}">{{ $empleado->email }}</span>
+                        <button class="btn btn-sm btn-secondary"
                                 onclick="copyToClipboard('{{ $empleado->nro_identificacion }}')">
-                                <i id="icon-{{ $empleado->nro_identificacion }}" class="fas fa-copy"></i> Copiar
-                            </button>
-                        </td>
+                            <i id="icon-{{ $empleado->nro_identificacion }}" class="fas fa-copy"></i> Copiar
+                        </button>
+                    </td>
 
-                        <td>
-                            <a href="{{ route('empleado.edit', $empleado->nro_identificacion) }}"
-                                class="btn btn-sm btn-primary">Editar</a>
-                            <form action="{{ route('empleado.destroy', $empleado->nro_identificacion) }}" method="POST"
-                                class="d-inline-block">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger"
+                    <!-- Agregando Celular -->
+                    <td>{{ $empleado->nro_telefono ?? 'N/A' }}</td> <!-- Muestra el número celular -->
+
+                    <td>
+                        <a href="{{ route('empleado.edit', $empleado->nro_identificacion) }}"
+                           class="btn btn-sm btn-primary">Editar</a>
+                        <form action="{{ route('empleado.destroy', $empleado->nro_identificacion) }}" method="POST"
+                              class="d-inline-block">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-danger"
                                     onclick="return confirm('¿Está seguro de eliminar este empleado?')">Eliminar</button>
-                            </form>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="8" class="text-center">No hay empleados registrados.</td>
-                    </tr>
-                @endforelse
+                        </form>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="9" class="text-center">No hay empleados registrados</td>
+                </tr>
+            @endforelse
             </tbody>
         </table>
 
         <!-- Paginación -->
-        <div class="mt-3">
-            {{ $empleados->links() }}
-        </div>
+        {{ $empleados->links() }}
     </div>
 
-    <!-- Script para copiar al portapapeles -->
     <script>
-        function copyToClipboard(nro_identificacion) {
-            var emailText = document.getElementById('email-' + nro_identificacion).innerText;
-            var textarea = document.createElement('textarea');
-            textarea.value = emailText;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-
-            // Cambiar el ícono a un "check" verde
-            var icon = document.getElementById('icon-' + nro_identificacion);
-            icon.classList.remove('fa-copy'); // Elimina el ícono de copiar
-            icon.classList.add('fa-check'); // Añade el ícono de "check"
-            icon.style.color = 'green'; // Cambia el color a verde
+        function copyToClipboard(empleadoId) {
+            var emailText = document.getElementById('email-' + empleadoId).innerText;
+            navigator.clipboard.writeText(emailText).then(function() {
+                var icon = document.getElementById('icon-' + empleadoId);
+                icon.classList.remove('fa-copy');
+                icon.classList.add('fa-check'); // Cambia el ícono a un 'check' cuando se copie
+                setTimeout(function() {
+                    icon.classList.remove('fa-check');
+                    icon.classList.add('fa-copy'); // Vuelve a poner el ícono de copiar
+                }, 2000); // Vuelve al ícono original después de 2 segundos
+            }).catch(function(err) {
+                console.error('Error al copiar: ', err);
+            });
         }
     </script>
 @endsection
+
