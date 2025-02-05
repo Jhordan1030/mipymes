@@ -54,6 +54,22 @@
                 padding: 0.5rem 1rem; /* Espaciado para el botón de cerrar sesión */
             }
         }
+
+        /* Estilo para que los botones de la navbar se alineen en una columna en pantallas pequeñas */
+        @media (max-width: 576px) {
+            .navbar-nav {
+                text-align: center;
+            }
+
+            .navbar-nav .nav-item {
+                margin-bottom: 10px;
+            }
+
+            .navbar-nav .nav-link {
+                padding-left: 0;
+                padding-right: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -67,47 +83,46 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                
-                @can('ver Producto')
-                    <!-- Productos -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('producto.index') }}">Productos</a>
-                    </li>
-                @endcan
-                    
-                @can('ver empleado')
-                    <!-- Empleados -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('empleado.index') }}">Empleados</a>
-                    </li>
-                @endcan
+
+                    @can('ver Producto')
+                        <!-- Productos -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('producto.index') }}">Productos</a>
+                        </li>
+                    @endcan
+
+                    @can('ver empleado')
+                        <!-- Empleados -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('empleado.index') }}">Empleados</a>
+                        </li>
+                    @endcan
 
                     @can('ver bodega')
-                    <!-- Bodegas -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('bodega.index') }}">Bodegas</a>
-                    </li>
+                        <!-- Bodegas -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('bodega.index') }}">Bodegas</a>
+                        </li>
                     @endcan
-
 
                     @can('ver TransaccionProducto')
-                    <!-- Transacción Producto -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownTransaccion" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Transacción Producto
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownTransaccion">
-                            <li><a class="dropdown-item" href="{{ route('transaccionProducto.index') }}">Registrar Transacción</a></li>
-                            <li><a class="dropdown-item" href="#">Historial de Transacciones</a></li>
-                        </ul>
-                    </li>
+                        <!-- Transacción Producto -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownTransaccion" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Transacción Producto
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownTransaccion">
+                                <li><a class="dropdown-item" href="{{ route('transaccionProducto.index') }}">Registrar Transacción</a></li>
+                                <li><a class="dropdown-item" href="#">Historial de Transacciones</a></li>
+                            </ul>
+                        </li>
                     @endcan
-                    
+
                     <!-- Tipo Nota -->
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('tipoNota.index') }}">Tipo Nota</a>
                     </li>
-                
+
                     <!-- Cerrar Sesión -->
                     <li class="nav-item">
                         <form action="{{ route('logout') }}" method="POST" class="d-inline">
