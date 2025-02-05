@@ -186,9 +186,9 @@ class TipoNotaController extends Controller
             ->firstOrFail();
 
         // Verificar si la transacción está confirmada
-        if (optional($nota->transaccion)->estado !== 'Confirmada') {
+        /*if (optional($nota->transaccion)->estado !== 'Confirmada') {
             return redirect()->back()->with('error', 'La nota debe estar confirmada antes de generar el PDF.');
-        }
+        }*/
 
         // Si la transacción está confirmada, proceder a generar el PDF
         $pdf = Pdf::loadView('tipoNota.pdf', compact('nota'));

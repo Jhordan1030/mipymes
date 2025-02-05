@@ -100,9 +100,7 @@
 
                         <td>
                             <a href="{{ route('tipoNota.pdf', $nota->codigo) }}" class="btn btn-danger"
-                               @if(optional($nota->transaccion)->estado !== 'Confirmada')
-                                   disabled title="La nota no está confirmada"
-                                @endif
+
                             >
                                 Descargar PDF
                             </a>
