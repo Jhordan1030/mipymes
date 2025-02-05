@@ -11,6 +11,12 @@ use App\Http\Controllers\TransaccionProductoController;
 use App\Http\Controllers\TipoEmpaquesController;
 use App\Http\Controllers\TipoNotaController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\RoleController;
+
+
+Route::middleware(['role:super-admin'])->group(function() {
+    // Rutas protegidas
+});
 
 
 // 🔹 Ruta para la página de inicio de sesión
@@ -38,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
         'producto' => 'codigo' // Define que 'producto' usa 'cod_Prod' como identificador
     ]);
     
+    Route::resource('roles', RoleController::class);
 
     Route::resource('empleado', EmpleadoController::class);
     Route::resource('cargo', CargoController::class);
