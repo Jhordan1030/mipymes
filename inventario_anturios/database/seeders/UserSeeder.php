@@ -39,6 +39,8 @@ class UserSeeder extends Seeder
             'password '=> 'Administrator55@',
             'email_verified_at'=> now()
         ]);
+
+        
       
         $roleAdmin = Role::create(['name'=>'super-admin']);
 
@@ -58,7 +60,7 @@ class UserSeeder extends Seeder
             'password '=> 'Saler11@',
             'email_verified_at'=> now()
         ]);
-        //Se crea el rol lla,ado vendedor 
+        //Se crea el rol vendedor 
         $roleVendedor= Role::create(['name'=>'vendedor']);
         //El rol vendedor se asigna al usuario vendedorUser 
         $vendedorUser->assignRole($roleVendedor);

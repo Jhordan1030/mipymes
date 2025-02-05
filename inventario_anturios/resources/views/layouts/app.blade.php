@@ -118,10 +118,12 @@
                         </li>
                     @endcan
 
+                    @can('ver rol')
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('roles.index') }}">Roles</a>
                     </li>
-
+                    @endcan
+                    
                     <!-- Tipo Nota -->
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('tipoNota.index') }}">Tipo Nota</a>
