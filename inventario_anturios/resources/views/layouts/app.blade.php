@@ -107,16 +107,10 @@
 
                     @can('ver TransaccionProducto')
                         <!-- Transacción Producto -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownTransaccion" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('transaccionProducto.index') }}" id="navbarDropdownTransaccion" role="button"  >
                                 Transacción Producto
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownTransaccion">
-                                <li><a class="dropdown-item" href="{{ route('transaccionProducto.index') }}">Registrar Transacción</a></li>
-                                <li><a class="dropdown-item" href="#">Historial de Transacciones</a></li>
-                            </ul>
-
-                           
+                            </a>                           
                         </li>
                     @endcan
 
