@@ -1,12 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="row">
-        <section class="content">
-            <div class="col-md-8 col-md-offset-2">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
                 <!-- Mostrar los mensajes de éxito -->
                 @if (session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
                 @endif
 
                 <!-- Mostrar los errores de validación -->
@@ -30,43 +32,35 @@
                     </div>
                 @endif
 
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Actualizar Cargo</h3>
+                <div class="card mb-4">
+                    <div class="card-header text-white" style="background-color: #88022D">
+                        <h3 class="card-title mb-0">Actualizar Cargo</h3>
                     </div>
-                    <div class="panel-body">
-                        <div class="table-container">
-                            <form method="POST" action="{{ route('cargo.update', $cargo->codigocargo) }}" role="form">
-                                {{ csrf_field() }}
-                                <input name="_method" type="hidden" value="PATCH">
-                                <div class="row">
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
-                                        <div class="form-group">
-                                            <input type="text" name="codigocargo" id="codigocargo"
-                                                class="form-control input-sm"
-                                                value="{{ old('codigocargo', $cargo->codigocargo) }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
-                                        <div class="form-group">
-                                            <input type="text" name="nombrecargo" id="nombrecargo"
-                                                class="form-control input-sm"
-                                                value="{{ old('nombrecargo', $cargo->nombrecargo) }}">
-                                        </div>
-                                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ route('cargo.update', $cargo->codigocargo) }}" role="form">
+                            @csrf
+                            @method('PATCH')
+                            <div class="row">
+                                <!-- Campo Nombre del Cargo -->
+                                <div class="col-12 col-md-6 mb-3">
+                                    <label for="nombrecargo" class="form-label">Nombre del Cargo</label>
+                                    <input type="text" name="nombrecargo" id="nombrecargo"
+                                        class="form-control"
+                                        value="{{ old('nombrecargo', $cargo->nombrecargo) }}" required>
                                 </div>
-                                <div class="row">
-                                    <div class="col-xs-12 col-sm-12 col-md-12">
-                                        <input type="submit" value="Actualizar" class="btn btn-success btn-block">
-                                        <a href="{{ route('cargo.index') }}" class="btn btn-info btn-block">Atrás</a>
-                                    </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-6 mb-3">
+                                    <button type="submit" class="btn btn-success w-100">Actualizar</button>
                                 </div>
-                            </form>
-                        </div>
+                                <div class="col-12 col-md-6 mb-3">
+                                    <a href="{{ route('cargo.index') }}" class="btn btn-info w-100">Atrás</a>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
     </div>
 @endsection
-

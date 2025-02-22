@@ -5,7 +5,8 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up()
     {
         Schema::create('tipo_nota', function (Blueprint $table) {
@@ -13,8 +14,11 @@ return new class extends Migration {
             $table->string('tiponota', 10);
             $table->string('nro_identificacion');
             $table->foreign('nro_identificacion')->references('nro_identificacion')->on('empleados')->onDelete('cascade');
-            $table->string('idbodega', 10);
+            
+            // Asegúrate de que el idbodega esté alineado con el tipo de datos de la tabla bodegas
+            $table->unsignedBigInteger('idbodega');
             $table->foreign('idbodega')->references('idbodega')->on('bodegas')->onDelete('cascade');
+            
             $table->date('fechanota')->default(DB::raw('CURRENT_DATE'));
             $table->timestamps();
         });

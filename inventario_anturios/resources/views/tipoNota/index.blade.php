@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <h3 class="text-center">Lista de Notas</h3>
-        <a href="{{ route('tipoNota.create') }}" class="btn btn-primary mb-3">Crear Nota</a>
+        <a href="{{ route('tipoNota.create') }}" class="btn mb-3" style="background-color: #88022D; color: white;">Crear Nota</a>
 
         @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>

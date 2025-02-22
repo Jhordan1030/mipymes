@@ -10,28 +10,28 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('cargos', function (Blueprint $table) {
-            $table->string('codigocargo', 10)->primary(); // Clave primaria como 'codigocargo'
+            $table->id('codigocargo'); // Clave primaria como 'codigocargo' (serial)
             $table->string('nombrecargo');
             $table->timestamps();
         });
 
-        // Crear función PL/pgSQL para validar nombre del cargo y codigocargo
+        // Crear función PL/pgSQL para validar nombre del cargo
         DB::unprepared("
             CREATE OR REPLACE FUNCTION validar_nombre_cargo()
-            RETURNS TRIGGER AS $$
+            RETURNS TRIGGER AS $$ 
             BEGIN
                 -- Validar que el nombre solo contenga letras y espacios
                 IF NEW.nombrecargo !~ '^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$' THEN
                     RAISE EXCEPTION 'El nombre del cargo solo puede contener letras y espacios.';
                 END IF;
 
-                -- Validar que el código del cargo sea único
-                IF EXISTS (SELECT 1 FROM cargos WHERE codigocargo = NEW.codigocargo) THEN
-                    RAISE EXCEPTION 'El código del cargo ya existe.';
-                END IF;
-
-                -- Validar que el nombre del cargo sea único
-                IF EXISTS (SELECT 1 FROM cargos WHERE nombrecargo = NEW.nombrecargo) THEN
+                -- Validar que el nombre del cargo sea único (excepto para el registro actual en caso de actualización)
+                IF EXISTS (
+                    SELECT 1 
+                    FROM cargos 
+                    WHERE nombrecargo = NEW.nombrecargo 
+                    AND codigocargo != NEW.codigocargo
+                ) THEN
                     RAISE EXCEPTION 'El nombre del cargo ya existe.';
                 END IF;
 
@@ -50,6 +50,11 @@ return new class extends Migration
 
     public function down(): void
     {
+        // Eliminar el trigger y la función
+        DB::unprepared("DROP TRIGGER IF EXISTS trg_validar_nombre_cargo ON cargos;");
+        DB::unprepared("DROP FUNCTION IF EXISTS validar_nombre_cargo;");
+
+        // Eliminar la tabla
         Schema::dropIfExists('cargos');
     }
 };

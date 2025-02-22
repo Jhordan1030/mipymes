@@ -9,18 +9,19 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests; // Asegúrate de impor
 
 class BodegaController extends Controller
 {
+    use AuthorizesRequests;
 
-    use AuthorizesRequests; 
     public function __construct()
-{  
-    $this->authorizeResource(Bodega::class, 'bodega'); // ✅ Debe coincidir con la ruta
-}
+    {  
+        $this->authorizeResource(Bodega::class, 'bodega'); // ✅ Debe coincidir con la ruta
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $bodegas = Bodega::orderBy('nombrebodega', 'DESC')->paginate(5);
+        $bodegas = Bodega::orderBy('nombrebodega', 'ASC')->paginate(5);
         return view('bodega.index', compact('bodegas'));
     }
 
@@ -37,12 +38,12 @@ class BodegaController extends Controller
      */
     public function store(Request $request)
     {
+        // Ya no es necesario validar el idbodega porque es autoincremental
         $request->validate([
-            'idbodega' => 'required',
-            'nombrebodega' => 'required|max:10',
+            'nombrebodega' => 'required|max:10',  // Solo validamos el nombre
         ]);
 
-        Bodega::create($request->all());
+        Bodega::create($request->all());  // Aquí idbodega será asignado automáticamente
         return redirect()->route('bodega.index')->with('success', 'Registro creado satisfactoriamente');
     }
 
@@ -70,15 +71,15 @@ class BodegaController extends Controller
     public function update(Request $request, string $idbodega)
     {
         $request->validate([
-            'idbodega' => 'required',
-            'nombrebodega' => 'required|max:10',
-            
+            'nombrebodega' => 'required|max:10',  // Solo validamos el nombre
         ]);
 
-        Bodega::findOrFail($idbodega)->update($request->all());
+        // No es necesario enviar 'idbodega' porque será un campo autoincremental
+        $bodega = Bodega::findOrFail($idbodega);
+        $bodega->update($request->all());
+        
         return redirect()->route('bodega.index')->with('success', 'Registro actualizado satisfactoriamente');
     }
-
 
     /**
      * Remove the specified resource from storage.

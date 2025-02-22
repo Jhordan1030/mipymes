@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('bodegas', function (Blueprint $table) {
-            $table->string('idbodega', 10)->primary(); 
+            $table->id('idbodega'); // Usamos el método `id()` para un campo autoincremental
             $table->char('nombrebodega', 10); 
             
             $table->timestamps(); 
