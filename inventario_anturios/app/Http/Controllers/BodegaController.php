@@ -12,8 +12,7 @@ class BodegaController extends Controller
 
     use AuthorizesRequests; 
     public function __construct()
-{
-    
+{  
     $this->authorizeResource(Bodega::class, 'bodega'); // ✅ Debe coincidir con la ruta
 }
     /**
