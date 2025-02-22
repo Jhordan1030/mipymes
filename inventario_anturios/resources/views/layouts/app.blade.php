@@ -115,14 +115,11 @@
                                 <li><a class="dropdown-item" href="{{ route('transaccionProducto.index') }}">Registrar Transacción</a></li>
                                 <li><a class="dropdown-item" href="#">Historial de Transacciones</a></li>
                             </ul>
+
+                           
                         </li>
                     @endcan
 
-                    @can('ver rol')
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('roles.index') }}">Roles</a>
-                    </li>
-                    @endcan
                     
                     <!-- Tipo Nota -->
                     <li class="nav-item">
