@@ -15,12 +15,12 @@ use Illuminate\Support\Facades\DB;
 
 class TipoNotaController extends Controller
 {
-//     use AuthorizesRequests;
-//     public function __construct()
-// {
+    //     use AuthorizesRequests;
+    //     public function __construct()
+    // {
 
-//     $this->authorizeResource(TipoNota::class, 'tipoNota'); // ✅ Debe coincidir con la ruta
-// }
+    //     $this->authorizeResource(TipoNota::class, 'tipoNota'); // ✅ Debe coincidir con la ruta
+    // }
 
 
     /**
@@ -178,6 +178,7 @@ class TipoNotaController extends Controller
     /**
      * Genera un PDF con la información de una nota.
      */
+
     public function generarPDF($codigo)
     {
         // Buscar la nota por código
@@ -185,15 +186,14 @@ class TipoNotaController extends Controller
             ->where('codigo', $codigo)
             ->firstOrFail();
 
-        // Verificar si la transacción está confirmada
-        /*if (optional($nota->transaccion)->estado !== 'Confirmada') {
+        // Verificar si la transacción existe y está confirmada
+        if ($nota->transaccion === null ) {
             return redirect()->back()->with('error', 'La nota debe estar confirmada antes de generar el PDF.');
-        }*/
+        }
 
         // Si la transacción está confirmada, proceder a generar el PDF
         $pdf = Pdf::loadView('tipoNota.pdf', compact('nota'));
 
         return $pdf->download("Nota_{$nota->codigo}.pdf");
     }
-
 }
