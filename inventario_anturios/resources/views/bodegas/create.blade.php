@@ -21,7 +21,7 @@
                 </div>
                 <div class="panel-body">
                     <div class="table-container">
-                        <form method="POST" action="{{ route('bodega.store') }}" role="form">
+                        <form method="POST" action="{{ route('bodegas.store') }}" role="form">
                             {{ csrf_field() }}
                             <div class="row">
                                 <div class="col-xs-6 col-sm-6 col-md-6">
@@ -40,7 +40,7 @@
 
                                 <div class="col-xs-12 col-sm-12 col-md-12">
                                     <input type="submit" value="Guardar" class="btn btn-success btn-block">
-                                    <a href="{{ route('bodega.index') }}" class="btn btn-info btn-block">Atrás</a>
+                                    <a href="{{ route('bodegas.index') }}" class="btn btn-info btn-block">Atrás</a>
                                 </div>
 
                             </div>
@@ -51,4 +51,42 @@
             </div>
         </div>
     </section>
-    @endsection
+    
+<select name="codigoproducto[]" class="form-control producto-select" required>
+    <!-- Las opciones se llenan por JS -->
+</select>
+@endsection
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const tipoNotaSelect = document.getElementById('tiponota-select');
+    const bodegaSelect = document.querySelector('select[name="idbodega"]');
+
+    function cargarProductos(url) {
+        fetch(url)
+            .then(res => res.json())
+            .then(productos => {
+                document.querySelectorAll('.producto-select').forEach(select => {
+                    select.innerHTML = '<option value="">Seleccione un producto</option>';
+                    productos.forEach(prod => {
+                        select.innerHTML += `<option value="${prod.codigo}" data-stock="${prod.cantidad ?? ''}">${prod.codigo} - ${prod.nombre}</option>`;
+                    });
+                });
+            });
+    }
+
+    function actualizarOpcionesProductos() {
+        if (tipoNotaSelect.value === 'DEVOLUCION' && bodegaSelect.value) {
+            cargarProductos(`/bodegas/${bodegaSelect.value}/productos`);
+        } else if (tipoNotaSelect.value === 'ENVIO') {
+            cargarProductos(`/bodegas/master/productos`);
+        }
+    }
+
+    tipoNotaSelect.addEventListener('change', actualizarOpcionesProductos);
+    bodegaSelect.addEventListener('change', actualizarOpcionesProductos);
+
+    // Ejecutar al cargar la página si ya hay valores seleccionados
+    actualizarOpcionesProductos();
+});
+</script>

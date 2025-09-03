@@ -12,6 +12,9 @@ use App\Http\Controllers\TipoEmpaquesController;
 use App\Http\Controllers\TipoNotaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\VentaBodegaController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 
 
 Route::middleware(['role:super-admin'])->group(function() {
@@ -34,23 +37,25 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth'])->group(function () {
 
     // 🔹 Ruta para la vista principal (home)
-    Route::get('/home', function () {
-        return view('home');
-    })->name('home');
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+    Route::get('/home/bodega/{id}', [App\Http\Controllers\HomeController::class, 'bodega'])->name('home.bodega');
+
+    Route::get('/home/master', [App\Http\Controllers\HomeController::class, 'master'])->name('home.master');
 
     // 🔹 Rutas para los módulos principales
     //Route::resource('producto', ProductoController::class);
-    Route::resource('producto', ProductoController::class)->parameters([
+    Route::resource('productos', ProductoController::class)->parameters([
         'producto' => 'codigo' // Define que 'producto' usa 'cod_Prod' como identificador
     ]);
+    Route::post('productos/import', [ProductoController::class, 'import'])->name('productos.import'); // <-- CORREGIDO
     
     Route::resource('roles', RoleController::class);
 
-    Route::resource('empleado', EmpleadoController::class);
-    Route::resource('cargo', CargoController::class);
-    //Route::resource('tipoidentificacion', TipoIdentificacionController::class);
-    Route::resource('bodega', BodegaController::class);
-    //Route::resource('tipoempaque', TipoEmpaquesController::class);
+    Route::resource('empleados', EmpleadoController::class);
+    Route::post('empleados/import', [EmpleadoController::class, 'import'])->name('empleados.import'); // <-- OPCIONAL, para mantener consistencia
+
+    Route::resource('bodegas', BodegaController::class);
     Route::resource('tipoNota', TipoNotaController::class);
     Route::resource('users', UserController::class);
 
@@ -73,10 +78,42 @@ Route::middleware(['auth'])->group(function () {
     // ✅ Generar PDF de Tipo Nota
     Route::get('tipoNota/pdf/{codigo}', [TipoNotaController::class, 'generarPDF'])->name('tipoNota.pdf');
 
-    Route::post('/transaccionProducto/finalizar/{id}', [TransaccionProductoController::class, 'finalizar'])
-        ->name('transaccionProducto.finalizar');
+    // Para ENVÍO
+    Route::get('/bodegas/master/productos', [TipoNotaController::class, 'productosMaster']);
+    // Para DEVOLUCIÓN
+    Route::get('/bodegas/{id}/productos', [TipoNotaController::class, 'productosPorBodega']);
 
+    Route::get('/bodega/{id}/venta', [VentaBodegaController::class, 'create'])->name('venta.create');
+    Route::post('/bodega/{id}/venta', [VentaBodegaController::class, 'store'])->name('venta.store');
+
+    Route::get('/ventas', [VentaBodegaController::class, 'index'])->name('venta.index');
+
+    Route::get('/bodega/{id}', [BodegaController::class, 'show'])->name('bodega.show');
+    Route::get('venta/{venta}', [App\Http\Controllers\VentaBodegaController::class, 'show'])->name('venta.show');
+    Route::get('venta/{venta}/abono', [App\Http\Controllers\VentaBodegaController::class, 'abonoForm'])->name('venta.abono');
+    Route::post('venta/{venta}/abono', [App\Http\Controllers\VentaBodegaController::class, 'agregarAbono'])->name('venta.abono.store');
+    Route::get('venta/{venta}/edit', [App\Http\Controllers\VentaBodegaController::class, 'edit'])->name('venta.edit');
+    Route::put('venta/{venta}', [App\Http\Controllers\VentaBodegaController::class, 'update'])->name('venta.update');
+    Route::delete('venta/{venta}', [App\Http\Controllers\VentaBodegaController::class, 'destroy'])->name('venta.destroy');
+
+    Route::get('bodega/{bodega}/ventas', [VentaBodegaController::class, 'indexPorBodega'])->name('venta.index.bodega');
+
+    Route::get('ventas/exportar', [VentaBodegaController::class, 'exportarVentas'])->name('ventas.exportar');
+
+    Route::get('/password/change', [AuthController::class, 'showChangePasswordForm'])->name('password.change.form');
+    Route::post('/password/change', [AuthController::class, 'changePassword'])->name('password.change');
+
+    Route::get('bodega/{id}/stock/pdf', [BodegaController::class, 'stockPdf'])->name('bodega.stock.pdf');
 });
+
+// Password Reset Routes
+Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
+
+Route::post('/empleados/{nro_identificacion}/reset-password', [\App\Http\Controllers\EmpleadoController::class, 'resetPassword'])->name('empleados.reset_password');
+
 
 // 🔹 Redirigir la raíz al login si no está autenticado
 Route::get('/', function () {

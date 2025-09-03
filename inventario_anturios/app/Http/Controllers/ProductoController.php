@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Validator;
 
 class ProductoController extends Controller
 {
@@ -14,7 +16,7 @@ class ProductoController extends Controller
 
     public function __construct()
     {
-        $this->authorizeResource(Producto::class, 'producto');
+        //$this->authorizeResource(Producto::class, 'producto');
     }
 
     /**
@@ -24,11 +26,15 @@ class ProductoController extends Controller
     {
         $query = Producto::query();
 
-        if ($request->filled('search')) {
-            $query->where('nombre', 'like', '%' . $request->search . '%');
+        if ($request->filled('search_codigo')) {
+            $query->whereRaw('LOWER(codigo) LIKE ?', ['%' . strtolower($request->search_codigo) . '%']);
         }
 
-        $productos = $query->orderBy('nombre', 'ASC')->paginate(5);
+        if ($request->filled('search_nombre')) {
+            $query->whereRaw('LOWER(nombre) LIKE ?', ['%' . strtolower($request->search_nombre) . '%']);
+        }
+
+        $productos = $query->orderBy('nombre', 'ASC')->paginate(5)->appends($request->all());
 
         return view('producto.index', compact('productos'));
     }
@@ -38,8 +44,12 @@ class ProductoController extends Controller
      */
     public function create()
     {
-        $tipoempaques = ['Paquete', 'Caja', 'Unidad'];
-        return view('producto.create', compact('tipoempaques'));
+        $cargo = auth()->user()->cargoNombre();
+        if (!in_array($cargo, ['Administrador', 'Gerente', 'Jefe de bodega'])) {
+            abort(403, 'No tienes permiso para añadir productos.');
+        }
+
+        return view('producto.create');
     }
 
     /**
@@ -47,17 +57,22 @@ class ProductoController extends Controller
      */
     public function store(Request $request)
     {
-        // Validaciones en Laravel antes de la inserción
         $validatedData = $request->validate([
             'codigo' => 'required|string|max:10',
-            'nombre' => 'required|string|max:50',
+            'nombre' => [
+                'required',
+                'string',
+                'max:50',
+                'regex:/^[\pL\pN\s\-]+$/u'
+            ],
             'descripcion' => 'required|string',
             'cantidad' => 'required|integer',
-            'tipoempaque' => 'nullable|in:Paquete,Caja,Unidad',
+            // Elimina la validación de tipoempaque
         ]);
 
+        $validatedData['tipoempaque'] = 'Unidad'; // Siempre "Unidad"
+
         try {
-            // Inserción en la base de datos para activar el trigger
             DB::insert("
                 INSERT INTO productos (codigo, nombre, descripcion, cantidad, tipoempaque, created_at, updated_at)
                 VALUES (?, ?, ?, ?, ?, NOW(), NOW())
@@ -69,7 +84,7 @@ class ProductoController extends Controller
                 $validatedData['tipoempaque']
             ]);
 
-            return redirect()->route('producto.index')->with('success', 'Producto creado correctamente.');
+            return redirect()->route('productos.index')->with('success', 'Producto creado correctamente.');
         } catch (QueryException $e) {
             return $this->handleDatabaseException($e);
         }
@@ -77,26 +92,37 @@ class ProductoController extends Controller
 
     public function edit($id)
     {
+        $cargo = auth()->user()->cargoNombre();
+        if (!in_array($cargo, ['Administrador', 'Gerente', 'Jefe de bodega'])) {
+            abort(403, 'No tienes permiso para editar productos.');
+        }
+
         $producto = Producto::findOrFail($id);
-        $tipoempaques = ['Paquete', 'Caja', 'Unidad'];
-        return view('producto.edit', compact('producto', 'tipoempaques'));
+        return view('producto.edit', compact('producto'));
     }
 
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
             'codigo' => 'required|string|max:10',
-            'nombre' => 'required|string|max:50',
+            'nombre' => [
+                'required',
+                'string',
+                'max:50',
+                'regex:/^[\pL\pN\s\-]+$/u'
+            ],
             'descripcion' => 'required|string',
             'cantidad' => 'required|integer|min:1',
-            'tipoempaque' => 'nullable|in:Paquete,Caja,Unidad',
+            // Elimina la validación de tipoempaque
         ]);
+
+        $validatedData['tipoempaque'] = 'Unidad'; // Siempre "Unidad"
 
         try {
             $producto = Producto::findOrFail($id);
             $producto->update($validatedData);
 
-            return redirect()->route('producto.index')->with('success', 'Producto actualizado correctamente.');
+            return redirect()->route('productos.index')->with('success', 'Producto actualizado correctamente.');
         } catch (QueryException $e) {
             return $this->handleDatabaseException($e);
         }
@@ -104,9 +130,14 @@ class ProductoController extends Controller
 
     public function destroy($id)
     {
+        $cargo = auth()->user()->cargoNombre();
+        if (!in_array($cargo, ['Administrador', 'Gerente', 'Jefe de bodega'])) {
+            abort(403, 'No tienes permiso para eliminar productos.');
+        }
+
         $producto = Producto::findOrFail($id);
         $producto->delete();
-        return redirect()->route('producto.index')->with('success', 'Producto eliminado correctamente.');
+        return redirect()->route('productos.index')->with('success', 'Producto eliminado correctamente.');
     }
 
     /**
@@ -122,5 +153,53 @@ class ProductoController extends Controller
         }
 
         return redirect()->back()->withInput()->with('error', 'Error inesperado en la base de datos.');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'excel_file' => 'required|file|mimes:xlsx,xls'
+        ]);
+
+        $file = $request->file('excel_file');
+        $rows = Excel::toArray([], $file)[0];
+
+        $tipoempaquesValidos = ['Paquete', 'Caja', 'Unidad']; // O consulta tu tabla tipoempaque
+
+        $errores = [];
+        foreach ($rows as $index => $row) {
+            if ($index === 0) continue; // Saltar encabezado
+
+            $data = [
+                'codigo' => $row[0] ?? null,
+                'nombre' => $row[1] ?? null,
+                'descripcion' => $row[2] ?? null,
+                'cantidad' => $row[3] ?? null,
+                'tipoempaque' => 'Unidad', // Siempre "Unidad"
+            ];
+
+            $validator = Validator::make($data, [
+                'codigo' => 'required|string|max:10',
+                'nombre' => 'required|string|max:50',
+                'descripcion' => 'required|string',
+                'cantidad' => 'required|integer',
+            ]);
+
+            if ($validator->fails()) {
+                $errores[] = "Fila " . ($index + 1) . ": " . implode(', ', $validator->errors()->all());
+                continue;
+            }
+
+            try {
+                Producto::create($data);
+            } catch (\Exception $e) {
+                $errores[] = "Fila " . ($index + 1) . ": " . $e->getMessage();
+            }
+        }
+
+        if ($errores) {
+            return redirect()->back()->with('error', implode('<br>', $errores));
+        }
+        return redirect()->route('productos.index')->with('success', 'Productos importados correctamente.');
     }
 }
